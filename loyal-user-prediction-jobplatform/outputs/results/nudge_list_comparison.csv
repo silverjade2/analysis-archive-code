@@ -1,0 +1,4 @@
+list,n,logged in ≤ 30d (snapshot),season joiner,preference complete,salary left at default,mean true consent propensity
+v1 top 10% (snapshot score),745,0.9477,0.0805,0.1248,0.4389,0.8389
+v2 top 10% (time-cut score),745,0.9101,0.0832,0.3611,0.353,0.8965
+all non-consented users,7457,0.8283,0.1053,0.0392,0.6344,0.7356

@@ -1,0 +1,6 @@
+status,users,share
+Joined only,353848,0.784
+Test only,25606,0.0567
+Profile only,33505,0.0742
+Test + profile,38355,0.085
+  └ consented (core users),30898,0.0685

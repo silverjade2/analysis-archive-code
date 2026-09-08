@@ -1,0 +1,5 @@
+metric,share
+salary left at default,0.5115
+welfare: 1 item or fewer,0.1959
+welfare: fewer than 5 items,0.7208
+preference complete (salary set & welfare ≥ 5),0.176

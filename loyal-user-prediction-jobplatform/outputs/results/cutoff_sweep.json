@@ -1,0 +1,533 @@
+{
+ "meta": {
+  "oracleAuc": 0.7156,
+  "users": 38355,
+  "positives": 30898,
+  "folds": 5,
+  "model": "LightGBM (n_estimators=200, num_leaves=31)"
+ },
+ "points": [
+  {
+   "offset": -30,
+   "label": "-30d",
+   "auc": 0.6812,
+   "seenAfterConsent": 0.0357,
+   "loginImportance": 0.0375,
+   "topFeatures": [
+    {
+     "feature": "acca_t_score",
+     "importance": 0.2245
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.1885
+    },
+    {
+     "feature": "marketing_consent_yn",
+     "importance": 0.1319
+    },
+    {
+     "feature": "pref_salary_default_yn",
+     "importance": 0.0858
+    },
+    {
+     "feature": "age",
+     "importance": 0.0742
+    }
+   ]
+  },
+  {
+   "offset": -14,
+   "label": "-14d",
+   "auc": 0.683,
+   "seenAfterConsent": 0.0357,
+   "loginImportance": 0.0338,
+   "topFeatures": [
+    {
+     "feature": "acca_t_score",
+     "importance": 0.2203
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.1879
+    },
+    {
+     "feature": "marketing_consent_yn",
+     "importance": 0.1327
+    },
+    {
+     "feature": "pref_salary_default_yn",
+     "importance": 0.0852
+    },
+    {
+     "feature": "age",
+     "importance": 0.0707
+    }
+   ]
+  },
+  {
+   "offset": -7,
+   "label": "-7d",
+   "auc": 0.6827,
+   "seenAfterConsent": 0.0357,
+   "loginImportance": 0.0359,
+   "topFeatures": [
+    {
+     "feature": "acca_t_score",
+     "importance": 0.2205
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.1823
+    },
+    {
+     "feature": "marketing_consent_yn",
+     "importance": 0.1302
+    },
+    {
+     "feature": "pref_salary_default_yn",
+     "importance": 0.0822
+    },
+    {
+     "feature": "age",
+     "importance": 0.0757
+    }
+   ]
+  },
+  {
+   "offset": -3,
+   "label": "-3d",
+   "auc": 0.684,
+   "seenAfterConsent": 0.0357,
+   "loginImportance": 0.0373,
+   "topFeatures": [
+    {
+     "feature": "acca_t_score",
+     "importance": 0.2138
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.1806
+    },
+    {
+     "feature": "marketing_consent_yn",
+     "importance": 0.1294
+    },
+    {
+     "feature": "pref_salary_default_yn",
+     "importance": 0.082
+    },
+    {
+     "feature": "age",
+     "importance": 0.074
+    }
+   ]
+  },
+  {
+   "offset": -1,
+   "label": "-1d",
+   "auc": 0.6848,
+   "seenAfterConsent": 0.0357,
+   "loginImportance": 0.0383,
+   "topFeatures": [
+    {
+     "feature": "acca_t_score",
+     "importance": 0.2101
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.1741
+    },
+    {
+     "feature": "marketing_consent_yn",
+     "importance": 0.128
+    },
+    {
+     "feature": "pref_salary_default_yn",
+     "importance": 0.0785
+    },
+    {
+     "feature": "age",
+     "importance": 0.0689
+    }
+   ]
+  },
+  {
+   "offset": 0,
+   "label": "+0d",
+   "auc": 0.6883,
+   "seenAfterConsent": 0.0357,
+   "loginImportance": 0.0401,
+   "topFeatures": [
+    {
+     "feature": "acca_t_score",
+     "importance": 0.2087
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.1728
+    },
+    {
+     "feature": "marketing_consent_yn",
+     "importance": 0.1233
+    },
+    {
+     "feature": "pref_salary_default_yn",
+     "importance": 0.0777
+    },
+    {
+     "feature": "age",
+     "importance": 0.0697
+    }
+   ]
+  },
+  {
+   "offset": 1,
+   "label": "+1d",
+   "auc": 0.6947,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.0441,
+   "topFeatures": [
+    {
+     "feature": "acca_t_score",
+     "importance": 0.199
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.1685
+    },
+    {
+     "feature": "marketing_consent_yn",
+     "importance": 0.122
+    },
+    {
+     "feature": "pref_salary_default_yn",
+     "importance": 0.075
+    },
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.0679
+    }
+   ]
+  },
+  {
+   "offset": 2,
+   "label": "+2d",
+   "auc": 0.8834,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.0176,
+   "topFeatures": [
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.6829
+    },
+    {
+     "feature": "acca_t_score",
+     "importance": 0.0647
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.0481
+    },
+    {
+     "feature": "marketing_consent_yn",
+     "importance": 0.0305
+    },
+    {
+     "feature": "age",
+     "importance": 0.0277
+    }
+   ]
+  },
+  {
+   "offset": 3,
+   "label": "+3d",
+   "auc": 0.9216,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.0318,
+   "topFeatures": [
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.7715
+    },
+    {
+     "feature": "acca_t_score",
+     "importance": 0.0418
+    },
+    {
+     "feature": "login_counts",
+     "importance": 0.0318
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.0264
+    },
+    {
+     "feature": "join_month",
+     "importance": 0.0219
+    }
+   ]
+  },
+  {
+   "offset": 5,
+   "label": "+5d",
+   "auc": 0.9003,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.0628,
+   "topFeatures": [
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.7066
+    },
+    {
+     "feature": "login_counts",
+     "importance": 0.0628
+    },
+    {
+     "feature": "acca_t_score",
+     "importance": 0.0457
+    },
+    {
+     "feature": "join_month",
+     "importance": 0.0273
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.0252
+    }
+   ]
+  },
+  {
+   "offset": 7,
+   "label": "+7d",
+   "auc": 0.8866,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.0911,
+   "topFeatures": [
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.659
+    },
+    {
+     "feature": "login_counts",
+     "importance": 0.0911
+    },
+    {
+     "feature": "acca_t_score",
+     "importance": 0.0489
+    },
+    {
+     "feature": "join_month",
+     "importance": 0.0333
+    },
+    {
+     "feature": "pref_welfare_cnt",
+     "importance": 0.0278
+    }
+   ]
+  },
+  {
+   "offset": 14,
+   "label": "+14d",
+   "auc": 0.8723,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.3655,
+   "topFeatures": [
+    {
+     "feature": "login_counts",
+     "importance": 0.3655
+    },
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.3428
+    },
+    {
+     "feature": "acca_t_score",
+     "importance": 0.0526
+    },
+    {
+     "feature": "join_month",
+     "importance": 0.0486
+    },
+    {
+     "feature": "join_year",
+     "importance": 0.024
+    }
+   ]
+  },
+  {
+   "offset": 30,
+   "label": "+30d",
+   "auc": 0.8885,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.5577,
+   "topFeatures": [
+    {
+     "feature": "login_counts",
+     "importance": 0.5577
+    },
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.1037
+    },
+    {
+     "feature": "join_month",
+     "importance": 0.0725
+    },
+    {
+     "feature": "acca_t_score",
+     "importance": 0.0424
+    },
+    {
+     "feature": "user_cnt",
+     "importance": 0.0378
+    }
+   ]
+  },
+  {
+   "offset": 60,
+   "label": "+60d",
+   "auc": 0.916,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.5785,
+   "topFeatures": [
+    {
+     "feature": "login_counts",
+     "importance": 0.5785
+    },
+    {
+     "feature": "join_month",
+     "importance": 0.0735
+    },
+    {
+     "feature": "user_cnt",
+     "importance": 0.0656
+    },
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.0623
+    },
+    {
+     "feature": "acca_t_score",
+     "importance": 0.0354
+    }
+   ]
+  },
+  {
+   "offset": 90,
+   "label": "+90d",
+   "auc": 0.9284,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.5656,
+   "topFeatures": [
+    {
+     "feature": "login_counts",
+     "importance": 0.5656
+    },
+    {
+     "feature": "user_cnt",
+     "importance": 0.085
+    },
+    {
+     "feature": "join_month",
+     "importance": 0.0696
+    },
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.0568
+    },
+    {
+     "feature": "join_year",
+     "importance": 0.0394
+    }
+   ]
+  },
+  {
+   "offset": 180,
+   "label": "+180d",
+   "auc": 0.9467,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.5295,
+   "topFeatures": [
+    {
+     "feature": "login_counts",
+     "importance": 0.5295
+    },
+    {
+     "feature": "user_cnt",
+     "importance": 0.1025
+    },
+    {
+     "feature": "join_year",
+     "importance": 0.0605
+    },
+    {
+     "feature": "join_month",
+     "importance": 0.0554
+    },
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.053
+    }
+   ]
+  },
+  {
+   "offset": 365,
+   "label": "+365d",
+   "auc": 0.9451,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.4942,
+   "topFeatures": [
+    {
+     "feature": "login_counts",
+     "importance": 0.4942
+    },
+    {
+     "feature": "user_cnt",
+     "importance": 0.1267
+    },
+    {
+     "feature": "total_apply_cnt",
+     "importance": 0.0632
+    },
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.0561
+    },
+    {
+     "feature": "join_year",
+     "importance": 0.0497
+    }
+   ]
+  },
+  {
+   "offset": null,
+   "label": "snapshot",
+   "auc": 0.9495,
+   "seenAfterConsent": 1.0,
+   "loginImportance": 0.4902,
+   "topFeatures": [
+    {
+     "feature": "login_counts",
+     "importance": 0.4902
+    },
+    {
+     "feature": "user_cnt",
+     "importance": 0.1315
+    },
+    {
+     "feature": "total_apply_cnt",
+     "importance": 0.0739
+    },
+    {
+     "feature": "join_year",
+     "importance": 0.0569
+    },
+    {
+     "feature": "days_since_last_login",
+     "importance": 0.0512
+    }
+   ]
+  }
+ ]
+}

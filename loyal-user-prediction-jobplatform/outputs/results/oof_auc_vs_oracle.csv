@@ -1,0 +1,4 @@
+model,AUC
+oracle (true propensity),0.7156
+v1 snapshot,0.9438
+v2 time cut,0.6883
