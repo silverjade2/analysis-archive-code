@@ -1,0 +1,9 @@
+feature,n_positive,churn_rate_if_positive,churn_rate_if_zero
+rev_2015,42,0.8095,0.377
+rev_2024,204,0.0,0.4724
+rev_2025,53,0.0,0.4103
+rev_2026,3,0.0,0.3932
+rev_2027,0,,0.3922
+n_contracts,354,0.1808,0.4805
+total_revenue,600,0.2483,0.5358
+gubun_신규,577,0.5303,0.2644

@@ -1,0 +1,9 @@
+metric,value
+n_companies,2000.0
+n_kept,1201.0
+kept_rate,0.6005
+churn_rate_all,0.417
+churn_rate_kept,0.3922
+churn_rate_dropped,0.4543
+n_fin_blank_filled_zero,678.0
+share_fin_zero_among_kept,0.5645

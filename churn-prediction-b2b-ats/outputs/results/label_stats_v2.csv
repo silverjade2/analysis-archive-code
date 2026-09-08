@@ -1,0 +1,7 @@
+metric,value
+n_rows,688.0
+n_features,29.0
+churn_rate,0.202
+share_no_renewal_decision_in_window,0.3924
+oracle_auc_truth_churn_p,0.8712
+oracle_auc_renew_p_only,0.7129

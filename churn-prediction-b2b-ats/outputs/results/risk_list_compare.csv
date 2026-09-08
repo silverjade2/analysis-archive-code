@@ -1,0 +1,5 @@
+list,n,actual_churn_rate,mean_truth_churn_p,share_no_renewal_in_window
+p_v1,131,0.6794,0.335,0.2672
+p_v2,131,0.5649,0.4421,0.0
+random,131,0.2015,0.1954,0.3893
+overlap_v1_v2,131,0.458,,
