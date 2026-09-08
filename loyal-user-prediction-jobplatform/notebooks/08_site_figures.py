@@ -1,56 +1,23 @@
 """08 — Redraw the six figures in the site's visual tone (Pretendard, site palette, webp).
 
 Data and axes are identical to the figures drawn by 02 / 05 / 06; only colors, font, labels
-(Korean) and margins change. Everything is read back from data/ and outputs/results/, so this
-script never recomputes a number. Output: outputs/figures/site/figN_*.webp (+ .png).
+(Korean) and margins change — except fig4 and fig5, which are re-designed here (dumbbell with
+the planted-truth AUC as a reference line; rank bump chart instead of two lollipop panels).
+Everything is read back from data/ and outputs/results/, so this script never recomputes a
+number. Output: outputs/figures/site/figN_*.webp (+ .png).
 """
-import io
 import sys
 from pathlib import Path
 import numpy as np
 import pandas as pd
-import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from matplotlib import font_manager
-from PIL import Image
+from matplotlib.lines import Line2D
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import DATA, FIG, RES, SERVICE_START, SNAPSHOT, SEASONS
+from common import DATA, RES, SERVICE_START, SNAPSHOT, SEASONS
+from sitestyle import setup, save, name, AFTER_TARGET, PLANTED, BLUE, ORANGE, GRAY, LIGHT, DARK, MUTED
 
-OUT = FIG / "site"
-OUT.mkdir(parents=True, exist_ok=True)
-
-# --- site tone
-for f in list(Path.home().glob("Library/Fonts/Pretendard-*.otf")) + list(Path("/Library/Fonts").glob("Pretendard-*.otf")):
-    font_manager.fontManager.addfont(str(f))
-have_pretendard = any("Pretendard" in f.name for f in font_manager.fontManager.ttflist)
-plt.rcParams.update({
-    "font.family": "Pretendard" if have_pretendard else "AppleGothic",
-    "axes.unicode_minus": False,
-    "axes.spines.top": False, "axes.spines.right": False,
-    "axes.edgecolor": "#a1a1aa", "axes.labelcolor": "#3f3f46",
-    "xtick.color": "#52525b", "ytick.color": "#52525b",
-    "axes.titlesize": 12, "axes.titleweight": "semibold", "axes.titlelocation": "left",
-    "axes.titlecolor": "#18181b", "axes.labelsize": 10, "xtick.labelsize": 9, "ytick.labelsize": 9,
-    "legend.fontsize": 9, "legend.frameon": False,
-    "grid.color": "#e4e4e7", "grid.linewidth": 0.8, "axes.axisbelow": True,
-    "figure.facecolor": "white", "savefig.facecolor": "white",
-})
-BLUE, ORANGE, GRAY, LIGHT, DARK = "#2563eb", "#ea580c", "#a1a1aa", "#e4e4e7", "#18181b"
-
-
-def save(fig, name):
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", dpi=160, bbox_inches="tight", pad_inches=0.15)
-    buf.seek(0)
-    img = Image.open(buf).convert("RGB")
-    img.save(OUT / f"{name}.webp", "WEBP", quality=88, method=6)
-    img.save(OUT / f"{name}.png")
-    plt.close(fig)
-    print(f"saved {name}.webp  {img.size[0]}x{img.size[1]}")
-
-
+setup()
 users = pd.read_csv(DATA / "users.csv")
 
 # ---------------------------------------------------------------- fig1 funnel (02)
@@ -114,40 +81,92 @@ ax.grid(axis="y")
 fig.tight_layout()
 save(fig, "fig3_weekly_logins")
 
-# ---------------------------------------------------------------- fig4 AUC by variant (05)
+# ---------------------------------------------------------------- fig4 AUC dumbbell (05 + 06 oracle)
 comp = pd.read_csv(RES / "model_comparison.csv")
+oracle = pd.read_csv(RES / "oof_auc_vs_oracle.csv").set_index("model")["AUC"]["oracle (true propensity)"]
 models = ["Logistic Regression", "Random Forest", "XGBoost", "LightGBM"]
-piv = comp.pivot(index="model", columns="variant", values="AUC").loc[models, ["v1_asis", "v1_pref", "v2_pref"]]
-fig, ax = plt.subplots(figsize=(8, 4))
-x = np.arange(len(models))
-w = 0.25
-for i, (col, lab, c) in enumerate([("v1_asis", "v1 스냅샷", GRAY), ("v1_pref", "v1 스냅샷 + 선호 정보", BLUE),
-                                   ("v2_pref", "v2 시간 절단 + 선호 정보", ORANGE)]):
-    bars = ax.bar(x + (i - 1) * w, piv[col].values, w, label=lab, color=c)
-    ax.bar_label(bars, fmt="%.3f", fontsize=8, padding=2, color=DARK)
-ax.set_xticks(x, models)
-ax.set_ylim(0.5, 1.0)
-ax.set_ylabel("10-fold CV AUC")
-ax.grid(axis="y")
-ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.1), ncols=3)
-ax.set_title("피처 구성별 AUC — 스냅샷은 모든 모델을 부풀린다")
-fig.tight_layout()
+piv = comp.pivot(index="model", columns="variant", values="AUC").loc[models]
+fig, ax = plt.subplots(figsize=(8.5, 3.7))
+yy = np.arange(len(models))[::-1]
+for i, m in enumerate(models):
+    ax.plot([piv.loc[m, "v2_pref"], piv.loc[m, "v1_pref"]], [yy[i]] * 2, color=LIGHT, lw=3.5, zorder=1, solid_capstyle="round")
+    ax.text(piv.loc[m, "v2_pref"] - 0.008, yy[i], f"{piv.loc[m, 'v2_pref']:.3f}", ha="right", va="center", fontsize=9, color=DARK)
+    ax.text(piv.loc[m, "v1_pref"] + 0.008, yy[i], f"{piv.loc[m, 'v1_pref']:.3f}", ha="left", va="center", fontsize=9, color=DARK)
+ax.scatter(piv["v1_asis"], yy, s=75, color=GRAY, zorder=3, label="v1 스냅샷")
+ax.scatter(piv["v1_pref"], yy, s=75, facecolor="white", edgecolor=MUTED, linewidth=1.8, zorder=4, label="v1 스냅샷 + 선호 정보")
+ax.scatter(piv["v2_pref"], yy, s=75, color=BLUE, zorder=3, label="v2 시간 절단 + 선호 정보")
+ax.axvline(oracle, color=ORANGE, ls="--", lw=1.2, zorder=2)
+ax.text(oracle + 0.004, yy.max() + 0.62, f"심어둔 정답 확률의 AUC {oracle:.3f}", color=ORANGE, fontsize=9, va="center")
+ax.set_yticks(yy, models)
+ax.set_ylim(-0.7, len(models) - 0.1)
+ax.set_xlim(0.6, 1.0)
+ax.set_xlabel("10-fold CV AUC")
+ax.tick_params(axis="y", length=0)
+ax.spines["left"].set_visible(False)
+ax.grid(axis="x")
+ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), ncols=3)
+ax.set_title("피처 구성별 AUC — 스냅샷은 정답보다 잘 맞힌다")
 save(fig, "fig4_auc_by_variant")
 
-# ---------------------------------------------------------------- fig5 importance v1 vs v2 (05)
-fig, axes = plt.subplots(1, 2, figsize=(12, 5.2))
-for ax, vname, title in zip(axes, ["v1_asis", "v2_pref"], ["v1 — 스냅샷 (당시 구조)", "v2 — 시간 절단 (+ 선호 정보)"]):
-    imp = pd.read_csv(RES / f"importance_{vname}.csv", index_col=0)["importance"]
-    top = imp.head(10)[::-1]
-    ax.hlines(top.index, 0, top.values, color=BLUE, lw=1.5)
-    ax.plot(top.values, top.index, "o", color=BLUE)
-    ax.set_title(title)
-    ax.set_xlabel("정규화 gain 중요도 (LightGBM)")
-    ax.grid(axis="x")
-    ax.set_xlim(0, max(0.45, top.values.max() * 1.15))
-    ax.tick_params(axis="y", labelsize=9)
-fig.suptitle("피처 중요도 상위 10 — 모델은 무엇을 배웠나", fontsize=12, x=0.02, ha="left", fontweight="semibold", color=DARK)
-fig.tight_layout()
+# ---------------------------------------------------------------- fig5 importance rank bump (05)
+imp1 = pd.read_csv(RES / "importance_v1_asis.csv", index_col=0)["importance"]
+imp2 = pd.read_csv(RES / "importance_v2_pref.csv", index_col=0)["importance"]
+TOP_N = 8
+feats = list(dict.fromkeys(list(imp1.index[:TOP_N]) + list(imp2.index[:TOP_N])))
+rank1 = {f: i + 1 for i, f in enumerate(imp1.index)}
+rank2 = {f: i + 1 for i, f in enumerate(imp2.index)}
+SHOWN = 13                                  # true ranks drawn 1..13; beyond that → "14위 밖" rows; absent → "없음" rows
+def positions(rank):
+    """y position per feature for one side: true rank, then staggered overflow / absent rows."""
+    pos, over, absent = {}, [], []
+    for f in feats:
+        if f not in rank:
+            absent.append(f)
+        elif rank[f] > SHOWN:
+            over.append(f)
+        else:
+            pos[f] = rank[f]
+    for i, f in enumerate(sorted(over, key=rank.get)):
+        pos[f] = SHOWN + 1 + i
+    for i, f in enumerate(absent):
+        pos[f] = SHOWN + 1 + len(over) + i
+    return pos, len(over), len(absent)
+pos1, over1, abs1 = positions(rank1)
+pos2, over2, abs2 = positions(rank2)
+n_over = max(over1, over2, 1)
+n_abs = max(abs1, abs2)
+# both sides share one axis: overflow rows start at SHOWN+1, absent rows after the widest overflow zone
+for pos, n_o in ((pos1, over1), (pos2, over2)):
+    for f, r in pos.items():
+        if r > SHOWN + n_o:                      # an absent row → shift past the shared overflow zone
+            pos[f] = r + (n_over - n_o)
+ylabels = [str(i) for i in range(1, SHOWN + 1)] + ["14위 밖"] + [""] * (n_over - 1) + (["없음"] + [""] * (n_abs - 1) if n_abs else [])
+NROWS = len(ylabels)
+fig, ax = plt.subplots(figsize=(10, 6.6))
+for f in feats:
+    c = ORANGE if f in AFTER_TARGET else BLUE if f in PLANTED else GRAY
+    r1, r2 = pos1[f], pos2[f]
+    ax.plot([0, 1], [r1, r2], color=c, lw=2.2, alpha=0.9, zorder=2)
+    ax.plot([0, 1], [r1, r2], "o", color=c, ms=7, zorder=3)
+    left = f"{name(f)}  {imp1[f]:.2f}" if f in rank1 else f"{name(f)}  (피처에 없음)"
+    ax.text(-0.04, r1, left, ha="right", va="center", fontsize=9.5, color=DARK)
+    ax.text(1.04, r2, f"{imp2[f]:.2f}  {name(f)}", ha="left", va="center", fontsize=9.5, color=DARK)
+ax.axhspan(SHOWN + 0.5, NROWS + 0.5, color=LIGHT, alpha=0.35, lw=0)
+ax.set_xlim(-0.75, 1.75)
+ax.set_ylim(NROWS + 0.6, 0.3)
+ax.set_yticks(range(1, NROWS + 1), ylabels)
+ax.set_ylabel("중요도 순위 (LightGBM gain)")
+ax.set_xticks([0, 1], ["v1 스냅샷 (당시 구조)", "v2 시간 절단 (+ 선호 정보)"])
+ax.tick_params(axis="x", labelsize=10.5, length=0)
+ax.tick_params(axis="y", length=0)
+for s in ("left", "bottom"):
+    ax.spines[s].set_visible(False)
+ax.grid(axis="y")
+handles = [Line2D([], [], color=ORANGE, lw=2.2, label="타깃 결정 이후의 행동"),
+           Line2D([], [], color=BLUE, lw=2.2, label="심어둔 전환 신호"),
+           Line2D([], [], color=GRAY, lw=2.2, label="그 외")]
+ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.06), ncols=3)
+ax.set_title("피처 중요도 순위 — 시간을 자르면 무엇이 올라오고 무엇이 내려가나")
 save(fig, "fig5_importance_v1_vs_v2")
 
 # ---------------------------------------------------------------- fig6 nudge lists (06)

@@ -1,0 +1,5 @@
+quadrant,n,share_of_list,mean_truth_p,logged_in_30d_snapshot,preference_complete,mean_login_counts_snapshot
+both lists,209,0.2805,0.9196,0.9713,0.4258,26.9713
+v1 list only,536,0.7195,0.8075,0.9384,0.0075,22.8078
+v2 list only,536,0.7195,0.8851,0.8843,0.3358,15.8825
+neither,6176,8.2899,0.7102,0.8091,0.0031,12.1365

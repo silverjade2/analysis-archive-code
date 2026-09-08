@@ -1,0 +1,38 @@
+metric,value
+consented: users,30898.0
+"consented: mean daily login rate, day -30..-1",0.24419764891587992
+consented: login rate on day +1,0.7752980132450331
+consented: login rate on day +2,0.7763026883504812
+"consented: mean daily login rate, day +8..+60",0.23209016171737235
+consented: post/pre ratio,0.9504193129939662
+not_consented: users,7457.0
+"not_consented: mean daily login rate, day -30..-1",0.22346551279076324
+not_consented: login rate on day +1,0.10347193632496227
+not_consented: login rate on day +2,0.11120274914089347
+"not_consented: mean daily login rate, day +8..+60",0.09079030100335977
+not_consented: post/pre ratio,0.40628327776183154
+"ratio consented / not_consented: mean daily login rate, day -30..-1",1.0927755512078892
+ratio consented / not_consented: login rate on day +1,7.492833716865459
+"ratio consented / not_consented: mean daily login rate, day +8..+60",2.5563321098449014
+AUC: v1 snapshot,0.9438485528782175
+AUC: v2 time cut,0.6865894789044606
+AUC: oracle (true propensity),0.7155619375931707
+deciles v1: top decile mean truth propensity,0.8389386831093717
+deciles v1: bottom decile mean truth propensity,0.6012374467696361
+deciles v1: top - bottom,0.2377012363397356
+deciles v2: top decile mean truth propensity,0.894801712717898
+deciles v2: bottom decile mean truth propensity,0.5943257547838054
+deciles v2: top - bottom,0.30047595793409254
+deciles: non-consented users,7457.0
+deciles: non-consented mean truth propensity,0.7356215497741135
+quadrants: v1 list threshold (min OOF score),0.8569411217523508
+quadrants: v2 list threshold (min OOF score),0.8944366152134516
+quadrants: list size k,745.0
+quadrants: both lists n,209.0
+quadrants: both lists mean truth propensity,0.9195929275908905
+quadrants: v1 list only n,536.0
+quadrants: v1 list only mean truth propensity,0.8074895467350481
+quadrants: v2 list only n,536.0
+quadrants: v2 list only mean truth propensity,0.8851349890080928
+quadrants: neither n,6176.0
+quadrants: neither mean truth propensity,0.710182678698307

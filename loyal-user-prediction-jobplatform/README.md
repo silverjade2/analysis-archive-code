@@ -11,7 +11,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in notebooks/0*.py; do .venv/bin/python "$s"; done
 ```
 
-Apple Silicon 기준 01~06 약 2분, 07(절단 시점 스윕) 약 2분 30초, 08 수 초. 시드 고정(`SEED=42`) — `data/`를 지우고 다시 돌려도 데이터와 `outputs/results/*.csv`가 바이트 단위로 같다(`model_comparison.csv`의 학습 시간 열만 예외).
+Apple Silicon 기준 01~06 약 2분, 07(절단 시점 스윕) 약 2분 30초, 09 약 15초, 08·10 수 초. 시드 고정(`SEED=42`) — `data/`를 지우고 다시 돌려도 데이터와 `outputs/results/*.csv`가 바이트 단위로 같다(`model_comparison.csv`의 학습 시간 열만 예외).
 
 환경: Python 3.14.6, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, XGBoost 3.4, matplotlib 3.11. macOS에서는 LightGBM·XGBoost용 `libomp`가 필요하다(`brew install libomp`). 08의 한글 폰트는 Pretendard이고, 없으면 AppleGothic으로 대체된다.
 
@@ -26,9 +26,11 @@ Apple Silicon 기준 01~06 약 2분, 07(절단 시점 스윕) 약 2분 30초, 08
 | `05_compare_models.py` | 95/5 분할 → 10-fold CV, LR·RF·XGBoost·LightGBM 비교, v1/v2 |
 | `06_nudge_list_compare.py` | 두 버전의 넛지 리스트(비동의 유저 상위 10%)를 심어둔 정답으로 채점 |
 | `07_cutoff_sweep.py` | 절단 시점을 동의일 기준 −30일~+365일·스냅샷으로 옮기며 AUC와 상위 피처 기록 — 글의 인터랙티브 위젯 데이터(`cutoff_sweep.json`) |
-| `08_site_figures.py` | 02·05·06의 그림 6장을 사이트 톤(Pretendard, webp)으로 재작도. 데이터·축은 동일 |
+| `08_site_figures.py` | 02·05·06의 그림 1~6을 사이트 톤(Pretendard, webp)으로 작도. 데이터·축은 동일. fig4(AUC 덤벨 + 정답 AUC 기준선)와 fig5(중요도 순위 범프 차트)는 여기서 재설계 |
+| `09_leakage_anatomy.py` | 그림 7~11의 데이터: 동의(또는 v2 절단 다음 날) 전후 일별 로그인 확률, 유저 12명 타임라인 표본, v1/v2 OOF 점수와 ROC, 비동의 유저의 점수 분위·v1×v2 사분면. 06의 AUC·넛지 리스트·겹침과 일치하는지 assert |
+| `10_site_figures_2.py` | 09의 CSV만 읽어 그림 7~11 작도 (동의 전후 로그인, 점수 평면 hexbin, 타임라인, ROC, 점수 분위) |
 
-결과는 `outputs/results/*.csv`, 그림은 `outputs/figures/*.png`(원본)와 `outputs/figures/site/*.webp`(사이트용).
+결과는 `outputs/results/*.csv`, 그림은 `outputs/figures/*.png`(원본)와 `outputs/figures/site/*.webp`(사이트용). `notebooks/sitestyle.py`는 08·10이 공유하는 사이트 톤(폰트·팔레트·피처 한글명·저장)이다. 글의 캡션에 쓰인 숫자는 `leakage_anatomy_summary.csv`에 모여 있다.
 
 ## 스키마
 
