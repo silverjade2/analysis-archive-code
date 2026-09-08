@@ -1,6 +1,6 @@
 # churn-prediction-b2b-ats
 
-글: [B2B 고객사 이탈 분류 — 타깃을 정의한 열이 피처로 남았을 때](https://analysis-archive.vercel.app/analyses/churn-prediction-b2b-ats)
+글: [B2B 고객사 이탈 분류: 타깃을 정의한 열이 feature로 남았을 때](https://analysis-archive.vercel.app/analyses/churn-prediction-b2b-ats)
 
 채용 관리 솔루션(ATS) 고객사 이탈 분류 프로젝트를 가상데이터로 재현한다. 고객사 2,000사에 연간 갱신 확률(`truth_renew_p`)을 심고 계약 이력을 생성한 뒤, 원본 노트북의 절차(외부데이터 결합 → 실행일 기준 90일 규칙 라벨 → 30열 피처 → 회귀로 학습)를 그대로 따라가고, 정답을 알고 다시 채점한다.
 
