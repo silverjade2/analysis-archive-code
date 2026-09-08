@@ -1,0 +1,7 @@
+version,scoring,subset,n,n_train,auc,accuracy,precision,recall,f1
+v1_exclude_normal,truth_depressed,test_all,11813,24761,0.9672,0.8805,0.8035,0.9516,0.8713
+v1_exclude_normal,truth_depressed,test_counsel_only,6000,24761,0.8985,0.8057,0.8071,0.9948,0.8912
+v1_exclude_normal,truth_depressed,test_daily_only,5813,24761,0.7915,0.9577,0.1765,0.0268,0.0465
+v2_include_normal,truth_depressed,test_all,11813,27561,0.9775,0.9314,0.9619,0.8734,0.9155
+v2_include_normal,truth_depressed,test_counsel_only,6000,27561,0.9406,0.903,0.9641,0.9127,0.9377
+v2_include_normal,truth_depressed,test_daily_only,5813,27561,0.8485,0.9608,0.3889,0.0312,0.0579

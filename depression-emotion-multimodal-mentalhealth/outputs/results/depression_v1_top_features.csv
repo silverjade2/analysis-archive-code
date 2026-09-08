@@ -1,0 +1,81 @@
+direction,feature,coef
+depressed(+),요 ,8.864
+depressed(+),네요,2.992
+depressed(+),네요 ,2.992
+depressed(+),어요 ,2.727
+depressed(+),어요,2.727
+depressed(+),습니다 ,2.505
+depressed(+),니다 ,2.505
+depressed(+),니다,2.505
+depressed(+),습니다,2.505
+depressed(+),습니,2.505
+depressed(+),제가,2.219
+depressed(+), 제가,2.219
+depressed(+), 제,2.219
+depressed(+),계속,1.911
+depressed(+), 계속,1.911
+depressed(+), 계,1.911
+depressed(+),요즘,1.903
+depressed(+), 요즘,1.903
+depressed(+), 요,1.903
+depressed(+), 우울,1.779
+depressed(+), 우,1.779
+depressed(+),우울,1.779
+depressed(+), 우울하,1.779
+depressed(+),우울하,1.779
+depressed(+), 외,1.737
+depressed(+), 외롭,1.737
+depressed(+),외롭,1.737
+depressed(+),거든,1.655
+depressed(+),거든요 ,1.655
+depressed(+),거든요,1.655
+depressed(+),든요,1.655
+depressed(+),든요 ,1.655
+depressed(+),자꾸,1.63
+depressed(+), 자꾸,1.63
+depressed(+), 자,1.63
+depressed(+),그래,1.596
+depressed(+),래서,1.596
+depressed(+),그래서,1.596
+depressed(+), 그래서,1.596
+depressed(+), 그래,1.596
+daily(-), 했,-5.412
+daily(-),하 ,-4.985
+daily(-),했 ,-4.968
+daily(-),었 ,-4.311
+daily(-), 헐,-4.092
+daily(-),그립,-4.016
+daily(-), 그립,-4.016
+daily(-), 싫,-3.934
+daily(-), 했 ,-3.723
+daily(-), 보,-3.593
+daily(-),나 ,-3.562
+daily(-), 울었,-3.522
+daily(-), 울,-3.522
+daily(-),울었,-3.522
+daily(-), 슬,-3.496
+daily(-), 슬프,-3.496
+daily(-),슬프,-3.496
+daily(-),그랬,-3.484
+daily(-), 그랬,-3.484
+daily(-), 신나,-3.4
+daily(-), 신,-3.4
+daily(-),신나,-3.4
+daily(-),설레,-3.296
+daily(-), 설레,-3.296
+daily(-), 설,-3.296
+daily(-),웠 ,-3.195
+daily(-),렸 ,-3.176
+daily(-), 떨,-3.162
+daily(-),질렸,-3.091
+daily(-), 질,-3.091
+daily(-), 질렸,-3.091
+daily(-), 열받,-3.077
+daily(-), 열,-3.077
+daily(-),열받,-3.077
+daily(-),있었,-3.037
+daily(-), 있,-3.037
+daily(-), 있었,-3.037
+daily(-), 싫 ,-3.032
+daily(-),싫 ,-3.032
+daily(-),음이,-3.013

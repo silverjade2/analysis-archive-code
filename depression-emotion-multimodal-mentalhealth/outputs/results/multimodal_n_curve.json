@@ -1,0 +1,175 @@
+{
+ "meta": {
+  "seeds": 3,
+  "nTotal": 19374,
+  "nOriginal": 2000,
+  "testSize": 0.3,
+  "model": "char n-gram TF-IDF + LR / 음성 표준화 + LR / late fusion",
+  "ns": [
+   500,
+   1000,
+   2000,
+   5000,
+   10000,
+   19374
+  ]
+ },
+ "points": [
+  {
+   "n": 500,
+   "split": "random",
+   "text": {
+    "mean": 0.7222,
+    "std": 0.0641
+   },
+   "multimodal": {
+    "mean": 0.7489,
+    "std": 0.0749
+   },
+   "gain": 0.0267
+  },
+  {
+   "n": 500,
+   "split": "speaker",
+   "text": {
+    "mean": 0.69,
+    "std": 0.0359
+   },
+   "multimodal": {
+    "mean": 0.7103,
+    "std": 0.0669
+   },
+   "gain": 0.0203
+  },
+  {
+   "n": 1000,
+   "split": "random",
+   "text": {
+    "mean": 0.7589,
+    "std": 0.0135
+   },
+   "multimodal": {
+    "mean": 0.7811,
+    "std": 0.0367
+   },
+   "gain": 0.0222
+  },
+  {
+   "n": 1000,
+   "split": "speaker",
+   "text": {
+    "mean": 0.7597,
+    "std": 0.0134
+   },
+   "multimodal": {
+    "mean": 0.767,
+    "std": 0.0253
+   },
+   "gain": 0.0073
+  },
+  {
+   "n": 2000,
+   "split": "random",
+   "text": {
+    "mean": 0.7956,
+    "std": 0.0067
+   },
+   "multimodal": {
+    "mean": 0.8233,
+    "std": 0.0093
+   },
+   "gain": 0.0277
+  },
+  {
+   "n": 2000,
+   "split": "speaker",
+   "text": {
+    "mean": 0.7662,
+    "std": 0.012
+   },
+   "multimodal": {
+    "mean": 0.7868,
+    "std": 0.0202
+   },
+   "gain": 0.0206
+  },
+  {
+   "n": 5000,
+   "split": "random",
+   "text": {
+    "mean": 0.8044,
+    "std": 0.0031
+   },
+   "multimodal": {
+    "mean": 0.8233,
+    "std": 0.0037
+   },
+   "gain": 0.0189
+  },
+  {
+   "n": 5000,
+   "split": "speaker",
+   "text": {
+    "mean": 0.7907,
+    "std": 0.0083
+   },
+   "multimodal": {
+    "mean": 0.8041,
+    "std": 0.0095
+   },
+   "gain": 0.0134
+  },
+  {
+   "n": 10000,
+   "split": "random",
+   "text": {
+    "mean": 0.8087,
+    "std": 0.0017
+   },
+   "multimodal": {
+    "mean": 0.83,
+    "std": 0.0038
+   },
+   "gain": 0.0213
+  },
+  {
+   "n": 10000,
+   "split": "speaker",
+   "text": {
+    "mean": 0.7976,
+    "std": 0.0036
+   },
+   "multimodal": {
+    "mean": 0.8132,
+    "std": 0.0019
+   },
+   "gain": 0.0156
+  },
+  {
+   "n": 19374,
+   "split": "random",
+   "text": {
+    "mean": 0.8108,
+    "std": 0.0083
+   },
+   "multimodal": {
+    "mean": 0.8315,
+    "std": 0.0034
+   },
+   "gain": 0.0207
+  },
+  {
+   "n": 19374,
+   "split": "speaker",
+   "text": {
+    "mean": 0.8054,
+    "std": 0.0061
+   },
+   "multimodal": {
+    "mean": 0.8189,
+    "std": 0.0033
+   },
+   "gain": 0.0135
+  }
+ ]
+}

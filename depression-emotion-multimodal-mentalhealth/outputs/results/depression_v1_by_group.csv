@@ -1,0 +1,5 @@
+group,n,pred_depressed_rate
+"counsel & normal intent (excluded from training, all 4,000)",4000,0.9432
+counsel & symptom intent (test),4800,0.9948
+daily & truth_depressed=1 (test),224,0.0268
+daily & truth_depressed=0 (test),5589,0.005

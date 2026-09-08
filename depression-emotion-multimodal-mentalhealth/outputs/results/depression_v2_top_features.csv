@@ -1,0 +1,81 @@
+direction,feature,coef
+depressed(+),요 ,8.282
+depressed(+),네요,2.662
+depressed(+),네요 ,2.662
+depressed(+),외롭,2.254
+depressed(+), 외롭,2.254
+depressed(+), 외,2.254
+depressed(+), 지,2.183
+depressed(+),지쳤,2.183
+depressed(+), 지쳤,2.183
+depressed(+),니다 ,2.072
+depressed(+),습니,2.072
+depressed(+),습니다 ,2.072
+depressed(+),니다,2.072
+depressed(+),습니다,2.072
+depressed(+), 우울하,2.028
+depressed(+), 우,2.028
+depressed(+),우울,2.028
+depressed(+), 우울,2.028
+depressed(+),우울하,2.028
+depressed(+),어요,1.938
+depressed(+),어요 ,1.938
+depressed(+), 가라앉,1.806
+depressed(+),라앉,1.806
+depressed(+), 가라,1.806
+depressed(+),가라앉,1.806
+depressed(+),가라,1.806
+depressed(+),쓸모,1.635
+depressed(+), 쓸,1.635
+depressed(+), 쓸모없,1.635
+depressed(+),쓸모없,1.635
+depressed(+),모없,1.635
+depressed(+), 쓸모,1.635
+depressed(+), 싶,1.617
+depressed(+),고 ,1.617
+depressed(+),눈물,1.572
+depressed(+), 눈,1.572
+depressed(+),물이,1.572
+depressed(+),눈물이 ,1.572
+depressed(+),눈물이,1.572
+depressed(+), 눈물,1.572
+not_depressed(-),했 ,-4.339
+not_depressed(-),었 ,-3.994
+not_depressed(-),하 ,-3.776
+not_depressed(-), 그립,-3.547
+not_depressed(-),그립,-3.547
+not_depressed(-), 했,-3.364
+not_depressed(-), 갔,-3.136
+not_depressed(-),봤 ,-3.131
+not_depressed(-), 봤 ,-3.131
+not_depressed(-), 슬프,-3.063
+not_depressed(-), 슬,-3.063
+not_depressed(-),슬프,-3.063
+not_depressed(-), 갔 ,-2.939
+not_depressed(-),갔 ,-2.939
+not_depressed(-), 보,-2.887
+not_depressed(-),나 ,-2.858
+not_depressed(-), 울,-2.733
+not_depressed(-),울었,-2.733
+not_depressed(-), 울었,-2.733
+not_depressed(-),음이,-2.652
+not_depressed(-),음이 ,-2.652
+not_depressed(-),프 ,-2.583
+not_depressed(-),립 ,-2.554
+not_depressed(-),그립 ,-2.554
+not_depressed(-), 그립 ,-2.554
+not_depressed(-), 헐,-2.506
+not_depressed(-),웠 ,-2.461
+not_depressed(-),그랬,-2.449
+not_depressed(-), 그랬,-2.449
+not_depressed(-), 설레,-2.419
+not_depressed(-),설레,-2.419
+not_depressed(-), 설,-2.419
+not_depressed(-),렸 ,-2.405
+not_depressed(-), 신,-2.323
+not_depressed(-),신나,-2.323
+not_depressed(-), 신나,-2.323
+not_depressed(-),질렸,-2.314
+not_depressed(-), 질렸,-2.314
+not_depressed(-), 질,-2.314
+not_depressed(-),가 ,-2.298

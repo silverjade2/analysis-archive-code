@@ -1,0 +1,54 @@
+emotion,rank,feature,coef
+happiness,1,신나,3.023
+happiness,2, 설,2.779
+happiness,3,복하,1.965
+happiness,4, 고,1.904
+happiness,5,즐거웠,1.778
+happiness,6, 기,1.74
+angry,1, 열받,2.759
+angry,2, 빡,2.576
+angry,3,어이없,2.008
+angry,4, 화가 ,1.998
+angry,5, 억울,1.794
+angry,6,짜증,1.625
+angry,7,없 ,1.482
+angry,8,울하,1.465
+neutral,1, 했,5.5
+neutral,2, 그랬,3.274
+neutral,3,보냈,3.181
+neutral,4, 왔,3.032
+neutral,5, 했 ,2.935
+neutral,6,있었,2.829
+neutral,7, 보,2.579
+neutral,8,했 ,2.518
+sadness,1,그립,2.88
+sadness,2, 울었,2.822
+sadness,3, 슬프,2.621
+sadness,4, 그립 ,1.481
+sadness,5,허전하,1.474
+sadness,6, 서,1.445
+sadness,7, 울었 ,1.438
+sadness,8,속상,1.436
+disgust,1, 싫,4.79
+disgust,2,질렸,2.925
+disgust,3, 역겹,2.53
+disgust,4, 더럽,2.351
+disgust,5, 싫 ,2.248
+disgust,6, 떨어지,1.342
+disgust,7,질렸 ,1.27
+disgust,8,역질,1.189
+surprise,1, 헐,4.023
+surprise,2,소름,2.244
+surprise,3, 대박,2.025
+surprise,4,자기,1.525
+surprise,5,헐 ,1.516
+surprise,6, 예상 ,1.259
+surprise,7, 않,1.17
+fear,1,떨렸,2.812
+fear,2,두렵,2.601
+fear,3,무서웠,1.923
+fear,4, 떨,1.822
+fear,5,정돼,1.75
+fear,6, 겁,1.693
+fear,7, 무,1.497
+fear,8,안하,1.44

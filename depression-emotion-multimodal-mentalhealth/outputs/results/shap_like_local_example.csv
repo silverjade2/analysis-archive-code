@@ -1,0 +1,7 @@
+token,sadness_contribution,example_text,true_emotion,truth_depressed
+외롭,0.949,외롭 허전하 그냥 울었 무의미하 진짜다,sadness,1
+허전하,1.3856,외롭 허전하 그냥 울었 무의미하 진짜다,sadness,1
+그냥,0.0847,외롭 허전하 그냥 울었 무의미하 진짜다,sadness,1
+울었,1.532,외롭 허전하 그냥 울었 무의미하 진짜다,sadness,1
+무의미하,0.7831,외롭 허전하 그냥 울었 무의미하 진짜다,sadness,1
+진짜다,-0.2492,외롭 허전하 그냥 울었 무의미하 진짜다,sadness,1

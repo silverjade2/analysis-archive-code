@@ -1,0 +1,5 @@
+source,label,n,used_in_training
+counsel,1 (우울),16000,1
+counsel,0 (우울 아님),4000,0
+daily,1 (우울),0,0
+daily,0 (우울 아님),19374,1
