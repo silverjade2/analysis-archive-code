@@ -10,274 +10,274 @@
   {
    "offset": -30,
    "label": "-30d",
-   "auc": 0.6812,
-   "seenAfterConsent": 0.0357,
-   "loginImportance": 0.0375,
+   "auc": 0.6822,
+   "seenAfterConsent": 0.0,
+   "loginImportance": 0.0286,
    "topFeatures": [
     {
      "feature": "acca_t_score",
-     "importance": 0.2245
+     "importance": 0.2142
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.1885
+     "importance": 0.1836
     },
     {
      "feature": "marketing_consent_yn",
-     "importance": 0.1319
+     "importance": 0.1285
     },
     {
      "feature": "pref_salary_default_yn",
-     "importance": 0.0858
+     "importance": 0.0789
     },
     {
-     "feature": "age",
-     "importance": 0.0742
+     "feature": "days_since_last_login",
+     "importance": 0.0709
     }
    ]
   },
   {
    "offset": -14,
    "label": "-14d",
-   "auc": 0.683,
-   "seenAfterConsent": 0.0357,
-   "loginImportance": 0.0338,
+   "auc": 0.6832,
+   "seenAfterConsent": 0.0,
+   "loginImportance": 0.0309,
    "topFeatures": [
     {
      "feature": "acca_t_score",
-     "importance": 0.2203
+     "importance": 0.2168
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.1879
+     "importance": 0.1801
     },
     {
      "feature": "marketing_consent_yn",
-     "importance": 0.1327
+     "importance": 0.1258
     },
     {
      "feature": "pref_salary_default_yn",
-     "importance": 0.0852
+     "importance": 0.0789
     },
     {
-     "feature": "age",
-     "importance": 0.0707
+     "feature": "days_since_last_login",
+     "importance": 0.0717
     }
    ]
   },
   {
    "offset": -7,
    "label": "-7d",
-   "auc": 0.6827,
-   "seenAfterConsent": 0.0357,
-   "loginImportance": 0.0359,
+   "auc": 0.6817,
+   "seenAfterConsent": 0.0,
+   "loginImportance": 0.0368,
    "topFeatures": [
     {
      "feature": "acca_t_score",
-     "importance": 0.2205
+     "importance": 0.2067
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.1823
+     "importance": 0.1764
     },
     {
      "feature": "marketing_consent_yn",
-     "importance": 0.1302
+     "importance": 0.1265
     },
     {
      "feature": "pref_salary_default_yn",
-     "importance": 0.0822
+     "importance": 0.0818
     },
     {
      "feature": "age",
-     "importance": 0.0757
+     "importance": 0.0692
     }
    ]
   },
   {
    "offset": -3,
    "label": "-3d",
-   "auc": 0.684,
-   "seenAfterConsent": 0.0357,
-   "loginImportance": 0.0373,
+   "auc": 0.6815,
+   "seenAfterConsent": 0.0,
+   "loginImportance": 0.0412,
    "topFeatures": [
     {
      "feature": "acca_t_score",
-     "importance": 0.2138
+     "importance": 0.2078
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.1806
+     "importance": 0.1759
     },
     {
      "feature": "marketing_consent_yn",
-     "importance": 0.1294
+     "importance": 0.1252
     },
     {
      "feature": "pref_salary_default_yn",
-     "importance": 0.082
+     "importance": 0.0788
     },
     {
      "feature": "age",
-     "importance": 0.074
+     "importance": 0.0717
     }
    ]
   },
   {
    "offset": -1,
    "label": "-1d",
-   "auc": 0.6848,
-   "seenAfterConsent": 0.0357,
-   "loginImportance": 0.0383,
+   "auc": 0.6874,
+   "seenAfterConsent": 0.0,
+   "loginImportance": 0.04,
    "topFeatures": [
     {
      "feature": "acca_t_score",
-     "importance": 0.2101
+     "importance": 0.203
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.1741
+     "importance": 0.1763
     },
     {
      "feature": "marketing_consent_yn",
-     "importance": 0.128
+     "importance": 0.1251
     },
     {
      "feature": "pref_salary_default_yn",
-     "importance": 0.0785
+     "importance": 0.076
     },
     {
      "feature": "age",
-     "importance": 0.0689
+     "importance": 0.0705
     }
    ]
   },
   {
    "offset": 0,
    "label": "+0d",
-   "auc": 0.6883,
-   "seenAfterConsent": 0.0357,
-   "loginImportance": 0.0401,
+   "auc": 0.6866,
+   "seenAfterConsent": 0.0,
+   "loginImportance": 0.0343,
    "topFeatures": [
     {
      "feature": "acca_t_score",
-     "importance": 0.2087
+     "importance": 0.2047
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.1728
+     "importance": 0.1748
     },
     {
      "feature": "marketing_consent_yn",
-     "importance": 0.1233
+     "importance": 0.1265
     },
     {
      "feature": "pref_salary_default_yn",
-     "importance": 0.0777
+     "importance": 0.0762
     },
     {
      "feature": "age",
-     "importance": 0.0697
+     "importance": 0.0679
     }
    ]
   },
   {
    "offset": 1,
    "label": "+1d",
-   "auc": 0.6947,
+   "auc": 0.6924,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.0441,
+   "loginImportance": 0.042,
    "topFeatures": [
     {
      "feature": "acca_t_score",
-     "importance": 0.199
+     "importance": 0.2006
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.1685
+     "importance": 0.166
     },
     {
      "feature": "marketing_consent_yn",
-     "importance": 0.122
+     "importance": 0.1211
     },
     {
      "feature": "pref_salary_default_yn",
-     "importance": 0.075
+     "importance": 0.0763
     },
     {
-     "feature": "days_since_last_login",
-     "importance": 0.0679
+     "feature": "age",
+     "importance": 0.0649
     }
    ]
   },
   {
    "offset": 2,
    "label": "+2d",
-   "auc": 0.8834,
+   "auc": 0.8828,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.0176,
+   "loginImportance": 0.0167,
    "topFeatures": [
     {
      "feature": "days_since_last_login",
-     "importance": 0.6829
+     "importance": 0.6821
     },
     {
      "feature": "acca_t_score",
-     "importance": 0.0647
+     "importance": 0.0653
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.0481
+     "importance": 0.0501
     },
     {
      "feature": "marketing_consent_yn",
-     "importance": 0.0305
+     "importance": 0.0289
     },
     {
      "feature": "age",
-     "importance": 0.0277
+     "importance": 0.0266
     }
    ]
   },
   {
    "offset": 3,
    "label": "+3d",
-   "auc": 0.9216,
+   "auc": 0.9253,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.0318,
+   "loginImportance": 0.0307,
    "topFeatures": [
     {
      "feature": "days_since_last_login",
-     "importance": 0.7715
+     "importance": 0.7767
     },
     {
      "feature": "acca_t_score",
-     "importance": 0.0418
+     "importance": 0.0391
     },
     {
      "feature": "login_counts",
-     "importance": 0.0318
+     "importance": 0.0307
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.0264
+     "importance": 0.0245
     },
     {
      "feature": "join_month",
-     "importance": 0.0219
+     "importance": 0.0211
     }
    ]
   },
   {
    "offset": 5,
    "label": "+5d",
-   "auc": 0.9003,
+   "auc": 0.9022,
    "seenAfterConsent": 1.0,
    "loginImportance": 0.0628,
    "topFeatures": [
     {
      "feature": "days_since_last_login",
-     "importance": 0.7066
+     "importance": 0.709
     },
     {
      "feature": "login_counts",
@@ -285,218 +285,218 @@
     },
     {
      "feature": "acca_t_score",
-     "importance": 0.0457
+     "importance": 0.0464
     },
     {
      "feature": "join_month",
-     "importance": 0.0273
+     "importance": 0.0263
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.0252
+     "importance": 0.0255
     }
    ]
   },
   {
    "offset": 7,
    "label": "+7d",
-   "auc": 0.8866,
+   "auc": 0.888,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.0911,
+   "loginImportance": 0.0882,
    "topFeatures": [
     {
      "feature": "days_since_last_login",
-     "importance": 0.659
+     "importance": 0.6602
     },
     {
      "feature": "login_counts",
-     "importance": 0.0911
+     "importance": 0.0882
     },
     {
      "feature": "acca_t_score",
-     "importance": 0.0489
+     "importance": 0.0485
     },
     {
      "feature": "join_month",
-     "importance": 0.0333
+     "importance": 0.0339
     },
     {
      "feature": "pref_welfare_cnt",
-     "importance": 0.0278
+     "importance": 0.0277
     }
    ]
   },
   {
    "offset": 14,
    "label": "+14d",
-   "auc": 0.8723,
+   "auc": 0.8736,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.3655,
+   "loginImportance": 0.3587,
    "topFeatures": [
     {
      "feature": "login_counts",
-     "importance": 0.3655
+     "importance": 0.3587
     },
     {
      "feature": "days_since_last_login",
-     "importance": 0.3428
+     "importance": 0.3461
     },
     {
      "feature": "acca_t_score",
-     "importance": 0.0526
+     "importance": 0.0535
     },
     {
      "feature": "join_month",
-     "importance": 0.0486
+     "importance": 0.0487
     },
     {
-     "feature": "join_year",
-     "importance": 0.024
+     "feature": "age",
+     "importance": 0.025
     }
    ]
   },
   {
    "offset": 30,
    "label": "+30d",
-   "auc": 0.8885,
+   "auc": 0.8887,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.5577,
+   "loginImportance": 0.5542,
    "topFeatures": [
     {
      "feature": "login_counts",
-     "importance": 0.5577
+     "importance": 0.5542
     },
     {
      "feature": "days_since_last_login",
-     "importance": 0.1037
+     "importance": 0.1047
     },
     {
      "feature": "join_month",
-     "importance": 0.0725
+     "importance": 0.0748
     },
     {
      "feature": "acca_t_score",
-     "importance": 0.0424
+     "importance": 0.0459
     },
     {
      "feature": "user_cnt",
-     "importance": 0.0378
+     "importance": 0.0373
     }
    ]
   },
   {
    "offset": 60,
    "label": "+60d",
-   "auc": 0.916,
+   "auc": 0.9158,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.5785,
+   "loginImportance": 0.5792,
    "topFeatures": [
     {
      "feature": "login_counts",
-     "importance": 0.5785
+     "importance": 0.5792
     },
     {
      "feature": "join_month",
-     "importance": 0.0735
+     "importance": 0.0738
     },
     {
      "feature": "user_cnt",
-     "importance": 0.0656
+     "importance": 0.0658
     },
     {
      "feature": "days_since_last_login",
-     "importance": 0.0623
+     "importance": 0.064
     },
     {
-     "feature": "acca_t_score",
-     "importance": 0.0354
+     "feature": "join_year",
+     "importance": 0.0349
     }
    ]
   },
   {
    "offset": 90,
    "label": "+90d",
-   "auc": 0.9284,
+   "auc": 0.9279,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.5656,
+   "loginImportance": 0.564,
    "topFeatures": [
     {
      "feature": "login_counts",
-     "importance": 0.5656
+     "importance": 0.564
     },
     {
      "feature": "user_cnt",
-     "importance": 0.085
+     "importance": 0.0848
     },
     {
      "feature": "join_month",
-     "importance": 0.0696
+     "importance": 0.0671
     },
     {
      "feature": "days_since_last_login",
-     "importance": 0.0568
+     "importance": 0.0585
     },
     {
      "feature": "join_year",
-     "importance": 0.0394
+     "importance": 0.0415
     }
    ]
   },
   {
    "offset": 180,
    "label": "+180d",
-   "auc": 0.9467,
+   "auc": 0.9466,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.5295,
+   "loginImportance": 0.5265,
    "topFeatures": [
     {
      "feature": "login_counts",
-     "importance": 0.5295
+     "importance": 0.5265
     },
     {
      "feature": "user_cnt",
-     "importance": 0.1025
+     "importance": 0.1027
     },
     {
      "feature": "join_year",
-     "importance": 0.0605
+     "importance": 0.0619
     },
     {
      "feature": "join_month",
-     "importance": 0.0554
+     "importance": 0.0553
     },
     {
      "feature": "days_since_last_login",
-     "importance": 0.053
+     "importance": 0.0519
     }
    ]
   },
   {
    "offset": 365,
    "label": "+365d",
-   "auc": 0.9451,
+   "auc": 0.9453,
    "seenAfterConsent": 1.0,
-   "loginImportance": 0.4942,
+   "loginImportance": 0.4955,
    "topFeatures": [
     {
      "feature": "login_counts",
-     "importance": 0.4942
+     "importance": 0.4955
     },
     {
      "feature": "user_cnt",
-     "importance": 0.1267
+     "importance": 0.1265
     },
     {
      "feature": "total_apply_cnt",
-     "importance": 0.0632
+     "importance": 0.0645
     },
     {
      "feature": "days_since_last_login",
-     "importance": 0.0561
+     "importance": 0.0551
     },
     {
      "feature": "join_year",
-     "importance": 0.0497
+     "importance": 0.0504
     }
    ]
   },

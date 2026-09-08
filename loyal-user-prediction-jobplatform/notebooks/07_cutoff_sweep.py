@@ -7,8 +7,8 @@ is the original notebook's table (everyone cut at the query date, i.e. v1 + pref
 
 For every offset: LightGBM 5-fold out-of-fold AUC (same model / seed as 06) and the top-5
 normalized gain importances (fit on all rows, one-hot columns folded back to their source
-feature as in 05). Cutoffs never go before the profile-completion day (the modeling population
-is defined by having a profile) and never past the snapshot day.
+feature as in 05). Cutoffs never go before the day before profile completion (same lower bound as 04) and never
+past the snapshot day.
 
 Outputs:
   outputs/results/cutoff_sweep.csv   long format: offset, auc, seen_after_consent, top features
@@ -56,7 +56,7 @@ for off in OFFSETS:
     if off == "snapshot":
         cutoff = np.full(len(users), N_DAYS - 1)
     else:
-        cutoff = np.clip(base + off, profile_day, N_DAYS - 1)
+        cutoff = np.clip(base + off, profile_day - 1, N_DAYS - 1)
     f = build_features(cutoff, users, *rest)
     X = encode(f, COLS)
     oof = cross_val_predict(make_model(), X, y, cv=cv, method="predict_proba")[:, 1]

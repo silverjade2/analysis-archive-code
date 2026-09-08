@@ -2,7 +2,9 @@
 
 Positives: cutoff = consent day - 1.
 Negatives: cutoff = profile day - 1 + a delay sampled from the positives' (consent - profile)
-           distribution, capped at the snapshot. This gives negatives a comparable observation
+           distribution, capped at the snapshot.
+The cutoff is never earlier than profile day - 1, so a user who consented on the profile day
+(delay 0) is still cut strictly before the consent day. This gives negatives a comparable observation
            window instead of the full period up to the snapshot.
 Features are then computed from events on or before each user's cutoff only.
 """
@@ -21,7 +23,7 @@ delay = (users.loc[pos, "consent_day"] - users.loc[pos, "profile_day"]).values
 own_delay = np.where(pos, users["consent_day"].values - users["profile_day"].values,
                      rng.choice(delay, size=len(users)))
 cutoff = users["profile_day"].values + own_delay - 1
-cutoff = np.clip(cutoff, users["profile_day"].values, N_DAYS - 1)
+cutoff = np.clip(cutoff, users["profile_day"].values - 1, N_DAYS - 1)   # strictly before consent, even when delay = 0
 f = build_features(cutoff, users, *rest)
 f.to_csv(DATA / "features_v2_timecut.csv", index=False)
 print(f"v2 rows {len(f):,}  median observation window (cutoff - join) pos %d  neg %d days"
