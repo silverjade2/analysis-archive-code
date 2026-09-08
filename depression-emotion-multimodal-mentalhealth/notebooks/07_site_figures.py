@@ -119,7 +119,7 @@ res = pd.read_csv(RESULTS / "multimodal_protocols.csv")
 def g(protocol, data, model, col="accuracy"):
     return res[(res.protocol == protocol) & (res.data == data) & (res.model == model)][col].iloc[0]
 arrows = [
-    ("(a) 원 방식\n텍스트 전체 → 멀티모달 2,000\n(테스트셋이 다름)", g("a_original", "all_19374", "text"), g("a_original", "sub_2000", "multimodal"),
+    ("(a) 원 방식\n텍스트 전체 → multimodal 2,000\n(테스트셋이 다름)", g("a_original", "all_19374", "text"), g("a_original", "sub_2000", "multimodal"),
      f"n={g('a_original','all_19374','text','n_test'):,} vs {g('a_original','sub_2000','multimodal','n_test'):,}", GRAY),
     ("(b) 같은 2,000건 · 랜덤", g("b_same_subset", "sub_2000", "text"), g("b_same_subset", "sub_2000", "multimodal"),
      f"n={g('b_same_subset','sub_2000','text','n_test'):,}", ORANGE),
@@ -138,8 +138,8 @@ for i, (lab, a, b, n, col) in enumerate(arrows[::-1]):
     ax.text(b + 0.004, i + 0.28, f"{b:.3f}  (Δ{b - a:+.3f})", ha="left", fontsize=8.5, color=col, fontweight="semibold")
     ax.text(0.855, i - 0.02, n, va="center", fontsize=8, color=MUTED)
 ax.set_yticks(range(len(arrows))); ax.set_yticklabels([a[0] for a in arrows[::-1]], fontsize=9)
-ax.set_xlim(0.74, 0.87); ax.set_ylim(-0.6, len(arrows) - 0.2); ax.set_xlabel("accuracy   (● 텍스트 → ▶ 멀티모달)")
-ax.set_title("멀티모달이 텍스트에 더한 것: 비교 조건에 따라 달라진다 (가상데이터)")
+ax.set_xlim(0.74, 0.87); ax.set_ylim(-0.6, len(arrows) - 0.2); ax.set_xlabel("accuracy   (● 텍스트 → ▶ multimodal)")
+ax.set_title("multimodal이 텍스트에 더한 것: 비교 조건에 따라 달라진다 (가상데이터)")
 ax.tick_params(axis="y", length=0); ax.spines["left"].set_visible(False); ax.grid(axis="x")
 ax.legend(handles=[Line2D([], [], color=GRAY, lw=2.5, label="테스트셋이 다른 비교"),
                    Line2D([], [], color=ORANGE, lw=2.5, label="랜덤 분할"),
@@ -151,20 +151,20 @@ save(fig, "fig4_protocols")
 agg = pd.read_csv(RESULTS / "multimodal_n_curve.csv")
 gap = pd.read_csv(RESULTS / "multimodal_n_curve_gain.csv")
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8.5, 6.2), sharex=True, gridspec_kw={"height_ratios": [2, 1]})
-style = {("random", "text"): (GRAY, "--", "텍스트 · 랜덤"), ("random", "multimodal"): (BLUE, "--", "멀티모달 · 랜덤"),
-         ("speaker", "text"): (GRAY, "-", "텍스트 · 화자 분리"), ("speaker", "multimodal"): (BLUE, "-", "멀티모달 · 화자 분리")}
+style = {("random", "text"): (GRAY, "--", "텍스트 · 랜덤"), ("random", "multimodal"): (BLUE, "--", "multimodal · 랜덤"),
+         ("speaker", "text"): (GRAY, "-", "텍스트 · 화자 분리"), ("speaker", "multimodal"): (BLUE, "-", "multimodal · 화자 분리")}
 for (how, model), (c, ls, lab) in style.items():
     a = agg[(agg.split == how) & (agg.model == model)]
     ax1.plot(a.n, a["mean"], color=c, ls=ls, marker="o", ms=4, lw=1.7, label=lab)
     ax1.fill_between(a.n, a["mean"] - a["std"], a["mean"] + a["std"], color=c, alpha=0.12, lw=0)
-ax1.set_xscale("log"); ax1.set_ylabel("accuracy (시드 3개, 밴드 = ±1 std)"); ax1.legend(ncol=2, loc="lower right")
+ax1.set_xscale("log"); ax1.set_ylabel("accuracy (seed 3개, 밴드 = ±1 std)"); ax1.legend(ncol=2, loc="lower right")
 ax1.axvline(2000, color=MUTED, ls=":", lw=1)
-ax1.text(2000, ax1.get_ylim()[1] - 0.004, " 원 프로젝트의 멀티모달 N", fontsize=8.5, color=MUTED, va="top")
+ax1.text(2000, ax1.get_ylim()[1] - 0.004, " 원 프로젝트의 multimodal N", fontsize=8.5, color=MUTED, va="top")
 ax1.grid(axis="y")
 for how, c, ls, lab in [("random", ORANGE, "--", "랜덤 분할"), ("speaker", BLUE, "-", "화자 분리")]:
     gg = gap[gap.split == how]
     ax2.plot(gg.n, gg.gain, color=c, marker="o", ms=4, ls=ls, lw=1.7, label=lab)
-ax2.axhline(0, color=DARK, lw=0.8); ax2.set_ylabel("멀티모달 − 텍스트"); ax2.set_xlabel("학습에 쓴 발화 수 N (log)")
+ax2.axhline(0, color=DARK, lw=0.8); ax2.set_ylabel("multimodal − 텍스트"); ax2.set_xlabel("학습에 쓴 발화 수 N (log)")
 ax2.legend(); ax2.grid(axis="y")
 ax1.set_title("N과 분할 방식에 따른 accuracy, 그리고 음성이 더한 것")
 fig.tight_layout()
@@ -176,7 +176,7 @@ diff = pd.read_csv(RESULTS / "confusion_diff_multimodal_minus_text.csv", index_c
 ang = np.linspace(0, 2 * np.pi, len(EMOTIONS), endpoint=False).tolist(); ang += ang[:1]
 fig = plt.figure(figsize=(11.5, 4.8))
 ax = fig.add_subplot(1, 2, 1, polar=True)
-for col, c, lab in [("text_recall", GRAY, "텍스트"), ("multimodal_recall", BLUE, "멀티모달")]:
+for col, c, lab in [("text_recall", GRAY, "텍스트"), ("multimodal_recall", BLUE, "multimodal")]:
     v = per[col].tolist(); v += v[:1]
     ax.plot(ang, v, color=c, lw=2, label=lab); ax.fill(ang, v, color=c, alpha=0.12)
 ax.set_xticks(ang[:-1]); ax.set_xticklabels(EMOTIONS, fontsize=9, color=DARK)
@@ -193,7 +193,7 @@ for i in range(7):
         v = diff.values[i, j]
         if v != 0:
             ax2.text(j, i, f"{v:+d}", ha="center", va="center", fontsize=7.5, color="white" if abs(v) > lim * 0.55 else DARK)
-ax2.set_xlabel("예측"); ax2.set_ylabel("정답"); ax2.set_title("혼동행렬 차이: 멀티모달 − 텍스트 (건수)")
+ax2.set_xlabel("예측"); ax2.set_ylabel("정답"); ax2.set_title("혼동행렬 차이: multimodal − 텍스트 (건수)")
 for s in ("top", "right", "left", "bottom"):
     ax2.spines[s].set_visible(False)
 ax2.tick_params(length=0)
@@ -217,7 +217,7 @@ fig, axes = plt.subplots(1, 2, figsize=(11, 4.4), sharex=True, sharey=True)
 spk_colors = dict(zip(top_spk, CAT8))
 emo_colors = dict(zip(EMOTIONS, CAT8))
 axes[0].scatter(P[:, 0], P[:, 1], c=[spk_colors[s] for s in sub.speaker_id], s=10, alpha=0.75, lw=0)
-axes[0].set_title("음성 피처 PCA: 화자별 색 (상위 8명)")
+axes[0].set_title("음성 feature PCA: 화자별 색 (상위 8명)")
 axes[1].scatter(P[:, 0], P[:, 1], c=[emo_colors[e] for e in sub.emotion_label], s=10, alpha=0.75, lw=0)
 axes[1].set_title("같은 점: 감정별 색")
 for ax in axes:
@@ -247,9 +247,9 @@ for t, c in tok_contrib:
     ax1.text(x + w / 2, 0.2, f"{c:+.2f}", ha="center", va="center", fontsize=8.5, color=DARK)
     x += w + 0.012
 ax1.set_xlim(0, max(1, x)); ax1.set_ylim(0, 1); ax1.axis("off")
-ax1.set_title(f"로컬: 예문 한 건의 토큰별 sadness 기여 (정답 감정 = {true_emo}, truth_depressed = {true_dep})", fontsize=10.5)
+ax1.set_title(f"local: 예문 한 건의 토큰별 sadness 기여 (정답 감정 = {true_emo}, truth_depressed = {true_dep})", fontsize=10.5)
 ax2.barh([f"'{f.strip()}'" for f in glob_sad.feature[::-1]], glob_sad.coef[::-1], color=BLUE, height=0.68)
-ax2.set_xlabel("LR coef (sadness, char n-gram)"); ax2.set_title("전역: sadness 상위 피처 (8위 안, 같은 계수는 하나로). '외롭', '무의미'는 없다", fontsize=10.5)
+ax2.set_xlabel("LR coef (sadness, char n-gram)"); ax2.set_title("global: sadness 상위 feature (8위 안, 같은 계수는 하나로). '외롭', '무의미'는 없다", fontsize=10.5)
 ax2.tick_params(axis="y", length=0); ax2.spines["left"].set_visible(False); ax2.grid(axis="x")
 fig.tight_layout()
 save(fig, "fig8_local_vs_global")

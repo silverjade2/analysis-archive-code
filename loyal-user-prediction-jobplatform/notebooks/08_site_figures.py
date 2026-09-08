@@ -105,7 +105,7 @@ ax.tick_params(axis="y", length=0)
 ax.spines["left"].set_visible(False)
 ax.grid(axis="x")
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), ncols=3)
-ax.set_title("피처 구성별 AUC — 스냅샷은 정답보다 잘 맞힌다")
+ax.set_title("feature 구성별 AUC — 스냅샷은 정답보다 잘 맞힌다")
 save(fig, "fig4_auc_by_variant")
 
 # ---------------------------------------------------------------- fig5 importance rank bump (05)
@@ -148,7 +148,7 @@ for f in feats:
     r1, r2 = pos1[f], pos2[f]
     ax.plot([0, 1], [r1, r2], color=c, lw=2.2, alpha=0.9, zorder=2)
     ax.plot([0, 1], [r1, r2], "o", color=c, ms=7, zorder=3)
-    left = f"{name(f)}  {imp1[f]:.2f}" if f in rank1 else f"{name(f)}  (피처에 없음)"
+    left = f"{name(f)}  {imp1[f]:.2f}" if f in rank1 else f"{name(f)}  (feature에 없음)"
     ax.text(-0.04, r1, left, ha="right", va="center", fontsize=9.5, color=DARK)
     ax.text(1.04, r2, f"{imp2[f]:.2f}  {name(f)}", ha="left", va="center", fontsize=9.5, color=DARK)
 ax.axhspan(SHOWN + 0.5, NROWS + 0.5, color=LIGHT, alpha=0.35, lw=0)
@@ -166,7 +166,7 @@ handles = [Line2D([], [], color=ORANGE, lw=2.2, label="타깃 결정 이후의 �
            Line2D([], [], color=BLUE, lw=2.2, label="심어둔 전환 신호"),
            Line2D([], [], color=GRAY, lw=2.2, label="그 외")]
 ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.06), ncols=3)
-ax.set_title("피처 중요도 순위 — 시간을 자르면 무엇이 올라오고 무엇이 내려가나")
+ax.set_title("feature importance 순위 — 시간을 자르면 무엇이 올라오고 무엇이 내려가나")
 save(fig, "fig5_importance_v1_vs_v2")
 
 # ---------------------------------------------------------------- fig6 nudge lists (06)
