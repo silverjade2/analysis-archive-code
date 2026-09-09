@@ -25,6 +25,6 @@ Apple Silicon 기준 전체 약 12초. 시드 고정(`SEED=42`) — `data/`를 �
 | `04_select_k.py` | k=2~10 스윕 (엘보우·실루엣·ARI) + k=4/5 대조 |
 | `05_profile_clusters.py` | 최종 군집(k=5) z-score 프로파일링 + 비즈니스 라벨링 |
 
-그림은 `outputs/figures/fig1~7.png`. 4호 글([intermittent-recovery-limits](../intermittent-recovery-limits))은 이 폴더의 생성기를 그대로 복사해 쓴다.
+그림은 `outputs/figures/fig1~7.png`. 후속 글(세그멘테이션 시리즈 2편, 발행 전)은 이 폴더의 생성기를 그대로 복사해 쓴다.
 
-`data/usage_profiles.csv`는 커밋한다. 생성기(`01_`)를 고치면 파이프라인 전체를 다시 돌려 데이터·결과·글의 숫자를 같은 커밋에 넣고, 4호 폴더의 `00_generate_usage_profiles.py`도 같이 바꾼다.
+`data/usage_profiles.csv`는 커밋한다. 생성기(`01_`)를 고치면 파이프라인 전체를 다시 돌려 데이터·결과·글의 숫자를 같은 커밋에 넣고, 후속 글 폴더의 `00_generate_usage_profiles.py`도 같이 바꾼다.
