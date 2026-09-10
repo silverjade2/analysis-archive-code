@@ -1,0 +1,8 @@
+metric,value
+recompute_sample_rows,200
+recompute_n_features,33
+recompute_mismatch,0
+post_event_rows,0
+target_definition_mismatch,0
+negative_control_rows,50
+negative_control_detected,34

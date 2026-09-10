@@ -1,0 +1,8 @@
+metric,value
+train_rows,63481.0
+train_day_max,142.0
+train_positive,217.0
+test_rows,10682.0
+test_day_min,150.0
+test_positive,42.0
+scale_pos_weight,291.54

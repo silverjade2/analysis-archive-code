@@ -1,0 +1,7 @@
+metric,value
+n_rows,77446.0
+n_features,33.0
+n_positive,279.0
+positive_rate,0.0036
+imbalance_ratio,276.5842
+n_positive_devices,40.0

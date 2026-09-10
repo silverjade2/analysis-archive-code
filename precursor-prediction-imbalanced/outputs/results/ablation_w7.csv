@@ -1,0 +1,4 @@
+metric,value
+pr_auc_full,0.6089
+pr_auc_no_w7,0.6021
+diff,-0.0068

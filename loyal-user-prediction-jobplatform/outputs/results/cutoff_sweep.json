@@ -12,7 +12,7 @@
    "label": "-30d",
    "auc": 0.6822,
    "seenAfterConsent": 0.0,
-   "loginImportance": 0.0286,
+   "loginImportance": 0.0288,
    "topFeatures": [
     {
      "feature": "acca_t_score",
@@ -32,7 +32,7 @@
     },
     {
      "feature": "days_since_last_login",
-     "importance": 0.0709
+     "importance": 0.0707
     }
    ]
   },
@@ -41,7 +41,7 @@
    "label": "-14d",
    "auc": 0.6832,
    "seenAfterConsent": 0.0,
-   "loginImportance": 0.0309,
+   "loginImportance": 0.0311,
    "topFeatures": [
     {
      "feature": "acca_t_score",
@@ -61,7 +61,7 @@
     },
     {
      "feature": "days_since_last_login",
-     "importance": 0.0717
+     "importance": 0.0715
     }
    ]
   },
@@ -70,7 +70,7 @@
    "label": "-7d",
    "auc": 0.6817,
    "seenAfterConsent": 0.0,
-   "loginImportance": 0.0368,
+   "loginImportance": 0.0371,
    "topFeatures": [
     {
      "feature": "acca_t_score",
@@ -99,7 +99,7 @@
    "label": "-3d",
    "auc": 0.6815,
    "seenAfterConsent": 0.0,
-   "loginImportance": 0.0412,
+   "loginImportance": 0.0414,
    "topFeatures": [
     {
      "feature": "acca_t_score",

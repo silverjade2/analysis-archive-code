@@ -1,0 +1,7 @@
+true_cluster,0,1,2,3,All
+allday_low,5,0,113,122,240
+intermittent,130,0,0,20,150
+morning,35,0,7,188,230
+night,10,0,70,85,165
+noise,0,15,0,0,15
+All,180,15,190,415,800

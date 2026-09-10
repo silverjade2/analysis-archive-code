@@ -2,7 +2,7 @@
 검증 (SKILL 재현 코드 검증 절차 2·3): 누수 점검, 시간 절단 손검산 5사, 정상 범위.
 파이프라인의 일부가 아니다. `python verify.py`로 실행.
 """
-import sys; sys.path.insert(0, "notebooks")
+import sys; sys.path.insert(0, "scripts")
 import numpy as np, pandas as pd
 from _common import *
 

@@ -1,0 +1,11 @@
+metric,value
+w3_daily_mean_event_day,4.25
+w3_daily_mean_before_ramp,0.288
+usage_norm_std_signal_window,0.4204
+usage_norm_std_before_window,0.2052
+w7_daily_mean_confounder,3.2783
+w7_daily_mean_severe,0.3064
+w7_daily_mean_normal,0.3053
+severe_rate_confounder,0.0
+severe_rate_severe,1.0
+severe_rate_normal,0.0

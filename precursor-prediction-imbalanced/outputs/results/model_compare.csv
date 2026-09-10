@@ -1,0 +1,4 @@
+variant,pr_auc,roc_auc
+no_handling,0.6089,0.9157
+class_weight,0.5927,0.9412
+scale_pos_weight,0.2498,0.7339
