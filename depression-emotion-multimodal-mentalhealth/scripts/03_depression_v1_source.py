@@ -1,7 +1,5 @@
-"""03. 우울 진단 v1 — 원 프로젝트 방식.
-상담 스크립트의 증상 의도 발화 = 1, 일상 대화 = 0. 상담 스크립트의 일상 의도 발화 4,000건은 학습에서 뺀다.
-홀드아웃 7:3. 같은 테스트셋을 (1) 학습 라벨, (2) truth_depressed 두 기준으로 채점하고,
-학습에서 뺀 상담 일상 의도 발화(모델이 한 번도 본 적 없는 4,000건)를 넣어 우울로 찍는 비율을 본다."""
+"""03. 우울 진단 v1. 상담 증상 의도 = 1, 일상 대화 = 0, 상담 일상 의도 4,000건은 학습에서 제외. 학습 라벨·truth_depressed 두 기준으로 채점
+출력: outputs/results/depression_v1_*.csv, depression_oracle.csv"""
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
@@ -31,7 +29,7 @@ cm = (te.source == "counsel").values
 rows.append(dict(scoring="truth_depressed", subset="test_counsel_only", n=int(cm.sum()), **metrics(te.truth_depressed[cm], p_all[cm])))
 res = pd.DataFrame(rows).round(4); res.to_csv(RESULTS / "depression_v1_metrics.csv", index=False)
 
-# 그룹별 우울 예측률. 상담 일상 의도는 학습에 쓰지 않았으므로 4,000건 전부에 넣어본다.
+# 그룹별 우울 예측률. 상담 일상 의도는 학습에 안 썼으므로 4,000건 전부 채점
 dropped = df[(df.source == "counsel") & (df.is_symptom == 0)]
 p_dropped = m.predict(dropped.text)
 d = te[te.source == "daily"]; p_d = p_all[(te.source == "daily").values]
@@ -43,8 +41,7 @@ detail = pd.DataFrame([
     dict(group="daily & truth_depressed=0 (test)", n=int((d.truth_depressed == 0).sum()), pred_depressed_rate=p_d[(d.truth_depressed == 0).values].mean()),
 ]).round(4); detail.to_csv(RESULTS / "depression_v1_by_group.csv", index=False)
 
-# 오라클: 내용 토큰이 정답을 가리키면 맞히고, 아니면 출처 안의 다수 클래스로 찍는다
-# (상담이면 1 — 상담 발화의 80%가 우울, 일상이면 0). 생성 모델을 아는 판정자의 상한.
+# 오라클: 내용 토큰이 정답을 가리키면 정답, 아니면 출처의 다수 클래스(상담 1, 일상 0). 생성 모델을 아는 판정자의 상한
 inf = te.truth_text_informative_dep.values.astype(bool)
 prior = (te.source == "counsel").astype(int).values
 op = np.where(inf, te.truth_depressed.values, prior)

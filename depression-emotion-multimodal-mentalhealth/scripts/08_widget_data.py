@@ -1,5 +1,5 @@
-"""08. 글의 인터랙티브 위젯(학습 N 탐색기)용 JSON. 05의 N 곡선 CSV 두 개를 합칠 뿐 숫자를 다시 계산하지 않는다.
-출력: outputs/results/multimodal_n_curve.json → 사이트 저장소 src/data/multimodal-n-curve.json으로 복사해 정적 임베드."""
+"""08. 위젯용 JSON. 05의 N 곡선 CSV 두 개를 합칠 뿐 숫자를 다시 계산하지 않는다
+출력: outputs/results/multimodal_n_curve.json"""
 import json
 import sys
 from pathlib import Path

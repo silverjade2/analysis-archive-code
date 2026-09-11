@@ -1,4 +1,4 @@
-"""loyal-user-prediction 재현의 공통 설정."""
+"""재현 스크립트 공통 설정: 경로, 상수, feature 목록."""
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -14,7 +14,7 @@ SEED = 42
 SERVICE_START = pd.Timestamp("2021-05-27")
 SNAPSHOT = pd.Timestamp("2023-06-23")
 LOGIN_WINDOW_DAYS = 180          # login_counts = 최근 6개월 로그인 수
-N_TOTAL = 451_314                # 전체 가입 유저
+N_TOTAL = 451_314
 N_MODEL = 38_355                 # 검사 등급 + 필수 프로필을 채운 유저 (일반 트랙)
 
 # 공채 시즌 (대기업 공개 채용): 원래 보고서 기준

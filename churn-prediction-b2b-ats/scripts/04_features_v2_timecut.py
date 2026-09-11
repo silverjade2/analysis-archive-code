@@ -1,10 +1,6 @@
 """
-04. v2 시간 절단 피처.
-- 절단 시점 T = REF_DATE 12개월 전. 모집단은 T 시점에 '고객'인 회사(최종종료일이 T-90일 이후).
-- 피처는 T 이전 정보만: 기업 속성·외부데이터·T까지의 계약 이력(건수, 재직 개월, 직전 12개월 매출,
-  현재 계약 잔여 개월, 상품 구성). 미래 매출 열·총매출·사용유무는 없다.
-- 라벨은 v1과 같은 REF_DATE 기준 이탈. 질문이 "T 시점 고객 중 누가 12개월 안에 이탈하는가"로 바뀐다.
-- 오라클: 심어둔 갱신 확률 p와 T~REF-90 사이 갱신 결정 횟수 k로 1-p^k. 채점에만 쓴다.
+04. v2 시간 절단 피처: T = REF_DATE 12개월 전, T 시점 고객만, T 이전 정보만 사용. 라벨은 v1과 동일.
+출력: data/features_v2.csv, truth_v2_population.csv, results/label_stats_v2.csv
 """
 import numpy as np, pandas as pd
 from _common import *
@@ -33,7 +29,7 @@ hist["active_at_T"] = ((T - hist.last_end_T).dt.days <= CHURN_GRACE_DAYS).astype
 pop = hist[hist.active_at_T == 1].merge(snap, on="company_id", suffixes=("", "_snap"))
 pop = pop.merge(companies[["company_id", "truth_renew_p"]], on="company_id")
 
-# 오라클 이탈 확률
+# 오라클: T~REF-90 사이 갱신 결정 횟수 k → 1 - p^k, 채점 전용
 horizon = REF_DATE - pd.Timedelta(days=CHURN_GRACE_DAYS)
 days_to_horizon = (horizon - pop.last_end_T).dt.days
 k = np.where(days_to_horizon <= 0, 0, 1 + np.floor(days_to_horizon / 365))

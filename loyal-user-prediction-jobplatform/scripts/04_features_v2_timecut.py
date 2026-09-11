@@ -1,12 +1,5 @@
-"""04. v2 feature: 타깃이 결정되기 직전 시점에서 절단.
-
-양성: cutoff = 동의일 - 1.
-음성: cutoff = 프로필 완성일 - 1 + 양성의 (동의일 - 프로필 완성일) 분포에서 뽑은 지연.
-      상한은 snapshot 당일.
-cutoff는 프로필 완성일 - 1보다 앞서지 않으므로, 프로필 완성 당일에 동의한 유저(지연 0)도
-동의일보다 엄격히 앞에서 잘린다. 음성에게 snapshot까지의 전체 기간 대신 양성과 비슷한
-관측 창을 주기 위한 설계다.
-feature는 각 유저의 cutoff 당일까지의 이벤트만으로 계산한다.
+"""v2 feature: 타깃 결정 직전에서 절단. 양성은 동의일 - 1, 음성은 양성의 지연 분포로 비슷한 관측 창.
+출력: data/features_v2_timecut.csv
 """
 import sys
 from pathlib import Path

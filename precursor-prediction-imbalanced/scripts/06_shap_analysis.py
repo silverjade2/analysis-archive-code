@@ -1,15 +1,5 @@
-# SHAP 해석 — 모델이 어떤 신호를 쓰는가
-#
-# 확인할 것:
-#   1. 심어둔 진짜 신호(W3 7일 빈도/추세, 사용량 표준편차)가 중요도 상위에 오는가
-#   2. 함정 신호(W7 상시 높음 — 이벤트와 무관한 교란)를 모델이 얼마나 쓰는가
-#      + W7 기여의 "방향" 확인: 교란군은 이벤트가 없으므로 W7 높음 → 안전 쪽으로
-#        학습됐을 가능성이 있다 (인과가 아니라 코호트 구성의 산물)
-#   3. W7 피처를 제거하고 재학습했을 때 성능이 얼마나 변하는가 (제거 가능성 검증)
-#
-# 대상 모델: PR-AUC 최고였던 no_handling (05의 산출물)
-# 실행: .venv/bin/python scripts/06_shap_analysis.py
-# 출력: outputs/figures/fig5_shap_summary.png, fig6_shap_w7.png
+# SHAP 해석: 심은 신호와 함정 신호(W7)의 중요도·방향 확인, W7 제거 ablation
+# 출력: outputs/figures/fig5_shap_summary.png, fig6_shap_w7.png, outputs/results/shap_ranking.csv, ablation_w7.csv
 
 from pathlib import Path
 
@@ -36,9 +26,10 @@ train = table[table["day"] <= TEST_START_DAY - 1 - PURGE_GAP]
 test = table[table["day"] >= TEST_START_DAY]
 X_te, y_te = test[feature_cols], test["target"]
 
+# 대상 모델: PR-AUC 최고였던 no_handling
 model = joblib.load(base / "data" / "model_no_handling.joblib")
 
-# ── SHAP 값 계산 (테스트 구간) ────────────────────────────────────
+# SHAP 값 계산 (테스트 구간)
 explainer = shap.TreeExplainer(model)
 shap_values = explainer.shap_values(X_te)
 if isinstance(shap_values, list):  # 구버전 호환: [음성, 양성] 리스트로 오는 경우
@@ -57,7 +48,7 @@ print("\n진짜 신호 — W3:", ", ".join(rank_of("w3")))
 print("진짜 신호 — 사용량:", ", ".join(rank_of("u1")))
 print("함정 신호 — W7:", ", ".join(rank_of("w7")))
 
-# ── fig5: summary plot ───────────────────────────────────────────
+# fig5: summary plot
 fig = plt.figure()
 shap.summary_plot(shap_values, X_te, max_display=15, show=False)
 plt.title("SHAP summary — 테스트 구간, no_handling 모델", fontsize=12)
@@ -65,7 +56,7 @@ plt.tight_layout()
 plt.savefig(base / "outputs" / "figures" / "fig5_shap_summary.png", dpi=150, bbox_inches="tight")
 plt.close("all")
 
-# ── fig6: W7 기여의 방향 — 교란 신호가 어떻게 쓰이는지 ────────────
+# fig6: W7 기여의 방향, 교란군은 이벤트가 없어 W7 높음이 안전 쪽으로 학습됐을 수 있음
 w7_feat = max((f for f in feature_cols if f.startswith("w7")), key=lambda f: mean_abs[f])
 idx = feature_cols.index(w7_feat)
 fig, ax = plt.subplots(figsize=(8, 5))
@@ -77,7 +68,7 @@ ax.set_title(f"함정 신호의 사용 방식 — {w7_feat}의 SHAP 기여")
 fig.tight_layout()
 fig.savefig(base / "outputs" / "figures" / "fig6_shap_w7.png", dpi=150)
 
-# ── W7 제거 재학습 (ablation) ────────────────────────────────────
+# W7 제거 재학습 (ablation)
 no_w7 = [c for c in feature_cols if not c.startswith("w7")]
 ablated = LGBMClassifier(
     n_estimators=400, learning_rate=0.05, num_leaves=31,

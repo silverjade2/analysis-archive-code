@@ -1,9 +1,6 @@
-"""07. 그림 1~8을 사이트 톤으로 다시 그린다 (Pretendard, 사이트 팔레트, webp).
-
-형식과 축·데이터·숫자는 02/04/05/06이 그린 그림과 같다. 값은 outputs/results/*.csv에서 읽고
-다시 계산하지 않는다. 예외는 fig7의 PCA 좌표 하나로, 02와 같은 코드·시드로 다시 구한 뒤
-설명 분산이 eda_audio_pca.csv와 같은지 assert 한다. 출력: outputs/figures/site/figN_*.webp (+ .png)
-"""
+"""07. 그림 1~8을 사이트 톤(Pretendard, 사이트 팔레트, webp)으로 다시 그린다. 값은 outputs/results/*.csv에서 읽고 재계산하지 않는다
+예외: fig7 PCA 좌표는 02와 같은 코드·시드로 다시 구하고 설명 분산이 eda_audio_pca.csv와 같은지 assert
+출력: outputs/figures/site/figN_*.webp (+ .png)"""
 import sys
 from pathlib import Path
 import numpy as np
@@ -21,7 +18,7 @@ setup()
 EMO_KO = {"happiness": "happiness", "angry": "angry", "neutral": "neutral", "sadness": "sadness",
           "disgust": "disgust", "surprise": "surprise", "fear": "fear"}
 
-# ---------------------------------------------------------------- fig1 라벨×출처 모자이크 + 감정 비중 (02)
+# fig1 라벨×출처 모자이크 + 감정 비중 (02)
 cells = pd.read_csv(RESULTS / "eda_label_source_cells.csv")
 emo = pd.read_csv(RESULTS / "eda_emotion_share.csv").set_index("emotion_label")["share"]
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), gridspec_kw={"width_ratios": [1.15, 1]})
@@ -59,7 +56,7 @@ ax.tick_params(axis="y", length=0); ax.spines["left"].set_visible(False); ax.gri
 fig.tight_layout()
 save(fig, "fig1_data_structure")
 
-# ---------------------------------------------------------------- fig2 와플 + 덤벨 (04)
+# fig2 와플 + 덤벨 (04)
 grp = pd.read_csv(RESULTS / "depression_v1_by_group.csv")
 v1m = pd.read_csv(RESULTS / "depression_v1_metrics.csv")
 cmp_ = pd.read_csv(RESULTS / "depression_v1_v2_compare.csv")
@@ -94,7 +91,7 @@ ax.set_title("같은 테스트셋, 학습에 4,000건을 넣었는지만 다르�
 fig.tight_layout()
 save(fig, "fig2_depression_scoring")
 
-# ---------------------------------------------------------------- fig3 토큰 종류별 발산 막대 (04)
+# fig3 토큰 종류별 발산 막대 (04)
 kinds = pd.read_csv(RESULTS / "depression_feature_kinds.csv")
 KC = {"어미": GRAY, "관용어": ORANGE, "내용": BLUE}
 v1f = kinds[kinds.version == "v1"].reset_index(drop=True)
@@ -114,7 +111,7 @@ ax.legend(handles=[Patch(color=c, label=k) for k, c in KC.items()], loc="lower r
 ax.spines["left"].set_visible(False); ax.set_ylim(-0.8, 13); ax.grid(axis="x")
 save(fig, "fig3_depression_features")
 
-# ---------------------------------------------------------------- fig4 프로토콜별 화살표 (05)
+# fig4 프로토콜별 화살표 (05)
 res = pd.read_csv(RESULTS / "multimodal_protocols.csv")
 def g(protocol, data, model, col="accuracy"):
     return res[(res.protocol == protocol) & (res.data == data) & (res.model == model)][col].iloc[0]
@@ -147,7 +144,7 @@ ax.legend(handles=[Line2D([], [], color=GRAY, lw=2.5, label="테스트셋이 다
           loc="upper center", bbox_to_anchor=(0.5, -0.16), ncols=3)
 save(fig, "fig4_protocols")
 
-# ---------------------------------------------------------------- fig5 N 곡선 밴드 + 이득 패널 (05)
+# fig5 N 곡선 밴드 + 이득 패널 (05)
 agg = pd.read_csv(RESULTS / "multimodal_n_curve.csv")
 gap = pd.read_csv(RESULTS / "multimodal_n_curve_gain.csv")
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8.5, 6.2), sharex=True, gridspec_kw={"height_ratios": [2, 1]})
@@ -170,7 +167,7 @@ ax1.set_title("N과 분할 방식에 따른 accuracy, 그리고 음성이 더한
 fig.tight_layout()
 save(fig, "fig5_n_curve")
 
-# ---------------------------------------------------------------- fig6 레이더 + 혼동행렬 차이 히트맵 (06)
+# fig6 레이더 + 혼동행렬 차이 히트맵 (06)
 per = pd.read_csv(RESULTS / "multimodal_per_class_gain_speaker_split.csv").set_index("emotion").loc[EMOTIONS]
 diff = pd.read_csv(RESULTS / "confusion_diff_multimodal_minus_text.csv", index_col=0).loc[EMOTIONS, EMOTIONS]
 ang = np.linspace(0, 2 * np.pi, len(EMOTIONS), endpoint=False).tolist(); ang += ang[:1]
@@ -201,7 +198,7 @@ cb = fig.colorbar(im, ax=ax2, fraction=0.046, pad=0.03); cb.outline.set_visible(
 fig.tight_layout()
 save(fig, "fig6_audio_gain_by_class")
 
-# ---------------------------------------------------------------- fig7 음성 피처 PCA: 화자 색 vs 감정 색 (02와 같은 코드·시드)
+# fig7 음성 피처 PCA (02와 같은 코드·시드)
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 df = pd.read_csv(DATA / "utterances.csv", low_memory=False)
@@ -228,7 +225,7 @@ axes[1].legend(handles=[Line2D([], [], marker="o", ls="", color=c, label=e) for 
 fig.tight_layout()
 save(fig, "fig7_audio_pca_speaker_vs_emotion")
 
-# ---------------------------------------------------------------- fig8 로컬 토큰 칩 + 전역 상위 피처 (06)
+# fig8 로컬 토큰 칩 + 전역 상위 피처 (06)
 local = pd.read_csv(RESULTS / "shap_like_local_example.csv")
 tok_contrib = list(zip(local.token, local.sadness_contribution))
 true_emo, true_dep = local.true_emotion.iloc[0], int(local.truth_depressed.iloc[0])

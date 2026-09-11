@@ -1,20 +1,5 @@
-# LightGBM 이진 분류 — 불균형 처리 3가지 비교
-#
-# 분할: 시간 기준 분할. 마지막 30일(day 150~)을 테스트로 쓴다.
-#   - 랜덤 분할 금지 이유:
-#     (a) 같은 기기의 인접한 날짜 행들은 트레일링 윈도우가 대부분 겹치는 준중복 행이다.
-#         랜덤 분할하면 사실상 같은 행이 train/test 양쪽에 들어가 성능이 부풀려진다.
-#     (b) 실제 운용은 "과거로 학습해 미래를 예측"하는 문제다. 랜덤 분할은 미래 데이터로
-#         학습해 과거를 맞추는 평가가 되어 배포 후 성능을 과대추정한다.
-#     (c) 한 이벤트의 전조 구간(7일, 최대 7행)이 양쪽에 흩어지면 이벤트 단위 누수가 된다.
-#   - 퍼지(purge) 갭: train은 day <= 142까지만 쓴다. day 143~149 행의 타깃 윈도우(t+1~t+7)는
-#     테스트 구간(150~)을 들여다보므로 경계의 7일을 버려 라벨을 통한 누수를 차단한다.
-#
-# 불균형 처리 비교: (1) 아무것도 안 함 (2) class_weight='balanced' (3) scale_pos_weight
-# 평가: PR-AUC 중심(양성 0.36%에서는 ROC-AUC가 후하게 나오므로), ROC-AUC 병기
-#
-# 실행: .venv/bin/python scripts/05_train_models.py
-# 출력: outputs/figures/fig4_pr_curves.png, data/model_*.joblib
+# LightGBM 이진 분류, 불균형 처리 3가지(no_handling, class_weight, scale_pos_weight) 비교
+# 출력: outputs/figures/fig4_pr_curves.png, data/model_*.joblib, outputs/results/model_compare.csv, split_stats.csv
 
 from pathlib import Path
 
@@ -36,6 +21,7 @@ base = Path(__file__).resolve().parents[1]
 table = pd.read_csv(base / "data" / "features.csv", parse_dates=["event_date"])
 feature_cols = [c for c in table.columns if c not in ("device_id", "event_date", "day", "target")]
 
+# 시간 기준 분할: 같은 기기의 인접 날짜 행은 준중복이라 랜덤 분할 시 성능이 부풀려짐
 train = table[table["day"] <= TEST_START_DAY - 1 - PURGE_GAP]
 test = table[table["day"] >= TEST_START_DAY]
 X_tr, y_tr = train[feature_cols], train["target"]
@@ -76,7 +62,7 @@ print(res.round(4).to_string())
 best = res["pr_auc"].idxmax()
 print(f"\nPR-AUC 최고: {best}")
 
-# ── PR 커브 플롯 ─────────────────────────────────────────────────
+# PR 커브 플롯
 labels = {
     "no_handling": "아무것도 안 함",
     "class_weight": "class_weight='balanced'",

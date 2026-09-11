@@ -1,5 +1,4 @@
-"""텍스트·음성 모델 정의. PLM fine-tuning 대신 char n-gram TF-IDF + Logistic Regression.
-재현 대상은 실험 구조이지 모델 자체가 아니다."""
+"""텍스트·음성 모델. PLM fine-tuning 대신 char n-gram TF-IDF + LR, 재현 대상은 실험 구조이지 모델 자체가 아니다"""
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
@@ -48,9 +47,7 @@ class AudioClf:
 
 
 class MultimodalClf:
-    """late fusion. 채널별 분류기(텍스트 TF-IDF+LR, 음성 표준화+LR)의 클래스 확률을
-    이어 붙여 상위 분류기(FC 한 층에 해당)가 결합한다. 상위 분류기는 out-of-fold 확률로 학습해
-    채널 분류기의 과적합이 그대로 새지 않게 한다."""
+    """late fusion. 채널별 LR의 클래스 확률을 이어 붙여 상위 LR이 결합, 상위 분류기는 out-of-fold 확률로 학습해 채널 과적합이 새지 않게 한다"""
     def __init__(self, seed, n_folds=5):
         from sklearn.model_selection import StratifiedKFold
         self.seed, self.n_folds = seed, n_folds

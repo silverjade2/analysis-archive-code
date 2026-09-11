@@ -1,10 +1,5 @@
-"""02. 저니맵: 유저는 어디서 멈추는가.
-
-모델링 이전에 나온 세 가지 발견을 재현한다.
-  (1) 전체 가입 유저의 상태 퍼널: 대부분 가입 직후에 멈춘다
-  (2) 검사를 치르고 필수 프로필을 채운 유저 중에서도 비어 있는 것은 선호 정보다
-      (연봉은 기본값 그대로, 복지 항목은 몇 개만 선택)
-  (3) 휴면: 6~12개월간 로그인하지 않은 비중이 크고, 재방문은 공채 시즌 주변에 몰린다
+"""저니맵: 상태 퍼널, 선호 정보 결측, 휴면과 시즌성.
+출력: outputs/results/journey_*.csv, outputs/figures/fig1~fig3
 """
 import sys
 from pathlib import Path
@@ -21,7 +16,7 @@ pop = pd.read_csv(DATA / "population.csv", parse_dates=["join_date", "last_login
 users = pd.read_csv(DATA / "users.csv")
 logins = np.load(DATA / "logins.npz")["logins"]
 
-# ---------------------------------------------------------------- (1) 퍼널
+# (1) 퍼널
 order = ["join_only", "test_only", "profile_only", "test_and_profile"]
 labels = ["Joined only", "Test only", "Profile only", "Test + profile"]
 cnt = pop.groupby("status")["n"].sum().reindex(order)
@@ -47,7 +42,7 @@ ax.grid(axis="x", alpha=0.3)
 fig.tight_layout()
 fig.savefig(FIG / "fig1_journey_funnel.png", dpi=150)
 
-# ---------------------------------------------------------------- (2) 선호 정보
+# (2) 선호 정보
 pref = pd.DataFrame({
     "metric": ["salary left at default", "welfare: 1 item or fewer", "welfare: fewer than 5 items",
                "preference complete (salary set & welfare ≥ 5)"],
@@ -86,7 +81,7 @@ for a in axes:
 fig.tight_layout()
 fig.savefig(FIG / "fig2_preference_fields.png", dpi=150)
 
-# ---------------------------------------------------------------- (3) 휴면 + 시즌성
+# (3) 휴면 + 시즌성
 gap = (SNAPSHOT - pop["last_login_date"]).dt.days
 dorm = pd.DataFrame({
     "metric": ["no login for 6+ months", "no login for 1+ year", "logged in within 30 days"],

@@ -1,6 +1,5 @@
-"""06. 해석. 원 프로젝트는 SHAP 텍스트 플롯 예문 1건으로 '슬픔 ← 외로운·무의미'를 보였다.
-여기서는 (1) 감정별 전역 상위 피처, (2) 예문에서 본 토큰이 실제 sadness 발화 중 몇 %에 있는지,
-(3) 융합 분류기가 텍스트/음성 채널에 준 가중치 합을 기록한다."""
+"""06. 해석. 감정별 전역 상위 피처, 예문 토큰의 전역 커버리지, 융합 채널 가중치, 혼동행렬 차이, 로컬 토큰 기여
+출력: outputs/results/emotion_top_features_by_class.csv, shap_*.csv, fusion_channel_weight.csv, confusion_*.csv, outputs/figures/fig6·fig8"""
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import GroupShuffleSplit
@@ -27,7 +26,7 @@ for e in EMOTIONS:
         if k == 8: break
 pd.DataFrame(rows).to_csv(RESULTS / "emotion_top_features_by_class.csv", index=False)
 
-# (2) 예문 토큰의 전역 커버리지: sadness 발화 중 '외롭'/'무의미' 포함 비율, 그리고 그 토큰이 있을 때 sadness 비율
+# (2) 예문 토큰의 전역 커버리지
 tok = ["외롭", "무의미"]
 cov = []
 for t in tok:
@@ -46,7 +45,7 @@ pd.DataFrame([dict(channel="text", abs_coef_sum=t_norm, share=t_norm / (t_norm +
               dict(channel="audio", abs_coef_sum=a_norm, share=a_norm / (t_norm + a_norm))]).round(4)\
     .to_csv(RESULTS / "fusion_channel_weight.csv", index=False)
 
-# 혼동행렬: 텍스트 / 멀티모달 (화자 분리, 전체) 과 그 차이
+# 혼동행렬 차이: 멀티모달 − 텍스트 (화자 분리, 전체)
 from sklearn.metrics import confusion_matrix
 from common import C_TEXT, C_MM, C_AUDIO, C_NEG, C_GRAY, C_DARK, EMO_COLORS
 pred_text = TextClf(SEED).fit(tr.text, tr.emotion_label).predict(te.text)
@@ -60,7 +59,7 @@ pd.DataFrame([dict(target=e, diag_change=int(diff.loc[e, e]), pulled_from_other_
              ).to_csv(RESULTS / "confusion_diff_summary.csv", index=False)
 pd.DataFrame(cm_m, index=EMOTIONS, columns=EMOTIONS).to_csv(RESULTS / "confusion_multimodal_speaker_split.csv")
 
-# fig6: 왼쪽 레이더(감정별 recall), 오른쪽 혼동행렬 차이 히트맵
+# fig6: 감정별 recall 레이더 + 혼동행렬 차이
 per = pd.read_csv(RESULTS / "multimodal_per_class_gain_speaker_split.csv").set_index("emotion").loc[EMOTIONS]
 ang = np.linspace(0, 2 * np.pi, len(EMOTIONS), endpoint=False).tolist(); ang += ang[:1]
 fig = plt.figure(figsize=(11.5, 4.8))
@@ -84,8 +83,7 @@ ax2.set_xlabel("예측"); ax2.set_ylabel("정답"); ax2.set_title("혼동행렬 
 plt.colorbar(im, ax=ax2, fraction=0.046, pad=0.03)
 plt.tight_layout(); plt.savefig(FIGURES / "fig6_audio_gain_by_class.png"); plt.close()
 
-# fig8: SHAP 텍스트 플롯을 흉내낸 로컬 토큰 기여 vs 전역 상위 피처.
-# 로컬 기여 = 각 char n-gram의 (tfidf 값 × sadness 계수)를 토큰(어절) 단위로 합산.
+# fig8: 로컬 토큰 기여 vs 전역 상위 피처. 로컬 기여 = char n-gram의 (tfidf 값 × sadness 계수)를 어절 단위로 합산
 ex_pool = daily[daily.text.str.contains("외롭") & daily.text.str.contains("무의미")]
 if len(ex_pool) == 0:
     ex_pool = daily[daily.text.str.contains("외롭")]
@@ -107,7 +105,6 @@ glob_sad["stem"] = glob_sad.feature.str.strip()
 glob_sad = glob_sad.sort_values("coef", ascending=False).drop_duplicates("stem").head(8)
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 5.4), gridspec_kw={"height_ratios": [1, 1.6]})
-# 위: 예문을 토큰 칩으로, 기여 크기에 따라 색
 lim = max(abs(c) for _, c in tok_contrib) or 1
 x = 0.02
 for t, c in tok_contrib:
@@ -119,7 +116,6 @@ for t, c in tok_contrib:
     x += w + 0.012
 ax1.set_xlim(0, max(1, x)); ax1.set_ylim(0, 1); ax1.axis("off")
 ax1.set_title(f"로컬: 예문 한 건의 토큰별 sadness 기여 (정답 감정 = {ex.emotion_label}, truth_depressed = {ex.truth_depressed})", fontsize=10, loc="left")
-# 아래: 전역 상위 피처
 ax2.barh([repr(f.strip()) for f in glob_sad.feature[::-1]], glob_sad.coef[::-1], color=EMO_COLORS["sadness"])
 hl = [i for i, f in enumerate(glob_sad.feature[::-1]) if "외롭" in f or "무의미" in f]
 ax2.set_xlabel("LR coef (sadness, char n-gram)"); ax2.set_title("전역: sadness 상위 피처 8개 — '외롭', '무의미'는 없다", fontsize=10, loc="left")

@@ -1,12 +1,5 @@
-"""06. 넛지 리스트 비교.
-
-모델의 운영 용도는 주간 리스트였다. 아직 동의하지 않은 유저를 채점해 상위 10%를 마케팅에
-넘긴다. 이 스크립트는 그 리스트를 v1(snapshot) 점수와 v2(시간 절단) 점수로 각각 만들고
-(LightGBM out-of-fold 확률 사용), 각 리스트에 누가 오르는지 본다.
-
-가상 데이터라 각 유저의 진짜 동의 성향(truth_p_consent)도 알고 있으므로 두 리스트를 정답
-기준으로 채점할 수 있다. 좋은 넛지 리스트는 단순히 활동적인 유저가 아니라 전환에 가까운
-유저로 채워져야 한다.
+"""넛지 리스트 비교: 비동의 유저 상위 10%를 v1 / v2 OOF 점수로 뽑아 심어둔 동의 확률로 채점.
+출력: outputs/results/oof_auc_vs_oracle.csv, nudge_list_comparison.csv, nudge_list_overlap.csv, outputs/figures/fig6
 """
 import sys
 from pathlib import Path
@@ -57,7 +50,7 @@ overlap = len(np.intersect1d(lists["v1"], lists["v2"])) / k
 
 def describe(idx, label):
     u = users.iloc[idx]
-    f = v1.iloc[idx]  # 현재 시점의 snapshot 사실
+    f = v1.iloc[idx]  # 리스트 특성은 현재 시점(snapshot) 기준으로 본다
     return {
         "list": label,
         "n": len(idx),
@@ -77,7 +70,6 @@ out.to_csv(RES / "nudge_list_comparison.csv", index=False)
 print(f"\noverlap between the two top-10% lists: {overlap:.1%}\n")
 print(out.to_string(index=False))
 
-# 정답 지표의 무작위 리스트 기준선
 rng = np.random.default_rng(0)
 rand_p = users.iloc[rng.choice(neg, k, replace=False)]["truth_p_consent"].mean()
 pd.DataFrame({"metric": ["overlap between v1 and v2 top-10% lists",

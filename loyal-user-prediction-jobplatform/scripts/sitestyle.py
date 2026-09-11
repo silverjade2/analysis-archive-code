@@ -1,4 +1,4 @@
-"""그림의 사이트 시각 톤 (Pretendard, 사이트 팔레트, webp). 08과 10이 공유."""
+"""그림의 사이트 시각 톤 (Pretendard, 사이트 팔레트, webp)."""
 import io
 from pathlib import Path
 import matplotlib
@@ -12,7 +12,7 @@ OUT = FIG / "site"
 BLUE, ORANGE, GRAY, LIGHT, DARK = "#2563eb", "#ea580c", "#a1a1aa", "#e4e4e7", "#18181b"
 LIGHT_BLUE, LIGHT_ORANGE, MUTED = "#bfdbfe", "#fed7aa", "#71717a"
 
-# feature id → 한국어 라벨 (글의 인터랙티브 위젯과 같은 매핑)
+# feature id → 한국어 라벨 (위젯과 같은 매핑)
 NAMES = {
     "login_counts": "로그인 횟수 (6개월)", "days_since_last_login": "마지막 로그인 경과일",
     "user_cnt": "알림 응답 횟수", "total_apply_cnt": "전체 지원 횟수", "apply_try_cnt": "지원 시도 횟수",

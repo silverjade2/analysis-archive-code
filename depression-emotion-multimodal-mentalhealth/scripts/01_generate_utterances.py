@@ -1,17 +1,9 @@
-"""01. 가상 발화 생성.
-
-두 출처(일상 대화 / 상담 스크립트)의 발화를 같은 스키마로 만든다.
-심어둔 구조 3종:
-  A. 문체는 출처(source)에, 우울 내용은 truth_depressed에 따로 종속된다.
-     (문체는 5%의 확률로 출처와 어긋난다. 출처 분류가 100%가 되지 않게 하는 장치)
-     상담 스크립트 20,000건 중 4,000건은 일상 의도(우울 아님)다. 원 프로젝트는 이걸 학습에서 뺐다.
-     일상 대화의 sadness 발화 일부는 실제로 우울하다.
-  B. 화자(speaker)마다 음성 지문과 감정 분포 편향이 있다.
-     음성 채널이 감정에 대해 가진 진짜 정보는 고각성 감정(angry/fear/surprise)에 몰려 있고
-     neutral/disgust에는 거의 없다.
-  C. 텍스트·음성 신호가 정답을 가리키는지 여부(truth_*_informative)를 기록해
-     오라클 상한을 계산할 수 있게 한다.
-truth_* 컬럼은 채점 전용이다. 피처로 쓰지 않는다.
+"""01. 가상 발화 생성. 일상 대화·상담 스크립트 발화를 같은 스키마로 만든다.
+출력: data/utterances.csv
+심어둔 구조 A. 문체는 출처(source)에, 우울 내용은 truth_depressed에 따로 종속
+심어둔 구조 B. 화자마다 음성 지문·감정 분포 편향, 음성의 감정 정보는 고각성 감정(angry/fear/surprise)에 집중
+심어둔 구조 C. 텍스트·음성 신호가 정답을 가리키는지 truth_*_informative에 기록 (오라클 상한용)
+truth_* 열은 채점 전용
 """
 import numpy as np
 import pandas as pd
@@ -20,7 +12,7 @@ from common import (SEED, DATA, EMOTIONS, EMOTION_P, N_DAILY, N_COUNSEL_SYMPTOM,
 
 rng = np.random.default_rng(SEED)
 
-# ---------- 어휘 풀 ----------
+# 어휘 풀
 COUNSEL_FILLER = ["요즘", "자꾸", "선생님", "계속", "사실은", "그래서", "제가", "아무래도", "며칠째"]
 COUNSEL_END = ["요", "어요", "습니다", "거든요", "네요", "것 같아요", "더라고요"]
 DAILY_FILLER = ["진짜", "완전", "오늘", "어제", "나", "그냥", "아", "근데", "약간"]
@@ -45,13 +37,12 @@ SYMPTOM_INTENT = ["정신증상/초조함", "정신증상/불안", "정신증상
                   "정신증상/식욕저하", "정신증상/수면문제", "정신증상/자책", "정신증상/집중력저하"]
 NORMAL_INTENT = ["일상/인사", "일상/취미", "일상/가족", "일상/직장", "일상/감사", "일상/날씨"]
 
-# ---------- 생성 파라미터 (심은 구조) ----------
+# 생성 파라미터
 P_DAILY_SAD_DEPRESSED = 0.25 # 일상 sadness 발화 중 실제 우울 비율
 Q_DEP_TEXT = 0.80            # 우울 내용 토큰이 정답을 가리킬 확률
 Q_EMO_TEXT = 0.82            # 감정 토큰이 정답 감정을 가리킬 확률 (나머지는 다른 감정 토큰)
 Q_EMO_AUDIO = 0.70           # 음성 오프셋이 실제로 실리는 확률
-# 감정별 음성 오프셋. 고각성 감정(angry/fear/surprise)은 rms·zcr에 크게, 저각성은 작게.
-# 값이 큰 감정일수록 음성 채널이 그 감정을 잘 구분한다 — 심어둔 구조 B의 핵심 파라미터.
+# 고각성 감정(angry/fear/surprise)은 rms·zcr 오프셋이 크다. 값이 클수록 음성 채널이 그 감정을 잘 구분
 AUDIO_OFFSET = {
     "angry":     {"rms_mean": 2.2, "rms_std": 1.4, "zcr_mean": 1.5, "mfcc1_mean": 1.2},
     "fear":      {"rms_mean": 1.0, "zcr_mean": 2.0, "mfcc2_mean": 1.6, "zcr_std": 1.2},
@@ -66,7 +57,7 @@ SPEAKER_FP_SD = 1.5          # 화자 음성 지문 크기 (감정 오프셋보�
 SPEAKER_FP_COLS = [f"mfcc{i}_mean" for i in range(7, 14)] + ["chroma_mean", "chroma_std", "duration"]
 AUDIO_NOISE_SD = 1.0
 SPEAKER_EMO_CONC = 0.4       # 화자별 감정 분포 편향. 작을수록 편향 큼
-P_STYLE_CROSS = 0.05         # 출처와 다른 문체(경어체↔반말)로 말하는 발화 비율
+P_STYLE_CROSS = 0.05         # 출처와 다른 문체(경어체↔반말) 비율. 출처 분류가 100%가 되지 않게 하는 장치
 
 
 def pick(pool, k=1):
@@ -83,12 +74,10 @@ def build_text(source, truth_dep, emotion, informative_dep, informative_emo):
         filler, ends = DAILY_FILLER, DAILY_END
         n_fill = rng.integers(0, 3)
     parts = pick(filler, n_fill) if n_fill else []
-    # 화제 토큰: 우울 내용 vs 일상 내용. 정보성일 때만 정답을 가리킨다.
     if informative_dep:
         parts += pick(DEPRESSED if truth_dep else NORMAL_LIFE, rng.integers(1, 3))
     else:
         parts += pick(NORMAL_LIFE if rng.random() < 0.5 else DEPRESSED, 1)
-    # 감정 토큰 (일상 데이터만)
     if emotion is not None:
         emo_src = emotion if informative_emo else rng.choice([e for e in EMOTIONS if e != emotion])
         parts += pick(EMOTION_TOKENS[emo_src], rng.integers(1, 3))
@@ -98,7 +87,7 @@ def build_text(source, truth_dep, emotion, informative_dep, informative_emo):
 
 rows = []
 
-# ---------- 상담 스크립트 ----------
+# 상담 스크립트
 N_COUNSEL = N_COUNSEL_SYMPTOM + N_COUNSEL_NORMAL
 counsel_truth = np.concatenate([np.ones(N_COUNSEL_SYMPTOM, int), np.zeros(N_COUNSEL_NORMAL, int)])
 rng.shuffle(counsel_truth)
@@ -113,7 +102,7 @@ for i in range(N_COUNSEL):
         truth_text_informative_emo=None, truth_audio_informative=None,
     ))
 
-# ---------- 일상 대화 (감정 라벨 + 화자 + 음성) ----------
+# 일상 대화
 speaker_w = rng.dirichlet(np.ones(N_SPEAKERS) * 2.0)
 speaker_ids = rng.choice(N_SPEAKERS, size=N_DAILY, p=speaker_w)
 speaker_emo_p = rng.dirichlet(EMOTION_P * len(EMOTIONS) * SPEAKER_EMO_CONC, size=N_SPEAKERS)

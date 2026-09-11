@@ -1,4 +1,4 @@
-"""사이트 톤 (Pretendard, 사이트 팔레트, webp). 07이 쓴다. 숫자는 만들지 않는다."""
+"""사이트 톤 설정·저장 (Pretendard, 사이트 팔레트, webp). 숫자는 만들지 않는다"""
 import io
 from pathlib import Path
 import matplotlib
@@ -14,7 +14,7 @@ BLUE, ORANGE, GRAY, LIGHT, DARK = "#2563eb", "#ea580c", "#a1a1aa", "#e4e4e7", "#
 LIGHT_BLUE, LIGHT_ORANGE, MUTED, RED = "#bfdbfe", "#fed7aa", "#71717a", "#dc2626"
 # 화자 8명 / 감정 7종처럼 범주가 많을 때만 쓰는 팔레트 (tailwind 600 계열)
 CAT8 = ["#2563eb", "#ea580c", "#16a34a", "#7c3aed", "#db2777", "#ca8a04", "#0891b2", "#52525b"]
-# 발산 컬러맵: 음(파랑) - 0(흰색) - 양(붉은색). 혼동행렬 차이와 토큰 기여에 쓴다
+# 발산 컬러맵: 음(파랑) - 0(흰색) - 양(붉은색)
 DIVERGING = LinearSegmentedColormap.from_list("site_diverging", [BLUE, "#ffffff", RED])
 
 

@@ -1,8 +1,7 @@
 """
-06. 기준일 스윕 — 라벨의 '오늘'을 움직이면 같은 회사의 라벨이 얼마나 바뀌는가.
-- live: 그 시점까지 체결된 계약으로 라벨 (노트북을 나중에 새 데이터로 다시 돌린 경우)
-- frozen: 2024-02 스냅샷을 그대로 두고 today만 바뀐 경우 (데이터 갱신 없이 재실행)
-- 결과는 인터랙티브 위젯 데이터(outputs/results/ref_sweep.json)로도 저장한다.
+06. 기준일 스윕: 라벨의 '오늘'을 옮기면 같은 회사의 라벨이 얼마나 바뀌는가.
+live = 그 시점까지 체결된 계약으로 라벨, frozen = REF_DATE 스냅샷 고정
+출력: results/reference_date_sweep.csv, ref_sweep.json
 """
 import json, numpy as np, pandas as pd
 from _common import *

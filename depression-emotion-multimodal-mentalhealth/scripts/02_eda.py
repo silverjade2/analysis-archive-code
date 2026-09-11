@@ -1,4 +1,5 @@
-"""02. EDA. 출처별 문체 통계, 감정 라벨 분포, 상담 의도 분포, 화자 편중."""
+"""02. EDA. 출처별 문체 통계, 상담 의도 분포, 감정 라벨 분포, 화자 편중, 음성 피처 PCA.
+출력: outputs/results/eda_*.csv, outputs/figures/fig1·fig7"""
 import numpy as np
 import pandas as pd
 from common import SEED, DATA, RESULTS, FIGURES, EMOTIONS, setup_mpl
@@ -34,7 +35,7 @@ spk_summary = pd.DataFrame({
 })
 spk_summary.to_csv(RESULTS / "eda_speaker_bias.csv", index=False)
 
-# fig1: 라벨 × 출처 모자이크. 원 프로젝트의 학습 데이터에서 어느 칸이 비어 있었는지.
+# fig1: 라벨 × 출처 모자이크 + 감정 비중
 from common import C_TEXT, C_MM, C_NEG, C_GRAY, C_DARK, EMO_COLORS
 counsel = df[df.source == "counsel"]
 n_sym = int((counsel.intent.str.startswith("정신증상")).sum()); n_norm = len(counsel) - n_sym
@@ -78,7 +79,7 @@ ax.set_xlim(0, 0.32); ax.set_xlabel("share"); ax.set_title("일상 대화 감정
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout(); plt.savefig(FIGURES / "fig1_data_structure.png"); plt.close()
 
-# fig7: 음성 피처 PCA — 같은 점을 화자 색 / 감정 색으로
+# fig7: 음성 피처 PCA, 화자 색 vs 감정 색
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 from common import AUDIO_COLS

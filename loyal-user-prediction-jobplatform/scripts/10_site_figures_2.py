@@ -1,10 +1,5 @@
-"""10. 사이트 그림 7~11, 09의 CSV로 그린다 (어떤 숫자도 다시 계산하지 않는다).
-
-  fig7_login_around_consent   (의사) 동의일 주변의 일별 로그인 확률
-  fig8_score_plane            비동의 유저의 v1 × v2 점수 평면, 색은 심어둔 정답
-  fig9_timeline_sample        유저 12명: 이벤트, 로그인, v2 cutoff
-  fig10_roc_curves            v1 / v2 / 심어둔 정답
-  fig11_score_deciles         비동의 유저의 점수 분위 → 심어둔 동의 성향
+"""사이트 그림 7~11, leakage 해부(09)의 CSV로 그린다 (재계산 없음).
+출력: outputs/figures/site/fig7~fig11 (webp + png)
 """
 import sys
 from pathlib import Path
@@ -22,7 +17,7 @@ GRAY_LINE = MUTED  # #a1a1aa는 얇은 선에서 흰 배경 대비 3:1을 못 �
 setup()
 summary = pd.read_csv(RES / "leakage_anatomy_summary.csv").set_index("metric")["value"]
 
-# ---------------------------------------------------------------- fig7 기준일 주변 로그인 확률
+# fig7 기준일 주변 로그인 확률
 ev = pd.read_csv(RES / "login_around_consent.csv")
 x, yc, yn = ev["rel_day"].to_numpy(), ev["consented_rate"].to_numpy(), ev["not_consented_rate"].to_numpy()
 d1 = float(summary["consented: login rate on day +1"])
@@ -34,7 +29,7 @@ ratio = float(summary["ratio consented / not_consented: mean daily login rate, d
 fig, ax = plt.subplots(figsize=(9, 3.2))
 ax.axvline(-0.5, color=MUTED, lw=0.8, ls=":")
 post = x >= 0
-ax.fill_between(x[post], yn[post], yc[post], color=LIGHT_ORANGE, alpha=0.55, lw=0)  # 절단 이후 두 집단의 격차
+ax.fill_between(x[post], yn[post], yc[post], color=LIGHT_ORANGE, alpha=0.55, lw=0)
 ax.plot(x, yc, color=ORANGE, lw=1.8)
 ax.plot(x, yn, color=GRAY_LINE, lw=1.8)
 ax.annotate(f"+1일 {d1:.2f}\n결과표 확인 로그인", xy=(1, d1), xytext=(7, d1 - 0.01), fontsize=8.5,
@@ -55,7 +50,7 @@ ax.set_title("두 집단을 가르는 신호는 v2 절단 이후에 있다", fon
 ax.grid(axis="y")
 save(fig, "fig7_login_around_consent")
 
-# ---------------------------------------------------------------- fig8 v1 × v2 점수 평면 (비동의 유저)
+# fig8 v1 × v2 점수 평면
 sc = pd.read_csv(RES / "oof_scores.csv")
 neg = sc[sc["matching_use_yn"] == 0]
 quad = pd.read_csv(RES / "score_quadrants.csv").set_index("quadrant")
@@ -86,7 +81,7 @@ ax.grid()
 ax.set_title("비동의 유저 7,457명의 두 점수 — 겹침 28%, 색은 정답")
 save(fig, "fig8_score_plane")
 
-# ---------------------------------------------------------------- fig9 타임라인 표본
+# fig9 타임라인 표본
 tl = pd.read_csv(RES / "timeline_sample.csv")
 XMAX = 365
 fig, ax = plt.subplots(figsize=(10, 5.4))
@@ -119,7 +114,7 @@ ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncol
 ax.set_title("유저 12명의 첫 1년 — v2는 파란 선 왼쪽만 본다")
 save(fig, "fig9_timeline_sample")
 
-# ---------------------------------------------------------------- fig10 ROC
+# fig10 ROC
 roc = pd.read_csv(RES / "roc_curves.csv")
 auc = pd.read_csv(RES / "oof_auc_vs_oracle.csv").set_index("model")["AUC"]
 SERIES = [("v1 snapshot", GRAY_LINE, "-", "v1 스냅샷"),
@@ -154,7 +149,7 @@ tx.text(0, y - 0.05, "정답 확률로 그린 곡선(주황 점선)이 모델이
         fontsize=9.5, color="#3f3f46", va="top", linespacing=1.7, transform=tx.transAxes)
 save(fig, "fig10_roc_curves")
 
-# ---------------------------------------------------------------- fig11 점수 분위
+# fig11 점수 분위
 dc = pd.read_csv(RES / "score_deciles.csv")
 base = float(summary["deciles: non-consented mean truth propensity"])
 n_neg = int(float(summary["deciles: non-consented users"]))

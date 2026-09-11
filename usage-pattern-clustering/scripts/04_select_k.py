@@ -1,17 +1,5 @@
-# k 선택: 로그+표준화 데이터로 k=2~10 스윕
-#
-# 확인할 것:
-#   1. 엘보우(inertia)와 실루엣 점수가 명확한 k를 가리키는가
-#      — 함정 2(night ↔ intermittent 경계 흐림) 때문에 애매하게 나올 것으로 예상
-#   2. k=4 vs k=5: 03에서 확인한 트레이드오프(로그 변환이 노이즈 15대의 극단성을
-#      눌러 allday_low에 흡수됨)가 k=5에서 해소되는가 — 군집 예산이 하나 늘면
-#      노이즈가 독립 군집으로 복원되는지
-#   3. 각 k에서 군집별 크기·정답 레이블 구성 — "지표가 고르는 k"와
-#      "해석 가능성이 고르는 k"가 갈리는 지점을 기록
-#
-# 실행: .venv/bin/python scripts/04_select_k.py
-# 출력: outputs/figures/fig5_k_sweep.png (엘보우 + 실루엣)
-#       outputs/figures/fig6_k4_vs_k5.png (k=4/k=5 군집 구성 대조)
+# k 선택: 로그+표준화 데이터로 k=2~10 스윕 (엘보우, 실루엣, ARI), k=4 vs k=5 군집 구성 대조
+# 출력: outputs/figures/fig5_k_sweep.png·fig6_k4_vs_k5.png, outputs/results/k_sweep.csv·k_composition.csv·crosstab_k4.csv·crosstab_k5.csv
 
 from pathlib import Path
 
@@ -39,7 +27,7 @@ feature_cols = hour_cols + ["total_usage"]
 X = StandardScaler().fit_transform(np.log1p(df[feature_cols].to_numpy()))
 true = df["true_cluster"]
 
-# ── k 스윕 ────────────────────────────────────────────────────────
+# k 스윕
 records = []
 preds = {}
 for k in K_RANGE:
@@ -58,8 +46,7 @@ print("── k 스윕 (로그+표준화, KMeans n_init=10) ──")
 print(sweep.round(3).to_string(index=False))
 print()
 
-# ── 각 k에서 군집별 크기와 정답 레이블 구성 요약 ──────────────────
-# 군집마다 최다 정답 레이블과 그 비율(순도)을 한 줄로 요약한다.
+# 각 k의 군집 구성: 크기, 최다 정답 레이블, 순도
 print("── 각 k의 군집 구성 (크기 / 최다 정답 레이블 / 순도) ──")
 for k in K_RANGE:
     pred = preds[k]
@@ -71,7 +58,7 @@ for k in K_RANGE:
     print(f"k={k}: " + "  ".join(parts))
 print()
 
-# ── k=4 vs k=5: 노이즈 15대 추적 ──────────────────────────────────
+# k=4 vs k=5: 군집 예산이 하나 늘면 노이즈 15대가 독립 군집으로 복원되는가
 print("── k=4 vs k=5 — 노이즈 소군집 15대 추적 ──")
 for k in (4, 5):
     pred = preds[k]
@@ -84,7 +71,7 @@ for k in (4, 5):
     purity = (true[pred == top_cluster] == "noise").mean()
     print(f"노이즈 15대 → 예측 군집 {top_cluster} (재현율 {recall:.0%}, 순도 {purity:.0%})\n")
 
-# ── 플롯 1: 엘보우 + 실루엣 ───────────────────────────────────────
+# 엘보우 + 실루엣
 fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 
 axes[0].plot(sweep["k"], sweep["inertia"], marker="o", color="tab:blue")
@@ -110,7 +97,7 @@ fig.tight_layout()
 fig.savefig(fig_dir / "fig5_k_sweep.png", dpi=150)
 print(f"플롯 저장 — {fig_dir / 'fig5_k_sweep.png'}")
 
-# ── 플롯 2: k=4 vs k=5 군집 구성 대조 (정답 레이블 누적 막대) ─────
+# k=4 vs k=5 군집 구성 누적 막대
 LABEL_ORDER = ["morning", "allday_low", "night", "intermittent", "noise"]
 LABEL_COLORS = {
     "morning": "tab:blue",

@@ -1,6 +1,6 @@
 """
-02. 원본 노트북의 결합 절차 재현 — 빈값→0, 연봉 3개 중앙값, dropna.
-탈락이 무작위인지, 규모·이탈에 편중됐는지를 계량한다.
+02. 외부데이터 결합 (원본 절차: 빈값 0, 연봉 중앙값, dropna)과 탈락 편향 계량.
+출력: data/merged_v1.csv, results/join_bias_by_size.csv, join_bias_summary.csv
 """
 import numpy as np, pandas as pd
 from _common import *
@@ -9,13 +9,13 @@ companies = pd.read_csv(DATA / "companies.csv")
 contracts = pd.read_csv(DATA / "contracts.csv", parse_dates=["contract_date", "start_date", "end_date"])
 ext = pd.read_csv(DATA / "external.csv")
 
-# 스냅샷: 실행일(REF_DATE) 이전에 체결된 계약만 존재한다
+# 스냅샷: REF_DATE 이전 체결 계약만 존재
 snap = contracts[contracts.contract_date <= REF_DATE]
 last_end = snap.groupby("company_id").end_date.max().rename("last_end")
 base = companies.drop(columns=["hiring_rate", "attrition_rate", "headcount_growth", "hiring_growth", "attrition_growth"]).merge(last_end, on="company_id")
 base["churn_ref"] = churn_label(base.last_end, REF_DATE)
 
-# --- 원본 절차 ---
+# 원본 절차
 fill0 = ["monthly_hires", "monthly_leavers", "employees_ext", "hiring_rate", "attrition_rate", "company_revenue", "operating_profit"]
 ext2 = ext.copy()
 n_blank_fin = ext2.company_revenue.isna().sum()
@@ -27,7 +27,7 @@ n_before = len(merged)
 merged_kept = merged.dropna()                                          # 4) dropna
 merged_kept.to_csv(DATA / "merged_v1.csv", index=False)
 
-# --- 탈락 편향 계량 ---
+# 탈락 편향 계량
 base["kept"] = base.company_id.isin(merged_kept.company_id)
 bins = [0, 50, 100, 300, 1000, 10**9]
 labels = ["<50", "50-99", "100-299", "300-999", "1000+"]

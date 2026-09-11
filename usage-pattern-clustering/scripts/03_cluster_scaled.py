@@ -1,23 +1,5 @@
-# 클러스터링 2차 시도: 스케일링 적용 후 재시도 (k=4 고정)
-#
-# 02에서 확인한 것: 스케일링 없이 돌리면 total_usage 혼자 분산의 99.8%를 차지해
-# 예측 군집이 하루 사용 "모양"이 아니라 total_usage "크기"로 갈렸다.
-# 이번엔 두 가지 스케일링을 비교한다.
-#   (a) 표준화만 (StandardScaler) — 평균 0, 분산 1로 맞춘다. 분산 지배 문제는 없어지지만
-#       치우친(skewed) 분포는 그대로 남는다.
-#   (b) 로그 변환(log1p) + 표준화 — 치우친 피처를 먼저 정규분포에 가깝게 편 다음 표준화한다.
-#       total_usage(0~5000, 오른쪽 꼬리 김)뿐 아니라 intermittent 프로파일의 시간대 피처도
-#       "대부분 0 근처 + 가끔 버스트"라 치우쳐 있어, 로그 변환이 여기도 영향을 준다.
-#
-# 02와 동일하게 true_cluster는 사후 대조에만 쓴다.
-#   - ARI, 교차표
-#   - 노이즈 소군집(15대)이 어느 예측 군집에 배정되는지 추적 (재현율/순도)
-#   - 예측 군집별 시간대 프로파일 플롯
-#   - 1차(스케일링 없음) 대비 ARI 변화 요약표
-#
-# 실행: .venv/bin/python scripts/03_cluster_scaled.py
-# 출력: outputs/figures/fig3_standard_kmeans.png
-#       outputs/figures/fig4_log_standard_kmeans.png
+# 2차 시도: 표준화만 vs 로그 변환+표준화 비교 (k=4 고정), ARI와 노이즈 15대 배정 추적
+# 출력: outputs/figures/fig3_standard_kmeans.png·fig4_log_standard_kmeans.png, outputs/results/skewness.csv·scaling_compare.csv·crosstab_standard.csv·crosstab_log_standard.csv
 
 from pathlib import Path
 
@@ -44,7 +26,7 @@ hour_cols = [c for c in df.columns if c.startswith("u_")]
 feature_cols = hour_cols + ["total_usage"]
 X_raw = df[feature_cols].to_numpy()
 
-# ── 진단: 치우침(skewness) 비교 — total_usage만 치우친 게 아니다 ──────────
+# 치우침 진단: 시간대 피처도 치우쳐 있어 로그 변환이 total_usage에만 작용하지 않음
 skew_hourly = skew(df[hour_cols].to_numpy(), axis=0)
 skew_total = skew(df["total_usage"].to_numpy())
 print("피처 치우침(skewness) — 0에 가까울수록 대칭")
@@ -118,20 +100,20 @@ def plot_result(pred: np.ndarray, method: str, fname: str) -> None:
     print(f"플롯 저장 — {fig_dir / fname}\n")
 
 
-# ── 0차 대조군: 02의 스케일링 없음 결과를 동일 SEED로 재계산 ─────────────
+# 대조군: 스케일링 없음 (02와 동일 SEED로 재계산)
 naive = run_kmeans(X_raw, "스케일링 없음 (02 재계산)")
 
-# ── (a) 표준화만 ──────────────────────────────────────────────────
+# (a) 표준화만
 X_std = StandardScaler().fit_transform(X_raw)
 result_std = run_kmeans(X_std, "표준화만 (StandardScaler)")
 plot_result(result_std["pred"], "표준화만 (StandardScaler)", "fig3_standard_kmeans.png")
 
-# ── (b) 로그 변환 + 표준화 ────────────────────────────────────────
+# (b) 로그 변환 + 표준화
 X_log_std = StandardScaler().fit_transform(np.log1p(X_raw))
 result_log = run_kmeans(X_log_std, "로그 변환(log1p) + 표준화")
 plot_result(result_log["pred"], "로그 변환(log1p) + 표준화", "fig4_log_standard_kmeans.png")
 
-# ── 요약표: 1차 대비 ARI 변화 ─────────────────────────────────────
+# 요약: 대조군 대비 ARI 변화
 summary = pd.DataFrame(
     [
         {"방법": r["method"], "ARI": round(r["ari"], 3),

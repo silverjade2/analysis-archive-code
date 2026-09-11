@@ -1,13 +1,6 @@
-"""05. 멀티모달 vs 텍스트 비교를 세 가지 프로토콜로 돌린다.
-
-(a) 원 프로젝트 방식: 텍스트는 전체 19,374건, 멀티모달은 2,000건 랜덤 서브샘플.
-    각자 자기 데이터 안에서 랜덤 홀드아웃 70/30. 테스트셋이 다르다.
-(b) 같은 2,000건, 같은 랜덤 분할에서 텍스트 / 음성 / 멀티모달.
-(c) 전체 19,374건, 화자 분리 분할(GroupShuffleSplit)에서 텍스트 / 음성 / 멀티모달.
-    2,000건 화자 분리도 같이.
-추가: 화자 사전확률 베이스라인(학습셋에서 화자의 최빈 감정으로 찍기), 오라클 상한,
-N × 분할 방식 × 모델 곡선(시드 3개 평균).
-"""
+"""05. 감정 분류, 멀티모달 vs 텍스트를 세 프로토콜로 비교: (a) 텍스트 전체 vs 멀티모달 2,000건 서브샘플, 테스트셋 다름 (b) 같은 2,000건·같은 랜덤 분할 (c) 화자 분리 분할
+추가: 화자 사전확률 베이스라인, 오라클 상한, N × 분할 × 모델 곡선(시드 3개 평균)
+출력: outputs/results/multimodal_*.csv, outputs/figures/fig4·fig5"""
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split, GroupShuffleSplit
@@ -46,9 +39,7 @@ def run(tr, te, model, seed):
 
 
 def oracle_pred(te, rng):
-    """텍스트 신호가 정답을 가리키면 정답. 아니면 음성 신호가 실려 있으면 정답
-    (음성 오프셋이 감정마다 다른 축에 있으므로 신호가 실린 경우 구분 가능하다고 본다 — 관대한 상한),
-    둘 다 없으면 최빈 클래스(happiness)."""
+    """텍스트 신호가 있으면 정답, 아니면 음성 신호가 실렸을 때 정답(neutral 제외), 둘 다 없으면 최빈 happiness. 관대한 상한"""
     out = []
     for _, r in te.iterrows():
         if r.truth_text_informative_emo == 1:
@@ -63,7 +54,7 @@ def oracle_pred(te, rng):
 rows = []
 sub2000 = daily.sample(N_MULTIMODAL, random_state=SEED)
 
-# (a) 원 프로젝트 프로토콜
+# (a) 텍스트 전체, 멀티모달 2,000건
 tr_all, te_all = split(daily, "random", SEED)
 r = run(tr_all, te_all, "text", SEED)
 rows.append(dict(protocol="a_original", data="all_19374", split="random", model="text", n_train=len(tr_all), n_test=len(te_all), accuracy=r["accuracy"], f1_weighted=r["f1_weighted"]))
@@ -86,13 +77,13 @@ for data_name, d in [("all_19374", daily), ("sub_2000", sub2000)]:
     if data_name == "all_19374":
         te_c_all, pred_c_mm = te, run(tr, te, "multimodal", SEED)["pred"]
         pred_c_text = run(tr, te, "text", SEED)["pred"]
-# (c) 전체 랜덤 분할 멀티모달도 기록 (a의 텍스트와 같은 테스트셋)
+# 전체 랜덤 분할 멀티모달, (a)의 텍스트와 같은 테스트셋
 r = run(tr_all, te_all, "multimodal", SEED)
 rows.append(dict(protocol="c_random_all", data="all_19374", split="random", model="multimodal", n_train=len(tr_all), n_test=len(te_all), accuracy=r["accuracy"], f1_weighted=r["f1_weighted"]))
 r = run(tr_all, te_all, "speaker_prior", SEED)
 rows.append(dict(protocol="c_random_all", data="all_19374", split="random", model="speaker_prior", n_train=len(tr_all), n_test=len(te_all), accuracy=r["accuracy"], f1_weighted=r["f1_weighted"]))
 
-# 오라클 (두 테스트셋 각각)
+# 오라클
 rng = np.random.default_rng(SEED)
 for name, te in [("all_19374_random", te_all), ("sub_2000_random", te_s), ("all_19374_speaker", te_c_all)]:
     op = oracle_pred(te, rng)
@@ -102,7 +93,7 @@ res = pd.DataFrame(rows).round(4)
 res.to_csv(RESULTS / "multimodal_protocols.csv", index=False)
 print(res.to_string())
 
-# 클래스별: 화자 분리 전체 데이터에서 음성이 더한 것
+# 감정별 recall 이득 (화자 분리, 전체)
 per = []
 for e in EMOTIONS:
     m = (te_c_all.emotion_label == e).values
@@ -128,7 +119,7 @@ agg = curve.groupby(["n", "split", "model"]).accuracy.agg(["mean", "std"]).round
 agg.to_csv(RESULTS / "multimodal_n_curve.csv", index=False)
 print(agg.to_string())
 
-# fig4: 프로토콜별 텍스트 → 멀티모달 화살표. 길이 = 이득, 테스트 n 표기.
+# fig4: 프로토콜별 텍스트 → 멀티모달 화살표
 from common import C_TEXT, C_MM, C_AUDIO, C_NEG, C_GRAY, C_DARK
 def g(protocol, data, model, col="accuracy"):
     return res[(res.protocol == protocol) & (res.data == data) & (res.model == model)][col].iloc[0]
@@ -152,7 +143,7 @@ ax.set_title("멀티모달이 텍스트에 더한 것: 비교 조건에 따라 �
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout(); plt.savefig(FIGURES / "fig4_protocols.png"); plt.close()
 
-# fig5: 위 — N 곡선(밴드), 아래 — 이득(멀티모달 − 텍스트) 곡선
+# fig5: N 곡선 + 이득 곡선
 gap = agg.pivot_table(index=["n", "split"], columns="model", values="mean").reset_index()
 gap["gain"] = gap.multimodal - gap.text
 gap.round(4).to_csv(RESULTS / "multimodal_n_curve_gain.csv", index=False)

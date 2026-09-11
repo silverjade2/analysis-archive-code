@@ -2,7 +2,7 @@
 
 글: [사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering)
 
-기기 800대의 시간대별 사용 프로파일(요일 7 × 시각 24 = 168개 feature + `total_usage`)에 진짜 군집 4개와 함정 3종을 심어 두고, scaling 없는 1차 시도의 실패, 로그 변환의 트레이드오프, k 선택 지표가 가리킨 k=5의 실체까지 정답을 알고 채점하며 기록한다. 클러스터링은 정답 라벨이 없어 결과가 틀려도 티가 나지 않는다. 그래서 정답을 심었다.
+기기 800대의 사용 프로파일(168개 feature + `total_usage`)에 진짜 군집 4개와 함정 3종을 심고, scaling·로그 변환·k 선택을 정답(`true_cluster`)으로 채점한다.
 
 ## 실행
 

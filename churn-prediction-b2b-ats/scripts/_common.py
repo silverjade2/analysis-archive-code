@@ -1,4 +1,4 @@
-"""공통 상수·경로·스타일. 모든 스크립트가 import한다."""
+"""공통 상수·경로·그림 스타일."""
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -11,7 +11,6 @@ FIGURES = ROOT / "outputs" / "figures"
 for p in (DATA, RESULTS, FIGURES):
     p.mkdir(parents=True, exist_ok=True)
 
-# 원본 노트북의 실행일(추정)과 이탈 판정 규칙
 REF_DATE = pd.Timestamp("2024-02-15")      # 노트북 실행일 — 라벨의 '오늘'
 CHURN_GRACE_DAYS = 90                      # 최종 종료일 + 90일 초과 → 이탈
 CUTOFF_T = pd.Timestamp("2023-02-15")      # v2 시간 절단 시점 (REF 12개월 전)
@@ -24,7 +23,7 @@ def churn_label(last_end: pd.Series, ref: pd.Timestamp) -> pd.Series:
     """원본 규칙: (ref - 최종종료일).days > 90 이면 이탈(1)."""
     return ((ref - last_end).dt.days > CHURN_GRACE_DAYS).astype(int)
 
-# ---- 그림 스타일 (사이트 톤) ----
+# 그림 스타일
 GRAY, BLUE, ORANGE, GREEN, RED = "#8a8f98", "#2f6fd6", "#e8833a", "#3a9d6b", "#c94a4a"
 def setup_mpl():
     import matplotlib

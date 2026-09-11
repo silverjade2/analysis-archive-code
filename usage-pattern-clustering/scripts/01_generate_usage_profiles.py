@@ -1,22 +1,5 @@
-# 가상데이터 생성 — 사용 패턴 세그멘테이션(usage_profiles)
-#
-# 스키마: usage_profiles(device_id, u_{dow}_h{HH} ×168, total_usage, true_cluster)
-#   - u_{dow}_h{HH}: 요일(dow)×시간대(HH) 평균 사용 강도, 0~10 스케일 (집계 피처 168개)
-#   - total_usage:   전체 사용량 합산 지표, 0~5000 스케일  ← 함정 1 (혼자 스케일이 큼)
-#   - true_cluster:  정답 레이블. 평가 전용이며 학습(클러스터링)에는 사용하지 않는다.
-#
-# 진짜 군집 4개 + 함정 3종:
-#   morning      아침집중   — 평일 아침 6~10시 피크
-#   allday_low   종일저강도 — 하루 종일 낮은 강도로 고르게 사용
-#   night        야간집중   — 21시~새벽 2시 피크
-#   intermittent 간헐고강도 — 평소 거의 0, 특정 시간대에만 고강도 버스트
-#   (함정 1) total_usage만 0~5000으로 스케일이 큼 → 스케일링 없이 돌리면 이 축이 지배
-#   (함정 2) night ↔ intermittent 일부 기기의 프로파일을 섞어 경계를 흐림 → 엘보우 애매
-#   (함정 3) 15대짜리 노이즈성 소군집(24시간 상시 고강도) 추가
-#
-# 실행: .venv/bin/python scripts/01_generate_usage_profiles.py
-# 출력: data/usage_profiles.csv
-#       outputs/figures/fig1_true_profiles.png (정답 레이블 기준 검증 플롯 4개)
+# 가상데이터 생성: 사용 패턴 세그멘테이션 usage_profiles (요일×시간대 168개 + total_usage + 정답 레이블)
+# 출력: data/usage_profiles.csv, outputs/figures/fig1_true_profiles.png, outputs/results/true_cluster_sizes.csv
 
 from pathlib import Path
 
@@ -31,7 +14,7 @@ matplotlib.rcParams["axes.unicode_minus"] = False
 SEED = 42
 N_DEVICES = 800
 
-# 군집 크기 — 합계 800 (노이즈 소군집 15대 포함)
+# 함정 3: 노이즈성 소군집(24시간 상시 고강도) 15대 포함, 합계 800
 CLUSTER_SIZES = {
     "morning": 230,
     "allday_low": 240,
@@ -48,7 +31,7 @@ BLUR_ALPHA = (0.45, 0.75) # 자기 군집 템플릿의 혼합 가중치 범위
 
 CELL_NOISE_SD = 0.45      # 셀 단위 관측 노이즈
 AMP_SIGMA = 0.15          # 기기별 전체 강도 편차 (lognormal sigma)
-TOTAL_SCALE = 3.5         # total_usage = 셀 합 × TOTAL_SCALE + 노이즈
+TOTAL_SCALE = 3.5         # 함정 1: total_usage만 0~5000 스케일, 스케일링 없이는 이 축이 거리를 지배
 
 rng = np.random.default_rng(SEED)
 base = Path(__file__).resolve().parents[1]
@@ -92,11 +75,7 @@ def night_profile(r: np.random.Generator) -> np.ndarray:
 
 
 def intermittent_profile(r: np.random.Generator) -> np.ndarray:
-    """간헐고강도: 기기마다 2~4개 버스트 시간대, 요일별 가동률이 들쭉날쭉.
-
-    버스트 시간대를 저녁(17~24시)에 치우치게 뽑아 night과의 경계를
-    한 번 더 흐린다 (함정 2 보조).
-    """
+    """간헐고강도: 기기마다 2~4개 버스트 시간대, 저녁에 치우치게 뽑아 night 경계를 흐림 (함정 2 보조)."""
     n_burst = r.integers(2, 5)
     hour_weights = np.ones(24)
     hour_weights[17:24] = 4.0
@@ -123,7 +102,7 @@ PROFILE_FN = {
     "noise": noise_profile,
 }
 
-# ── 기기별 프로파일 생성 ──────────────────────────────────────────
+# 기기별 프로파일 생성
 labels = np.repeat(list(CLUSTER_SIZES), list(CLUSTER_SIZES.values()))
 order = rng.permutation(N_DEVICES)  # device_id와 군집이 정렬돼 있지 않도록 섞는다
 labels = labels[order]
@@ -138,7 +117,7 @@ for i, label in enumerate(labels):
         alpha = rng.uniform(*BLUR_ALPHA)
         prof = alpha * prof + (1 - alpha) * PROFILE_FN[other](rng)
 
-    amp = rng.lognormal(0, AMP_SIGMA)  # 기기별 전체 강도 편차
+    amp = rng.lognormal(0, AMP_SIGMA)
     prof = prof * amp + rng.normal(0, CELL_NOISE_SD, size=(7, 24))
     prof = np.clip(prof, 0, 10)
 
@@ -161,8 +140,7 @@ print(df["true_cluster"].value_counts().to_string())
 print(f"집계 피처 범위: {df[feature_cols].values.min():.2f} ~ {df[feature_cols].values.max():.2f}")
 print(f"total_usage 범위: {df['total_usage'].min():.0f} ~ {df['total_usage'].max():.0f}")
 
-# ── 검증: 정답 레이블 기준 시간대별 프로파일 플롯 4개 ────────────
-# 요일 축을 평균으로 접어 24시간 프로파일로 본다.
+# 검증 플롯: 정답 레이블 기준 24시간 프로파일 (요일 축은 평균으로 접음)
 hourly = pd.DataFrame(
     np.stack([p.mean(axis=0) for _, p, _, _ in rows]),
     columns=HOURS,

@@ -1,7 +1,5 @@
-"""03. v1 feature: 조회 시점 snapshot (원래 노트북의 구조).
-
-모든 유저의 feature를 snapshot 당일까지의 전체 이벤트로 계산한다. 타깃(동의)이 결정된
-이후에 일어난 이벤트도 포함된다.
+"""v1 feature: 전원을 snapshot 당일에서 절단 (타깃 결정 이후 이벤트 포함).
+출력: data/features_v1_snapshot.csv
 """
 import sys
 from pathlib import Path

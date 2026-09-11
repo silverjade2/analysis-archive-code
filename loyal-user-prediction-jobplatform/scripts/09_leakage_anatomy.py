@@ -1,21 +1,5 @@
-"""09. leakage 해부: 그림 7~11의 데이터.
-
-파이프라인은 바꾸지 않는다. data/와 v1/v2 feature 테이블을 읽어 10_site_figures_2.py가
-그릴 작은 CSV를 쓴다. 다섯 부분으로 구성한다.
-
-  1. (의사) 동의일 주변의 로그인 확률: 동의자는 consent_day, 비동의자는 v2 cutoff + 1을
-     기준일로 둔다 (04와 같은 "프로필 + 지연" 공식)
-  2. 유저 12명(동의 6 / 비동의 6)의 타임라인 표본: 로그인 일자와 v2 cutoff
-  3. v1과 v2의 LightGBM out-of-fold 점수(06과 같은 CV / seed) → ROC 곡선,
-     oof_auc_vs_oracle.csv와 대조
-  4. 비동의 유저의 점수 분위별 심어둔 동의 성향 평균, nudge_list_comparison.csv와 대조
-     (상위 분위 = 넛지 리스트)
-  5. 비동의 유저를 v1 × v2 점수 평면에 놓고 두 상위 분위 리스트를 사분면으로 표시,
-     nudge_list_overlap.csv와 대조
-
-출력 (outputs/results/): login_around_consent.csv, timeline_sample.csv, oof_scores.csv,
-roc_curves.csv, score_deciles.csv, score_quadrants.csv, leakage_anatomy_summary.csv (글의
-캡션에 인용한 숫자).
+"""leakage 해부: 기준일 주변 로그인, 타임라인 표본, OOF 점수와 ROC, 점수 분위, v1 × v2 사분면.
+출력: outputs/results/login_around_consent.csv, timeline_sample.csv, oof_scores.csv, roc_curves.csv, score_deciles.csv, score_quadrants.csv, leakage_anatomy_summary.csv
 """
 import sys
 from pathlib import Path
@@ -44,7 +28,7 @@ cutoff = v2["cutoff_day"].values
 truth_p = users["truth_p_consent"].values
 summary = {}
 
-# ---------------------------------------------------------------- 1. 기준일 주변 로그인 확률
+# 1. 기준일 주변 로그인 확률 (비동의자의 기준일 = v2 cutoff + 1)
 anchor = np.where(pos, consent, cutoff + 1)
 rel = np.arange(-PRE, POST + 1)
 idx = anchor[:, None] + rel[None, :]
@@ -71,7 +55,7 @@ for w in (f"mean daily login rate, day -{PRE}..-1", "login rate on day +1", f"me
 out.round(4).to_csv(RES / "login_around_consent.csv", index=False)
 print("1. login_around_consent.csv")
 
-# ---------------------------------------------------------------- 2. 타임라인 표본
+# 2. 타임라인 표본
 season = users["truth_season_joiner"].values
 rng = np.random.default_rng(SEED)
 room = (N_DAYS - 1 - join) >= 365
@@ -91,7 +75,7 @@ for u in sample:
 pd.DataFrame(rows).to_csv(RES / "timeline_sample.csv", index=False)
 print("2. timeline_sample.csv")
 
-# ---------------------------------------------------------------- 3. out-of-fold 점수 → ROC
+# 3. OOF 점수 → ROC
 def encode(df, cols):
     cats = [c for c in cols if c in CAT_COLS]
     X = pd.get_dummies(df[cols], columns=cats, dtype=int)
@@ -121,7 +105,7 @@ for label, s in curves.items():
 pd.DataFrame(rows, columns=["model", "fpr", "tpr"]).round(4).to_csv(RES / "roc_curves.csv", index=False)
 print("3. oof_scores.csv, roc_curves.csv")
 
-# ---------------------------------------------------------------- 4. 비동의 유저의 점수 분위
+# 4. 비동의 유저의 점수 분위
 neg = np.flatnonzero(~pos)
 k = int(len(neg) * TOP)
 nudge = pd.read_csv(RES / "nudge_list_comparison.csv").set_index("list")["mean true consent propensity"]
@@ -145,7 +129,7 @@ summary["deciles: non-consented mean truth propensity"] = truth_p[neg].mean()
 deciles.round(4).to_csv(RES / "score_deciles.csv", index=False)
 print("4. score_deciles.csv")
 
-# ---------------------------------------------------------------- 5. v1 × v2 점수 평면, 상위 분위 사분면
+# 5. v1 × v2 점수 평면, 상위 분위 사분면
 lists = {vname: neg[np.argsort(-s[neg])[:k]] for vname, s in scores.items()}   # 06의 리스트와 정확히 같다
 both = np.intersect1d(lists["v1"], lists["v2"])
 v1_only = np.setdiff1d(lists["v1"], both)

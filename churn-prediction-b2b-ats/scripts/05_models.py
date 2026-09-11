@@ -1,10 +1,6 @@
 """
-05. 회귀 vs 분류, v1 vs v2, 오라클.
-- 원본 절차: 95/5 분할 → 95% 안에서 10-fold. 원본은 이진 y를 회귀(RF)로 학습했다. 그대로 재현하고
-  같은 피처로 분류기 4종(LR·RF·XGBoost·LightGBM)을 돌린다.
-- v1 피처에서 미래 매출 열(rev_2024~2027)과 누적 열(총매출·총계약수)을 뺀 v1-ablation도 채점한다.
-- v2는 T 시점 모집단(688사)에서만 정의되므로, v1도 같은 688사로 다시 채점해 나란히 놓는다.
-- SHAP(LightGBM TreeExplainer)로 두 버전의 상위 피처를 비교하고, v2 OOF 확률로 캘리브레이션을 본다.
+05. 모델 비교: 원본 회귀 재현, 분류기 4종, v1 ablation, 같은 688사 v1/v2, 오라클, SHAP, 캘리브레이션.
+출력: results/model_compare.csv, shap_importance_*.csv, calibration.csv, risk_list_compare.csv, data/shap_values_*.csv
 """
 import warnings; warnings.filterwarnings("ignore")
 import numpy as np, pandas as pd
@@ -22,7 +18,7 @@ v1 = pd.read_csv(DATA / "features_v1.csv")
 v2 = pd.read_csv(DATA / "features_v2.csv")
 truth2 = pd.read_csv(DATA / "truth_v2_population.csv")
 
-# ---- 누수 점검: 피처 행렬에 truth_* / 라벨 파생 열이 없어야 한다 ----
+# 누수 점검
 for name, df in [("v1", v1), ("v2", v2)]:
     bad = [c for c in df.columns if c.startswith("truth_") or c in ("in_use", "last_end", "churn_ref")]
     assert not bad, f"{name} leakage columns: {bad}"
@@ -54,7 +50,7 @@ def cv_auc(X, y, name, variant, rows):
     return oof
 
 rows = []
-# ---- (1) v1 전체 1,201사 — 원본 회귀 재현 ----
+# (1) v1 스냅샷: 원본 회귀(RF) 재현
 tr = split95(v1)
 X, y = tr.drop(columns=["company_id", "y"]), tr.y
 kf = KFold(10, shuffle=True, random_state=123)
@@ -63,23 +59,23 @@ rows.append(dict(variant="v1 snapshot", model="Random Forest (regression, 원본
                  auc=roc_auc_score(y, pred), r2=r2_score(y, pred), mae=mean_absolute_error(y, pred),
                  rmse=np.sqrt(mean_squared_error(y, pred))))
 oof_v1 = cv_auc(X, y, "v1", "v1 snapshot", rows)
-# ---- (2) v1 ablation: 미래 매출·누적 열 제거 ----
+# (2) v1 ablation: 미래 매출·누적 열 제거
 Xa = X.drop(columns=FUTURE_COLS + CUM_COLS)
 cv_auc(Xa, y, "v1a", "v1 minus future/cumulative", rows)
-# ---- (2b) 단계적 제거: 구분(재계약 이력) → 최초 계약 연·월까지 빼면 무엇이 남는가 (LightGBM만) ----
+# (2b) 계약 이력 열 단계적 제거 (LightGBM만)
 skf10 = StratifiedKFold(10, shuffle=True, random_state=123)
 for label, extra in [("v1 minus future/cumulative/gubun", ["gubun_신규", "gubun_재계약"]),
                      ("v1 minus all contract-history cols", ["gubun_신규", "gubun_재계약", "first_year", "first_month"])]:
     p = cross_val_predict(models()["LightGBM"], Xa.drop(columns=extra), y, cv=skf10, method="predict_proba")[:, 1]
     rows.append(dict(variant=label, model="LightGBM", task="classification", n=len(y), auc=roc_auc_score(y, p)))
-# ---- (3) 같은 688사에서 v1 / v2 ----
+# (3) v2 모집단(688사)에서 v1도 다시 채점
 v1_688 = v1[v1.company_id.isin(v2.company_id)].set_index("company_id").loc[v2.company_id].reset_index()
 X1s, y1s = v1_688.drop(columns=["company_id", "y"]), v1_688.y
 cv_auc(X1s, y1s, "v1s", "v1 snapshot (688)", rows)
 X2, y2 = v2.drop(columns=["company_id", "y"]), v2.y
 oof_v2 = cv_auc(X2, y2, "v2", "v2 timecut (688)", rows)
 rows.append(dict(variant="oracle (688)", model="truth_churn_p", task="oracle", n=len(y2), auc=roc_auc_score(y2, truth2.truth_churn_p)))
-# ---- 전체 1,201사 오라클: 심어둔 갱신 확률 p와 최초계약 이후 갱신 기회 k(12개월 기준)로 1-p^k ----
+# 전체 오라클: 최초계약 이후 갱신 기회 k(12개월 단위)로 1 - p^k
 comp = pd.read_csv(DATA / "companies.csv")[["company_id", "truth_renew_p"]]
 snap = pd.read_csv(DATA / "snapshot_v1.csv", parse_dates=["first_contract"]).merge(comp, on="company_id")
 horizon = REF_DATE - pd.Timedelta(days=CHURN_GRACE_DAYS)
@@ -94,7 +90,7 @@ res = pd.DataFrame(rows).round(4)
 res.to_csv(RESULTS / "model_compare.csv", index=False)
 print(res.to_string(index=False))
 
-# ---- SHAP: LightGBM v1(1,201) / v2(688), 5-fold OOF SHAP ----
+# SHAP: LightGBM 5-fold OOF
 def oof_shap(X, y, tag):
     skf = StratifiedKFold(5, shuffle=True, random_state=7)
     sv = np.zeros(X.shape)
@@ -111,7 +107,7 @@ def oof_shap(X, y, tag):
 imp1 = oof_shap(X, y, "v1"); imp2 = oof_shap(X2, y2, "v2")
 print(imp1.head(8).round(3)); print(imp2.head(8).round(3))
 
-# ---- 캘리브레이션 (v2·v1 LightGBM OOF) ----
+# 캘리브레이션 (LightGBM OOF)
 cal_rows = []
 for tag, p, yy in [("v1", oof_v1["LightGBM"], y), ("v2", oof_v2["LightGBM"], y2)]:
     frac, mean_p = calibration_curve(yy, p, n_bins=8, strategy="quantile")
@@ -121,7 +117,7 @@ for tag, p, yy in [("v1", oof_v1["LightGBM"], y), ("v2", oof_v2["LightGBM"], y2)
     cal_rows.append(dict(variant=tag, mean_pred=np.nan, frac_pos=np.nan, **{k: v for k, v in rows_b.items() if k != "variant"}))
 pd.DataFrame(cal_rows).round(4).to_csv(RESULTS / "calibration.csv", index=False)
 
-# ---- v2 OOF 점수 vs 오라클: 상위 20% 리스크 리스트 ----
+# 상위 20% 리스크 리스트 vs 오라클
 sc = truth2.copy(); sc["p_v2"] = oof_v2["LightGBM"]; sc["p_v1"] = None
 sc["p_v1"] = pd.Series(oof_v1["LightGBM"], index=tr.company_id).reindex(sc.company_id).values
 # v1 OOF는 95% 분할 안에서만 존재 → 없는 회사는 제외하고 비교

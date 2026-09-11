@@ -1,14 +1,5 @@
-"""05. 모델 비교, v1 대 v2.
-
-원래 노트북의 파이프라인을 재현한다. 95/5 무작위 분할(random_state=786) 후 95%에 대해
-10-fold stratified CV(session_id=123)를 돌려 Logistic Regression, Random Forest, XGBoost,
-LightGBM을 비교한다. feature 테이블 세 가지에 대해 실행한다.
-
-  v1_asis   snapshot feature, 노트북 feature 집합 (실제로 했던 것)
-  v1_pref   snapshot feature + 선호 정보 (있었지만 쓰지 않은 것)
-  v2_pref   시간 절단 feature + 선호 정보 (했어야 하는 것)
-
-이후 95% 분할에 LightGBM을 적합해 5% holdout을 채점하고 gain importance를 저장한다.
+"""모델 비교: 95/5 분할 후 10-fold CV, LR / RF / XGBoost / LightGBM × feature 3종 (v1_asis, v1_pref, v2_pref).
+출력: outputs/results/model_comparison.csv, holdout_lightgbm.csv, importance_*.csv, outputs/figures/fig4, fig5
 """
 import sys, time, json
 from pathlib import Path
@@ -70,7 +61,6 @@ for vname, (fname, cols) in VARIANTS.items():
                "TT (Sec)": r["fit_time"].mean()}
         rows.append(rec)
         print(f"  {mname:20s} " + " ".join(f"{k} {rec[k]:.4f}" for k in SCORING) + f"  ({time.time()-t0:.0f}s)")
-    # 95% 전체에 LightGBM 적합 → holdout + importance
     lgbm = MODELS["LightGBM"]().fit(Xtr, ytr)
     p = lgbm.predict_proba(Xte)[:, 1]
     yhat = (p >= 0.5).astype(int)
@@ -78,7 +68,7 @@ for vname, (fname, cols) in VARIANTS.items():
                     "Recall": recall_score(yte, yhat), "Prec.": precision_score(yte, yhat),
                     "F1": f1_score(yte, yhat)})
     gain = pd.Series(lgbm.booster_.feature_importance("gain"), index=Xtr.columns)
-    # one-hot 열을 원래 feature로 되돌려 합산
+    # one-hot 열을 원래 feature로 되돌려 합산 (importance를 feature 단위로 비교)
     src = gain.index.to_series().map(lambda c: next((k for k in cols if c == k or c.startswith(k + "_")), c))
     imp = gain.groupby(src.values).sum().sort_values(ascending=False)
     imp = imp / imp.sum()
@@ -91,7 +81,7 @@ pd.DataFrame(holdout).to_csv(RES / "holdout_lightgbm.csv", index=False)
 print("\n", comp.round(4).to_string(index=False))
 print("\nhold-out (LightGBM):\n", pd.DataFrame(holdout).round(4).to_string(index=False))
 
-# ---------------------------------------------------------------- 그림
+# 그림
 fig, axes = plt.subplots(1, 2, figsize=(12, 5.2), sharex=False)
 for ax, vname, title in zip(axes, ["v1_asis", "v2_pref"],
                             ["v1 — snapshot (as-was)", "v2 — time cut (+ preference fields)"]):

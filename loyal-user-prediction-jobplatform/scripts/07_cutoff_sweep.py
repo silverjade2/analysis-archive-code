@@ -1,17 +1,5 @@
-"""07. cutoff sweep (글의 인터랙티브 위젯용 데이터).
-
-모든 유저의 v2 cutoff(features_v2_timecut.csv: cutoff_day)를 일 단위 offset만큼 이동한다.
-음의 offset은 동의 직전보다 더 이른 시점에서 유저를 본다. 양의 offset은 타깃 결정 이후의
-이벤트가 feature로 새어 들어가게 한다. "snapshot"은 원래 노트북의 테이블이다 (전원을 조회
-시점에서 절단, 즉 v1 + 선호 정보).
-
-offset마다 LightGBM 5-fold out-of-fold AUC(06과 같은 모델 / seed)와 상위 5개 정규화 gain
-importance(전체 행으로 적합, one-hot 열은 05처럼 원래 feature로 합산)를 구한다. cutoff는
-프로필 완성 전날보다 앞서지 않고(04와 같은 하한) snapshot 당일을 넘지 않는다.
-
-출력:
-  outputs/results/cutoff_sweep.csv   long format: offset, auc, seen_after_consent, 상위 feature
-  outputs/results/cutoff_sweep.json  같은 내용, 위젯이 읽는 형태
+"""cutoff sweep: v2 cutoff를 offset만큼 이동하며 LightGBM 5-fold OOF AUC와 상위 importance 산출 (위젯 데이터).
+출력: outputs/results/cutoff_sweep.csv, cutoff_sweep.json
 """
 import sys, json
 from pathlib import Path

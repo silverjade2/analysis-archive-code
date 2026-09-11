@@ -1,6 +1,5 @@
 """
-검증 (SKILL 재현 코드 검증 절차 2·3): 누수 점검, 시간 절단 손검산 5사, 정상 범위.
-파이프라인의 일부가 아니다. `python verify.py`로 실행.
+검증: 누수 점검, 시간 절단 손검산 5사, 정상 범위. 파이프라인과 별개로 `python verify.py`로 실행.
 """
 import sys; sys.path.insert(0, "scripts")
 import numpy as np, pandas as pd
@@ -16,7 +15,7 @@ for name, df in [("v1", v1), ("v2", v2)]:
     assert "y" in df.columns and df.columns.tolist().count("y") == 1
 print("[1] truth_* 열 없음, y 1개 — OK")
 
-# 2) 시간 절단 손검산: v2 5사. T 이후 체결 계약이 피처에 들어가지 않았는지
+# 2) 시간 절단 손검산 5사: T 이후 체결 계약이 피처에 미반영인지
 sample = v2.sample(5, random_state=1)
 ok = True
 for _, r in sample.iterrows():

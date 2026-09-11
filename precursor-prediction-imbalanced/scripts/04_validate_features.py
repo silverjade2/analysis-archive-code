@@ -1,16 +1,5 @@
-# 피처 테이블 누수(leakage) 검증
-#
-# 원칙: 피처는 t 이하의 데이터만, 타깃은 t 초과의 데이터만 써야 한다.
-# 검증 3종:
-#   (1) 재계산 대조 — 무작위 표본 행에 대해, 원천 데이터를 t 시점까지로 "잘라낸 뒤"
-#       피처를 처음부터 다시 계산해 저장된 값과 일치하는지 확인.
-#       미래 데이터가 피처에 섞였다면 잘라낸 데이터로는 같은 값이 나올 수 없다.
-#   (2) 타깃 방향 검증 — 모든 행에서 이벤트일이 t보다 미래인지(사후 행 제거 확인),
-#       target 정의가 정확히 t+1~t+7 윈도우와 일치하는지 확인.
-#   (3) 음성 대조 — 일부러 미래 데이터(t+1~t+3의 W3)를 쓰는 '누수 피처'를 만들어
-#       (1)의 재계산 대조가 실제로 이를 잡아내는지 확인. 검증 도구 자체의 검증.
-#
-# 실행: .venv/bin/python scripts/04_validate_features.py
+# 피처 테이블 누수 검증: 재계산 대조, 타깃 방향 검증, 음성 대조
+# 출력: outputs/results/leakage_checks.csv
 
 from pathlib import Path
 
@@ -63,7 +52,7 @@ def recompute_features(device_id: str, t: int, cutoff: pd.DataFrame) -> dict[str
     return out
 
 
-# ── (1) 재계산 대조 ──────────────────────────────────────────────
+# (1) 재계산 대조: t까지 잘라낸 원천 데이터로 피처를 다시 계산해 저장값과 비교
 mismatch = 0
 for _, row in sample.iterrows():
     t = int(row["day"])
@@ -78,7 +67,7 @@ for _, row in sample.iterrows():
 print(f"[검증 1] 재계산 대조 — 표본 {N_SAMPLE}행 × 피처 {len(feature_cols)}개: "
       f"불일치 {mismatch}건 {'→ 통과' if mismatch == 0 else '→ 실패!'}")
 
-# ── (2) 타깃 방향 검증 ───────────────────────────────────────────
+# (2) 타깃 방향 검증: 이벤트일이 t보다 미래인지, target 정의가 t+1 ~ t+7과 일치하는지
 merged = table.merge(gt[["device_id", "event_day"]], on="device_id", how="left")
 ev, t = merged["event_day"], merged["day"]
 
@@ -91,12 +80,12 @@ print(f"[검증 2] 이벤트일 이후 행: {post_event_rows}건, "
       f"타깃 정의 불일치: {target_mismatch}건 "
       f"{'→ 통과' if post_event_rows == 0 and target_mismatch == 0 else '→ 실패!'}")
 
-# ── (3) 음성 대조: 일부러 만든 누수 피처를 검증이 잡아내는가 ───────
+# (3) 음성 대조: 일부러 만든 누수 피처를 (1)의 방법이 잡아내는지, 검증 도구 자체의 검증
 w3 = raw[raw["event_code"] == "W3"]
 leak_detected = 0
 for _, row in sample.head(50).iterrows():
     t = int(row["day"])
-    # 누수 피처: 미래(t+1 ~ t+3)의 W3 건수 — 실제 파이프라인에 섞였다고 가정
+    # 누수 피처: 미래(t+1 ~ t+3)의 W3 건수를 일부러 만듦
     leaky_value = w3[(w3["device_id"] == row["device_id"])
                      & (w3["day"].between(t + 1, t + 3))]["count"].sum()
     # 재계산 대조: t까지 잘라낸 데이터에서 같은 피처를 계산하면 미래분은 항상 0
@@ -106,7 +95,6 @@ for _, row in sample.head(50).iterrows():
 print(f"[검증 3] 음성 대조 — 누수 피처 표본 50행 중 재계산 불일치 {leak_detected}건 "
       f"(0보다 커야 정상: 검증 방법이 누수를 실제로 잡아낸다는 뜻)")
 
-# ── 타깃 불균형 요약 ─────────────────────────────────────────────
 n_pos = int(table["target"].sum())
 print(f"\n타깃 불균형: positive {n_pos:,} / 전체 {len(table):,} "
       f"= {n_pos / len(table):.4%} (1 : {(len(table) - n_pos) / n_pos:.0f})")

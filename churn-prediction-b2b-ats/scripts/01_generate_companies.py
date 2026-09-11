@@ -1,11 +1,6 @@
 """
-01. 가상 고객사·계약 이력·외부데이터 생성.
-- 고객사 2,000사. 각 사에 잠재 갱신 확률 truth_renew_p(연간)를 부여하고,
-  계약 종료 시점마다 베르누이로 갱신 여부를 결정해 계약 이력을 만든다.
-- 이탈 라벨은 여기서 만들지 않는다. 03에서 원본 규칙으로 '도출'한다.
-- 외부데이터(건강보험·공시)는 기업 규모가 클수록 존재 확률이 높게 심는다 → 결합 탈락 편향.
-- 심어둔 진짜 원인: 인원 성장률(+), 연간 채용비율(+), 두 상품(A=diag, B=posting) 동시 사용(+),
-  기업 규모(+), 업력(−), 퇴사비율(−). truth_* 열은 채점에만 쓴다.
+01. 가상 고객사 2,000사·계약 이력·외부데이터 생성. truth_* 열은 채점 전용, 이탈 라벨은 생성하지 않음.
+출력: data/companies.csv, contracts.csv, external.csv
 """
 import numpy as np, pandas as pd
 from _common import *
@@ -14,7 +9,7 @@ N = 2000
 r = rng(1)
 z = lambda x: (x - x.mean()) / x.std()
 
-# ---- 고객사 속성 ----
+# 고객사 속성
 employees = np.clip(np.exp(r.normal(np.log(300), 1.1, N)), 3, 40000).round().astype(int)
 firm_age = np.clip(r.gamma(2.2, 12, N), 0, 130).round().astype(int)
 hiring_rate = np.clip(r.beta(1.6, 40, N), 0.002, 0.6)            # 연간 신규채용/재직
@@ -28,7 +23,7 @@ both = (product == "both").astype(int)
 size_class = np.where(employees >= 1000, "LARGE", np.where(employees >= 300, "MEDIUM", "SMALL"))
 size_class = np.where(r.random(N) < 0.05, "ETC", size_class)
 
-# ---- 잠재 갱신 확률 (연간) ----
+# 잠재 갱신 확률 (연간)
 logit = (0.30 + 0.70 * z(headcount_growth) + 0.50 * z(np.log(hiring_rate)) + 0.90 * both
          + 0.35 * z(np.log(employees)) - 0.20 * z(firm_age) - 0.40 * z(np.log(attrition_rate))
          + r.normal(0, 0.5, N))
@@ -43,7 +38,7 @@ companies = pd.DataFrame({
     "truth_renew_p": truth_renew_p.round(4),
 })
 
-# ---- 계약 이력 (DATA_END까지 생성; 스냅샷 절단은 사용하는 쪽에서) ----
+# 계약 이력: DATA_END까지 생성, 스냅샷 절단은 사용하는 쪽에서
 year_p = {2015: 0.03, 2018: 0.09, 2019: 0.13, 2020: 0.16, 2021: 0.20, 2022: 0.22, 2023: 0.17}
 years, probs = zip(*year_p.items())
 first_year = r.choice(years, N, p=probs)
@@ -78,7 +73,7 @@ for i in range(N):
         start = end + pd.Timedelta(days=1 + gap)
 contracts = pd.DataFrame(rows)
 
-# ---- 외부데이터: 규모가 클수록 존재. 일부 필드는 빈값 ----
+# 외부데이터: 규모가 클수록 존재 확률 높음 → 결합 탈락 편향
 lz = z(np.log(employees))
 p_ext = 1 / (1 + np.exp(-(0.55 + 1.3 * lz)))
 has_ext = r.random(N) < p_ext
@@ -97,7 +92,7 @@ ext = pd.DataFrame({
     "hiring_rate": hiring_rate.round(3), "attrition_rate": attrition_rate.round(3),
     "attrition_growth": attrition_growth, "hiring_growth": hiring_growth, "headcount_growth": headcount_growth,
 })[has_ext].copy()
-# 공시 없는 비상장 다수: 매출·영업이익 빈값 (원본: fillna(0)) / 연봉 빈값 (원본: median)
+# 공시 없는 비상장 다수 → 매출·영업이익 빈값, 연봉 일부 빈값
 m = ext.shape[0]
 blank_fin = r.random(m) < 0.55
 blank_sal = r.random(m) < 0.30

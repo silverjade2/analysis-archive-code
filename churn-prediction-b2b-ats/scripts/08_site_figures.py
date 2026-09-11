@@ -1,5 +1,6 @@
 """
-08. 그림 8장. 데이터·축은 02~07의 결과 CSV 그대로. 색·폰트·여백만 사이트 톤.
+08. 그림 8장. 데이터·축은 results CSV 그대로, 색·폰트·여백만 조정.
+출력: outputs/figures/fig1~fig8 png
 """
 import numpy as np, pandas as pd
 from _common import *
@@ -22,7 +23,7 @@ ax[1].text(4.45, s.churn_rate_kept - 0.045, f"남은 회사 {s.churn_rate_kept:.
 ax[1].set_title("이탈률: 탈락 전후"); ax[1].legend(fontsize=8, loc="upper right")
 fig.savefig(FIGURES / "fig1_join_bias.png"); plt.close(fig)
 
-# fig2 최초계약연도별 이탈률 = 갱신 기회 횟수
+# fig2 최초계약연도별 이탈률·갱신 기회 횟수
 by = R("churn_by_first_year.csv")
 fig, ax = plt.subplots(figsize=(8, 3.6))
 ax.bar(by.first_year.astype(str), by.churn_rate, color=GRAY)
@@ -86,7 +87,7 @@ beeswarm(ax[0], "v1", "v1 스냅샷 — LightGBM OOF SHAP", tr); beeswarm(ax[1],
 fig.text(0.5, -0.02, "점 색: feature 값의 백분위 (파랑 낮음 → 빨강 높음)", ha="center", fontsize=8, color=GRAY)
 fig.savefig(FIGURES / "fig5_shap_v1_vs_v2.png"); plt.close(fig)
 
-# fig6 기준일 스윕 — 위: 이탈률, 아래: 라벨이 뒤집힌 비율. 범례 대신 선 끝 직접 라벨.
+# fig6 기준일 스윕 (위 이탈률, 아래 라벨 뒤집힘 비율)
 import matplotlib.dates as mdates
 from matplotlib.ticker import PercentFormatter
 sw = R("reference_date_sweep.csv"); sw["ref_date"] = pd.to_datetime(sw.ref_date)
@@ -125,7 +126,7 @@ fig.text(0.125, 0.905, "최종 종료일 + 90일 초과 → 이탈. 원본 실�
 fig.subplots_adjust(right=0.82, top=0.86)
 fig.savefig(FIGURES / "fig6_reference_date_sweep.png"); plt.close(fig)
 
-# fig7 KM + Cox — 신뢰구간 밴드, 직접 라벨, at-risk 표(별도 축), 정렬된 forest plot
+# fig7 KM + Cox
 import matplotlib.transforms as mtrans
 km = R("km_by_product.csv"); cx = R("cox_summary.csv")
 fig = plt.figure(figsize=(12.5, 5.2))
@@ -141,7 +142,7 @@ for prod, col, lab_ in series:
     ax0.fill_between(d.month, d.ci_lower, d.ci_upper, step="post", color=col, alpha=0.10, lw=0)
     ax0.step(d.month, d.survival, where="post", color=col, lw=2)
     ends[prod] = (col, lab_, d.iloc[-1].survival)
-# 선 끝 라벨 — 겹치면 위아래로 벌린다
+# 선 끝 라벨, 겹치면 위아래로 벌림
 ys = sorted(ends.items(), key=lambda kv: kv[1][2])
 placed = []
 for prod, (col, lab_, yv) in ys:

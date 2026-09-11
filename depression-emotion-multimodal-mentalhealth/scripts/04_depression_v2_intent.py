@@ -1,7 +1,6 @@
-"""04. 우울 진단 v2 — 버린 4,000건을 되살린다.
-상담 스크립트의 일상 의도 발화를 라벨 0으로 학습에 넣는다. 증상 의도 = 1, 일상 대화 = 0.
-(일상 대화 안의 실제 우울 발화는 원 데이터에 라벨이 없으므로 0으로 남는다 — 라벨 노이즈)
-03과 같은 테스트셋에서 v1과 비교한다."""
+"""04. 우울 진단 v2. 상담 일상 의도 4,000건을 라벨 0으로 학습에 포함, 03과 같은 테스트셋에서 v1과 비교
+일상 대화 안의 실제 우울 발화는 라벨이 없어 0으로 남는다 (라벨 노이즈)
+출력: outputs/results/depression_v1_v2_compare.csv, depression_v2_top_features.csv, depression_feature_kinds.csv, outputs/figures/fig2·fig3"""
 import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, roc_auc_score
@@ -41,7 +40,7 @@ from common import C_TEXT, C_MM, C_AUDIO, C_NEG, C_GRAY, C_DARK
 v1m = pd.read_csv(RESULTS / "depression_v1_metrics.csv")
 grp = pd.read_csv(RESULTS / "depression_v1_by_group.csv")
 
-# fig2: 왼쪽 — 버린 4,000건 와플(100칸), 오른쪽 — v1→v2 덤벨
+# fig2: 4,000건 와플 + v1→v2 덤벨
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.2), gridspec_kw={"width_ratios": [1, 1.4]})
 ax = axes[0]
 rate = grp.iloc[0].pred_depressed_rate; k = int(round(rate * 100))
@@ -70,7 +69,7 @@ ax.legend(loc="lower left", fontsize=8); ax.spines[["top", "right"]].set_visible
 ax.set_title("같은 테스트셋, 학습에 4,000건을 넣었는지만 다르다")
 plt.tight_layout(); plt.savefig(FIGURES / "fig2_depression_scoring.png"); plt.close()
 
-# fig3: 피처를 어미 / 관용어 / 내용으로 색 구분한 발산 막대 (v1 왼쪽, v2 오른쪽)
+# fig3: 상위 피처 발산 막대, 어미/관용어/내용 색 구분
 ENDINGS = ["요", "어요", "습니다", "네요", "거든요", "니다", "더라고요", "것 같아요", "어", "네", "야", "지", "다", "ㅋㅋ", "ㅠㅠ", "임"]
 IDIOM = ["요즘", "자꾸", "선생님", "계속", "사실은", "그래서", "제가", "아무래도", "며칠째", "진짜", "완전", "오늘", "어제", "나", "그냥", "아", "근데", "약간"]
 def kind(f):

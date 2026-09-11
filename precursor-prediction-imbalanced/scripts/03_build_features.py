@@ -1,19 +1,5 @@
-# device-day 단위 피처 테이블 생성
-#
-# 관측 단위: (device_id, day) — 각 기기의 각 날짜가 한 행
-# 피처: 해당 날짜 기준 "과거" 7일/14일 트레일링 윈도우(당일 포함, 미래 미포함) 집계
-#   - 경고코드별(W1~W9): 7일/14일 발생 건수, 7일 추세(일별 건수의 선형회귀 기울기)
-#   - 사용량(U1): 7일/14일 평균·표준편차, 7일/14일 추세
-# 타깃: 해당 날짜 "다음 날부터" 7일 내(t+1 ~ t+7) 심각 이벤트 발생 여부
-#
-# 누수 방지 설계:
-#   - 피처 윈도우는 t 이하의 데이터만 사용 (t-13 ~ t)
-#   - 타깃 윈도우는 t 초과의 데이터만 사용 (t+1 ~ t+7) → 두 구간이 겹치지 않음
-#   - 심각 이벤트 발생 이후의 행은 제거 (이벤트 후 데이터로 이벤트를 "예측"하는 누수 방지)
-#   - 타깃 윈도우가 관측 기간을 벗어나는 마지막 7일 행은 제거 (라벨 불완전)
-#
-# 실행: .venv/bin/python scripts/03_build_features.py
-# 출력: data/features.csv
+# device-day 피처 테이블 생성: 7일/14일 트레일링 윈도우 집계(t 이하만 사용), 타깃은 t+1 ~ t+7 심각 이벤트 여부
+# 출력: data/features.csv, outputs/results/feature_table_stats.csv
 
 from pathlib import Path
 
@@ -59,7 +45,7 @@ def slope(win: np.ndarray) -> np.ndarray:
     return (win * x).sum(axis=-1) / (x**2).sum()
 
 
-# ── 피처 계산 ─────────────────────────────────────────────────────
+# 피처 계산
 features: dict[str, np.ndarray] = {}  # 각 값은 (n_devices, n_days)
 
 u1 = daily_matrix("U1")
@@ -75,7 +61,7 @@ for code in WARNING_CODES:
         features[f"{code.lower()}_cnt_{w}d"] = trailing(mat, w).sum(axis=-1)
     features[f"{code.lower()}_slope_7d"] = slope(trailing(mat, 7))
 
-# ── 타깃 계산: t+1 ~ t+7 사이에 심각 이벤트가 있는가 ──────────────
+# 타깃: t+1 ~ t+7 사이에 심각 이벤트가 있는가
 event_day = gt["event_day"].to_numpy()  # (n_devices,) NaN이면 이벤트 없음
 days = np.arange(n_days)
 with np.errstate(invalid="ignore"):
@@ -84,7 +70,7 @@ with np.errstate(invalid="ignore"):
         & (event_day[:, None] <= days[None, :] + TARGET_HORIZON)
     ).astype(int)  # NaN 비교는 False → 이벤트 없는 기기는 전부 0
 
-# ── 행 필터 ──────────────────────────────────────────────────────
+# 행 필터
 valid = np.ones((n_devices, n_days), dtype=bool)
 valid[:, : MAX_WINDOW - 1] = False                       # 14일 윈도우가 안 차는 초기 구간
 valid[:, n_days - TARGET_HORIZON:] = False               # 타깃 윈도우가 잘리는 마지막 7일
@@ -92,7 +78,7 @@ has_event = ~np.isnan(event_day)
 post_event = has_event[:, None] & (days[None, :] >= np.nan_to_num(event_day, nan=np.inf)[:, None])
 valid &= ~post_event                                     # 이벤트 발생일 이후 행 제거
 
-# ── 조립 및 저장 ─────────────────────────────────────────────────
+# 조립 및 저장
 dev_idx, day_idx = np.nonzero(valid)
 table = pd.DataFrame({
     "device_id": device_ids[dev_idx],
@@ -107,7 +93,6 @@ assert not table.isna().any().any(), "피처에 NaN이 남아 있음"
 out = base / "data" / "features.csv"
 table.to_csv(out, index=False)
 
-# ── 요약 ─────────────────────────────────────────────────────────
 n_pos = int(table["target"].sum())
 print(f"rows: {len(table):,} (device-day), features: {len(features)}")
 print(f"positive: {n_pos:,} / negative: {len(table) - n_pos:,}")

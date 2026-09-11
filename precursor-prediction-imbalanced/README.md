@@ -2,7 +2,7 @@
 
 글: [이상 이벤트 예측: 불균형 데이터에서 전조 신호 모델링](https://analysis-archive.vercel.app/analyses/precursor-prediction-imbalanced)
 
-기기 로그로 심각 이벤트를 7일 전에 예측하는 이진 분류를 가상데이터로 재현한다. 기기 500대 × 180일 로그에 전조 신호 2종과 교란 신호 1종을 심고, device-day 단위 feature 테이블(양성 0.36%)을 만든 뒤 시간 기준 분할, leakage 검증, 불균형 처리 3종 비교, SHAP 해석과 ablation까지 간다.
+기기 500대 × 180일 로그에 전조 신호 2종과 교란 신호 1종을 심고, device-day feature 테이블(양성 0.36%)로 시간 분할·leakage 검증·불균형 처리 3종 비교·SHAP·ablation을 돌린다.
 
 ## 실행
 
