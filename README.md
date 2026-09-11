@@ -1,8 +1,8 @@
 # analysis-archive-code
 
-Reproduction code for the articles on [analysis-archive](https://analysis-archive.vercel.app). Each folder rebuilds one past project on synthetic data with the same schema and re-scores the original procedure against planted ground truth. No real data is included.
+Reproduction code for the articles on [analysis-archive](https://analysis-archive.vercel.app). Each folder rebuilds one past project on synthetic data with the same schema, plants the structure the original analysis tripped over, and re-scores the original procedure against that planted ground truth. No real data is included. The articles hold the background and the interpretation; this repository holds only what is needed to rerun the numbers.
 
-글 하나 = 폴더 하나, 폴더명 = 글의 slug. 배경과 해석은 글에 있고 여기에는 코드·데이터·결과만 둔다.
+글 하나 = 폴더 하나, 폴더명 = 글의 slug.
 
 | 폴더 | 글 | 질문 | 소요 시간 |
 | --- | --- | --- | --- |
@@ -16,11 +16,13 @@ Reproduction code for the articles on [analysis-archive](https://analysis-archiv
 
 ```
 <slug>/
-  scripts/          NN_역할.py, pipeline 순서. 어디서 실행해도 된다
-  data/             생성 데이터 (커밋)
-  outputs/figures/  그림. site/ 하위는 사이트용 webp
-  outputs/results/  결과 CSV·JSON. 글의 재현값은 전부 여기서 나온다
-  README.md         실행, pipeline 표, 데이터 스키마, 심어둔 구조, 결과 파일 표
+  scripts/               NN_역할.py, pipeline 순서. 어디서 실행해도 된다
+  data/                  생성 데이터 (커밋)
+  outputs/figures/       그림
+  outputs/figures/site/  사이트용 webp (일부 폴더)
+  outputs/results/       결과 CSV와 JSON. 글의 재현값은 전부 여기서 나온다
+  verify.py              선택. 누수·손검산 재확인
+  README.md              실행, pipeline 표, 데이터 스키마, 심어둔 구조, 결과 파일 표
   requirements.txt
 ```
 
@@ -34,8 +36,9 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
-- seed 고정(`SEED=42`). 폴더 README에 적힌 버전에서는 `data/`를 지우고 다시 돌려도 데이터와 결과 CSV가 byte 단위로 같다. 다른 버전에서는 마지막 자리가 달라질 수 있다.
-- Python 3.12 이상. LightGBM·XGBoost를 쓰는 폴더는 macOS에서 `brew install libomp`.
+- 폴더 README에 적힌 버전에서는 `data/`를 지우고 다시 돌려도 데이터와 결과 CSV가 byte 단위로 같다. 다른 버전에서는 마지막 자리가 달라질 수 있고, 어느 폴더가 어디까지 흔들리는지는 폴더 README에 적었다.
+- `requirements.txt`는 하한만 적는다. 재현에 쓴 정확한 버전은 각 폴더 README의 "환경" 줄에 있다.
+- Python 3.12 이상. LightGBM이나 XGBoost를 쓰는 폴더는 macOS에서 `brew install libomp`가 먼저 필요하다.
 - `draft: true`인 글의 코드는 발행 전까지 별도 private 저장소에 있다.
 
 ## 라이선스
