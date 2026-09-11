@@ -1,7 +1,7 @@
 """회귀 대 분류, v1 대 v2, oracle.
 
-원본 절차는 95/5 분할 뒤 95% 안에서 10-fold. 원본은 이진 y를 회귀(RF)로 학습했다. 이상하지만 그대로 재현하고,
-같은 feature로 분류기 4종 LR, RF, XGBoost, LightGBM을 돌린다. v1 feature에서 미래 매출 열 rev_2024~2027과 누적
+원본 절차는 95/5 분할 뒤 95% 안에서 10-fold. 원본은 이진 y를 회귀(RF)로 학습했다. 그대로 재현하고, 같은
+feature로 분류기 4종 LR, RF, XGBoost, LightGBM을 돌린다. v1 feature에서 미래 매출 열 rev_2024~2027과 누적
 열 총매출, 총계약수를 뺀 v1-ablation도 채점한다. v2는 T 시점 모집단 688사에서만 정의되므로 v1도 같은 688사로
 다시 채점해 나란히 놓는다. SHAP은 LightGBM TreeExplainer로 두 버전의 상위 feature를 비교하고, v2 OOF 확률로
 calibration을 본다.
