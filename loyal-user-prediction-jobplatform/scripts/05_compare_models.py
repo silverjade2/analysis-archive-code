@@ -1,7 +1,7 @@
 """모델 비교, v1 대 v2. 원래 노트북의 pipeline을 재현한다.
 
 95/5 무작위 분할 뒤 95%에 10-fold stratified CV로 Logistic Regression, Random Forest, XGBoost, LightGBM을
-비교한다. random_state 786과 123은 원본 노트북의 값이다. feature 테이블은 셋이다.
+비교한다. random_state 786과 123은 원본 노트북의 값이다. feature 테이블 세 가지에 대해 실행한다.
   v1_asis   snapshot feature, 노트북의 feature 집합. 실제로 했던 것
   v1_pref   snapshot feature에 선호 정보를 더한 것. 있었지만 쓰지 않은 것
   v2_pref   시간 절단 feature에 선호 정보를 더한 것. 했어야 하는 것

@@ -2,9 +2,6 @@
 
 글: [핵심 유저 전환 예측: 저니맵이 가리킨 병목을 모델로 검증하기](https://analysis-archive.vercel.app/analyses/loyal-user-prediction-jobplatform)
 
-<!-- TODO: 배경 문단 직접 쓰기 -->
-<!-- 옛 문단: 원본 프로젝트(2023.07)는 구직 플랫폼 유저 45만 명을 저니맵으로 나누고, 프로필·검사를 마친 유저 중 누가 기업 추천에 동의하는지(핵심 유저 전환)를 분류 모델로 예측했다. 이 폴더는 그 pipeline을 같은 스키마의 가상데이터로 다시 돌리되, 당시 모델의 구조적 문제(타깃이 결정된 이후의 행동이 feature에 포함됨)를 데이터에 그대로 심어 놓고, 시점을 절단한 두 번째 버전과 나란히 채점한다. -->
-
 ## 실행
 
 ```bash
@@ -13,7 +10,7 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 ```
 
 - Apple Silicon 기준 01에서 06까지 약 2분, 07의 절단 시점 sweep이 약 2분 30초, 09 약 15초, 08과 10은 수 초.
-- 환경: Python 3.14.6, numpy 2.5.3, pandas 3.0.5, scikit-learn 1.9.0, LightGBM 4.7.0, XGBoost 3.4.1, matplotlib 3.11.1, Pillow 12.3.0. macOS에서는 `brew install libomp`가 먼저 필요하다. 08과 10의 한글 폰트는 Pretendard이고 없으면 AppleGothic으로 대체된다.
+- 환경: Python 3.14.6, numpy 2.5.3, pandas 3.0.5, scikit-learn 1.9.0, LightGBM 4.7.0, XGBoost 3.4.1, matplotlib 3.11.1, Pillow 12.3.0. macOS라면 `brew install libomp`부터. 08과 10의 한글 폰트는 Pretendard이고 없으면 AppleGothic으로 대체된다.
 - `data/`를 지우고 다시 돌려도 데이터와 `outputs/results/*.csv`가 byte 단위로 같다. `model_comparison.csv`의 학습 시간 열만 예외다.
 - 제대로 돌았는지 확인할 숫자
   - 01의 동의율 0.8056, 30,898 / 38,355. 원본 기록 81%에 맞춰 절편을 푼 결과라 이 값에서 벗어나면 생성기가 달라진 것
