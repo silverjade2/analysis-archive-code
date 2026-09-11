@@ -1,5 +1,12 @@
-# device-day 피처 테이블 생성: 7일/14일 트레일링 윈도우 집계(t 이하만 사용), 타깃은 t+1 ~ t+7 심각 이벤트 여부
-# 출력: data/features.csv, outputs/results/feature_table_stats.csv
+"""device-day 단위 feature 테이블. 각 기기의 각 날짜가 한 행이다.
+
+feature는 그날을 포함한 과거 7일과 14일의 trailing window 집계이고, 타깃은 다음 날부터 7일 안에 심각 이벤트가
+있는지다. 누수를 막기 위한 설계 네 가지:
+- feature window는 t 이하만 쓴다. t-13에서 t까지
+- 타깃 window는 t 초과만 쓴다. t+1에서 t+7까지. 두 구간이 겹치지 않는다
+- 심각 이벤트 발생 이후의 행은 버린다. 이벤트 뒤의 데이터로 이벤트를 "예측"하는 누수를 막기 위해서다
+- 타깃 window가 관측 기간을 벗어나는 마지막 7일 행도 버린다. 라벨이 불완전하기 때문이다
+"""
 
 from pathlib import Path
 
@@ -45,7 +52,6 @@ def slope(win: np.ndarray) -> np.ndarray:
     return (win * x).sum(axis=-1) / (x**2).sum()
 
 
-# 피처 계산
 features: dict[str, np.ndarray] = {}  # 각 값은 (n_devices, n_days)
 
 u1 = daily_matrix("U1")
@@ -61,30 +67,28 @@ for code in WARNING_CODES:
         features[f"{code.lower()}_cnt_{w}d"] = trailing(mat, w).sum(axis=-1)
     features[f"{code.lower()}_slope_7d"] = slope(trailing(mat, 7))
 
-# 타깃: t+1 ~ t+7 사이에 심각 이벤트가 있는가
 event_day = gt["event_day"].to_numpy()  # (n_devices,) NaN이면 이벤트 없음
 days = np.arange(n_days)
 with np.errstate(invalid="ignore"):
-    target = (
-        (event_day[:, None] > days[None, :])
-        & (event_day[:, None] <= days[None, :] + TARGET_HORIZON)
-    ).astype(int)  # NaN 비교는 False → 이벤트 없는 기기는 전부 0
+    target = ((event_day[:, None] > days[None, :]) & (event_day[:, None] <= days[None, :] + TARGET_HORIZON)).astype(
+        int
+    )  # NaN 비교는 False라 이벤트 없는 기기는 전부 0
 
-# 행 필터
 valid = np.ones((n_devices, n_days), dtype=bool)
-valid[:, : MAX_WINDOW - 1] = False                       # 14일 윈도우가 안 차는 초기 구간
-valid[:, n_days - TARGET_HORIZON:] = False               # 타깃 윈도우가 잘리는 마지막 7일
+valid[:, : MAX_WINDOW - 1] = False  # 14일 윈도우가 안 차는 초기 구간
+valid[:, n_days - TARGET_HORIZON :] = False  # 타깃 윈도우가 잘리는 마지막 7일
 has_event = ~np.isnan(event_day)
 post_event = has_event[:, None] & (days[None, :] >= np.nan_to_num(event_day, nan=np.inf)[:, None])
-valid &= ~post_event                                     # 이벤트 발생일 이후 행 제거
+valid &= ~post_event  # 이벤트 발생일 이후 행 제거
 
-# 조립 및 저장
 dev_idx, day_idx = np.nonzero(valid)
-table = pd.DataFrame({
-    "device_id": device_ids[dev_idx],
-    "event_date": start + pd.to_timedelta(day_idx, unit="D"),
-    "day": day_idx,
-})
+table = pd.DataFrame(
+    {
+        "device_id": device_ids[dev_idx],
+        "event_date": start + pd.to_timedelta(day_idx, unit="D"),
+        "day": day_idx,
+    }
+)
 for name, mat in features.items():
     table[name] = mat[dev_idx, day_idx]
 table["target"] = target[dev_idx, day_idx]
@@ -102,8 +106,16 @@ print(f"saved: {out}")
 
 res_dir = base / "outputs" / "results"
 res_dir.mkdir(parents=True, exist_ok=True)
-pd.DataFrame({
-    "metric": ["n_rows", "n_features", "n_positive", "positive_rate", "imbalance_ratio", "n_positive_devices"],
-    "value": [len(table), len(features), n_pos, n_pos / len(table), (len(table) - n_pos) / n_pos,
-              table.loc[table["target"] == 1, "device_id"].nunique()],
-}).round(4).to_csv(res_dir / "feature_table_stats.csv", index=False)
+pd.DataFrame(
+    {
+        "metric": ["n_rows", "n_features", "n_positive", "positive_rate", "imbalance_ratio", "n_positive_devices"],
+        "value": [
+            len(table),
+            len(features),
+            n_pos,
+            n_pos / len(table),
+            (len(table) - n_pos) / n_pos,
+            table.loc[table["target"] == 1, "device_id"].nunique(),
+        ],
+    }
+).round(4).to_csv(res_dir / "feature_table_stats.csv", index=False)

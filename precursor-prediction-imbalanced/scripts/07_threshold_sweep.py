@@ -1,5 +1,6 @@
-# 임계값 스윕: no_handling 모델의 테스트 구간 점수로 precision / recall / 일평균 경보 건수 계산
-# 출력: outputs/results/threshold_sweep.json
+"""threshold sweep. 격자를 등간격이 아니라 "상위 k건 경보"의 로그 격자로 잡았다. 운영에서 의미 있는 소수 경보
+구간이 촘촘해지고 슬라이더 전 구간이 고르게 쓰인다.
+"""
 
 import json
 from pathlib import Path
@@ -22,7 +23,6 @@ n_days = test["day"].nunique()
 model = joblib.load(base / "data" / "model_no_handling.joblib")
 score = model.predict_proba(test[feature_cols])[:, 1]
 
-# "상위 k건 경보" 로그 격자로 임계값 추출, 소수 경보(고정밀) 구간이 촘촘해짐
 sorted_scores = np.sort(score)[::-1]
 ks = np.unique(np.geomspace(1, len(score) // 2, 220).astype(int))
 thresholds = np.unique(sorted_scores[ks - 1])[::-1]
@@ -35,14 +35,16 @@ for t in thresholds:
     fn = int((~pred & (y == 1)).sum())
     if tp + fp == 0:
         continue
-    rows.append({
-        "threshold": round(float(t), 6),
-        "precision": round(tp / (tp + fp), 4),
-        "recall": round(tp / (tp + fn), 4),
-        "alertsPerDay": round((tp + fp) / n_days, 2),
-        "tp": tp,
-        "fp": fp,
-    })
+    rows.append(
+        {
+            "threshold": round(float(t), 6),
+            "precision": round(tp / (tp + fp), 4),
+            "recall": round(tp / (tp + fn), 4),
+            "alertsPerDay": round((tp + fp) / n_days, 2),
+            "tp": tp,
+            "fp": fp,
+        }
+    )
 
 payload = {
     "meta": {

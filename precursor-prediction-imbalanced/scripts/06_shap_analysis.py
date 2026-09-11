@@ -1,19 +1,22 @@
-# SHAP 해석: 심은 신호와 함정 신호(W7)의 중요도·방향 확인, W7 제거 ablation
-# 출력: outputs/figures/fig5_shap_summary.png, fig6_shap_w7.png, outputs/results/shap_ranking.csv, ablation_w7.csv
+"""모델이 어떤 신호를 쓰는지 SHAP으로 본다. 대상은 05에서 PR-AUC가 가장 높았던 no_handling 모델이다.
+
+보는 것은 셋이다. 심어둔 진짜 신호인 W3 빈도와 사용량 표준편차가 상위에 오는지, 함정인 W7을 모델이 얼마나
+쓰는지, W7을 빼고 다시 학습하면 성능이 얼마나 변하는지. W7은 기여의 방향까지 본다. 교란군은 이벤트가 없으므로
+모델이 "W7 높음은 안전"으로 배웠을 가능성이 있는데, 그건 인과가 아니라 코호트 구성의 산물이다.
+"""
 
 from pathlib import Path
 
 import joblib
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import shap
+from common import setup_font
 from lightgbm import LGBMClassifier
 from sklearn.metrics import average_precision_score
 
-matplotlib.rcParams["font.family"] = "AppleGothic"
-matplotlib.rcParams["axes.unicode_minus"] = False
+setup_font()
 
 SEED = 42
 TEST_START_DAY = 150
@@ -26,13 +29,11 @@ train = table[table["day"] <= TEST_START_DAY - 1 - PURGE_GAP]
 test = table[table["day"] >= TEST_START_DAY]
 X_te, y_te = test[feature_cols], test["target"]
 
-# 대상 모델: PR-AUC 최고였던 no_handling
 model = joblib.load(base / "data" / "model_no_handling.joblib")
 
-# SHAP 값 계산 (테스트 구간)
 explainer = shap.TreeExplainer(model)
 shap_values = explainer.shap_values(X_te)
-if isinstance(shap_values, list):  # 구버전 호환: [음성, 양성] 리스트로 오는 경우
+if isinstance(shap_values, list):  # 구버전 shap은 [음성, 양성] 리스트로 준다
     shap_values = shap_values[1]
 
 mean_abs = pd.Series(np.abs(shap_values).mean(axis=0), index=feature_cols)
@@ -41,14 +42,15 @@ print("=== mean|SHAP| 상위 15 ===")
 for i, (name, v) in enumerate(ranking.head(15).items(), 1):
     print(f"{i:2d}. {name:<16s} {v:.4f}")
 
+
 def rank_of(prefix: str) -> list[str]:
     return [f"{i + 1}위 {n}" for i, n in enumerate(ranking.index) if n.startswith(prefix)]
+
 
 print("\n진짜 신호 — W3:", ", ".join(rank_of("w3")))
 print("진짜 신호 — 사용량:", ", ".join(rank_of("u1")))
 print("함정 신호 — W7:", ", ".join(rank_of("w7")))
 
-# fig5: summary plot
 fig = plt.figure()
 shap.summary_plot(shap_values, X_te, max_display=15, show=False)
 plt.title("SHAP summary — 테스트 구간, no_handling 모델", fontsize=12)
@@ -56,7 +58,6 @@ plt.tight_layout()
 plt.savefig(base / "outputs" / "figures" / "fig5_shap_summary.png", dpi=150, bbox_inches="tight")
 plt.close("all")
 
-# fig6: W7 기여의 방향, 교란군은 이벤트가 없어 W7 높음이 안전 쪽으로 학습됐을 수 있음
 w7_feat = max((f for f in feature_cols if f.startswith("w7")), key=lambda f: mean_abs[f])
 idx = feature_cols.index(w7_feat)
 fig, ax = plt.subplots(figsize=(8, 5))
@@ -68,24 +69,30 @@ ax.set_title(f"함정 신호의 사용 방식 — {w7_feat}의 SHAP 기여")
 fig.tight_layout()
 fig.savefig(base / "outputs" / "figures" / "fig6_shap_w7.png", dpi=150)
 
-# W7 제거 재학습 (ablation)
+# 05와 같은 하이퍼파라미터. 05를 바꾸면 여기도 손으로 맞춰야 한다
 no_w7 = [c for c in feature_cols if not c.startswith("w7")]
 ablated = LGBMClassifier(
-    n_estimators=400, learning_rate=0.05, num_leaves=31,
-    min_child_samples=30, random_state=SEED, verbosity=-1, n_jobs=-1,
+    n_estimators=400,
+    learning_rate=0.05,
+    num_leaves=31,
+    min_child_samples=30,
+    random_state=SEED,
+    verbosity=-1,
+    n_jobs=-1,
 )
 ablated.fit(train[no_w7], train["target"])
 pr_full = average_precision_score(y_te, model.predict_proba(X_te)[:, 1])
 pr_ablated = average_precision_score(y_te, ablated.predict_proba(test[no_w7])[:, 1])
-print(f"\n=== W7 제거 ablation ===")
+print("\n=== W7 제거 ablation ===")
 print(f"전체 피처 PR-AUC: {pr_full:.4f}")
 print(f"W7 제거 PR-AUC:   {pr_ablated:.4f} (차이 {pr_ablated - pr_full:+.4f})")
 print("saved: figures/fig5_shap_summary.png, fig6_shap_w7.png")
 
 res_dir = base / "outputs" / "results"
 res_dir.mkdir(parents=True, exist_ok=True)
-ranking.rename("mean_abs_shap").rename_axis("feature").reset_index().assign(rank=lambda d: d.index + 1) \
-    .round(4).to_csv(res_dir / "shap_ranking.csv", index=False)
-pd.DataFrame({"metric": ["pr_auc_full", "pr_auc_no_w7", "diff"],
-              "value": [pr_full, pr_ablated, pr_ablated - pr_full]}).round(4) \
-    .to_csv(res_dir / "ablation_w7.csv", index=False)
+ranking.rename("mean_abs_shap").rename_axis("feature").reset_index().assign(rank=lambda d: d.index + 1).round(4).to_csv(
+    res_dir / "shap_ranking.csv", index=False
+)
+pd.DataFrame(
+    {"metric": ["pr_auc_full", "pr_auc_no_w7", "diff"], "value": [pr_full, pr_ablated, pr_ablated - pr_full]}
+).round(4).to_csv(res_dir / "ablation_w7.csv", index=False)
