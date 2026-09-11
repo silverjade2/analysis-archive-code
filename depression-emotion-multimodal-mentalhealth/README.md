@@ -2,19 +2,23 @@
 
 글: [직장인 번아웃 조기 탐지: 발화로 우울을 분류하는 모델이 실제로 배운 것](https://analysis-archive.vercel.app/analyses/depression-emotion-multimodal-mentalhealth)
 
-두 출처(일상 대화 19,374건, 상담 스크립트 20,000건)의 발화를 같은 스키마로 생성해, 출처가 곧 라벨인 우울 분류(v1)와 상담 일상 의도를 되살린 v2, multimodal vs 텍스트 비교를 프로토콜 3개로 돌린다.
+<!-- TODO: 배경 문단 직접 쓰기 -->
+<!-- 옛 문단: 원본 프로젝트(2024 상반기, 대학원 팀 프로젝트)는 공개 감정 대화 음성 데이터(일상 발화)와 정신건강 상담 스크립트(우울 발화)를 합쳐 우울 진단 분류기와 7클래스 감정 분류기를 만들고, 텍스트 PLM 3종과 음성·텍스트 multimodal을 비교했다. 이 폴더는 그 두 비교를 같은 스키마의 가상데이터로 다시 돌리되, 당시 설계의 문제 두 가지를 데이터에 그대로 심어 놓고 조건을 맞춘 버전과 비교한다. (1) 라벨 1과 0이 서로 다른 출처에서만 와서 문체가 곧 라벨이었고, 그걸 통제할 상담 일상 의도 발화 4,000건은 학습에서 뺐다. (2) multimodal과 텍스트를 다른 N·다른 테스트셋에서 비교했다. -->
 
 ## 실행
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
-cd scripts && for s in 0*.py; do ../.venv/bin/python "$s"; done
+for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
-- Apple Silicon 1 core 기준 01\~06 약 3분 40초, 07·08은 수 초. 스크립트는 `scripts/` 안에서 실행한다(`common.py`, `models.py`를 같은 폴더에서 import).
-- 환경: Python 3.14.6, `requirements.txt`의 고정 버전(numpy 2.4.4, pandas 3.0.2, scikit-learn 1.8.0, scipy 1.17.1, matplotlib 3.10.8).
-- seed 고정(`SEED=42`). `data/`를 지우고 다시 돌려도 `data/`와 `outputs/results/*.csv`가 byte 단위로 같다.
-- 제대로 돌았는지 확인할 숫자: 01의 shape (39374, 30). 03의 `test_as_original` accuracy 0.9944(학습 라벨)·0.9745(실제 우울), 학습에서 뺀 4,000건의 우울 예측률 0.9432. 04의 v2 `test_counsel_only` accuracy 0.9030. 05의 (c) 화자 분리 전체 multimodal 0.8180 vs 텍스트 0.8079.
+- Apple Silicon 1 core 기준 01에서 06까지 약 3분 40초, 07과 08은 수 초. 스크립트는 어느 위치에서 실행해도 된다. Python이 스크립트가 있는 폴더를 sys.path 맨 앞에 넣으므로 `common.py`와 `models.py`를 그대로 import한다.
+- 환경: Python 3.14.6, numpy 2.4.4, pandas 3.0.2, scikit-learn 1.8.0, scipy 1.17.1, matplotlib 3.10.8. 이 버전에서 `data/`를 지우고 다시 돌려도 `data/`와 `outputs/results/*.csv`가 byte 단위로 같다. `requirements.txt`에는 하한만 적었다.
+- 제대로 돌았는지 확인할 숫자
+  - 01의 shape (39374, 30). 일상 19,374건에 상담 20,000건
+  - 03의 `test_as_original` accuracy 0.9944(학습 라벨), 0.9745(실제 우울). 원 방식대로 채점하면 거의 완벽하고 실제 우울로 채점해도 2%p만 빠진다. 학습에서 뺀 4,000건의 우울 예측률 0.9432이 문제다. 우울이 아닌 상담 발화 열에 아홉을 우울로 찍는다. 모델이 배운 것은 우울이 아니라 상담 문체다
+  - 04의 v2 `test_counsel_only` accuracy 0.9030. v1의 0.8057에서 오른 값이고, 4,000건을 넣으면 상담 발화 안에서 우울과 아닌 것을 가르기 시작한다는 뜻
+  - 05의 (c) 화자 분리 전체 multimodal 0.8180 vs 텍스트 0.8079. 조건을 맞추면 음성이 더하는 것은 1%p 남짓이다. 원 방식 (a)의 2%p 차이는 절반이 비교 조건에서 왔다
 
 ## Pipeline
 
@@ -29,7 +33,7 @@ cd scripts && for s in 0*.py; do ../.venv/bin/python "$s"; done
 | `07_site_figures.py` | 그림 1\~8을 사이트 톤으로 작도. 값은 02\~06의 CSV에서 읽고 다시 계산하지 않는다 | `outputs/figures/site/*.webp` |
 | `08_widget_data.py` | 05의 N 곡선 CSV 두 개를 위젯용 JSON으로 | `results/multimodal_n_curve.json`(사이트 `src/data/multimodal-n-curve.json`으로 복사, 위젯 MultimodalNCurveExplorer) |
 
-`models.py`: 텍스트(char n-gram 2\~4 TF-IDF + Logistic Regression), 음성(표준화 + LR), multimodal(두 채널의 out-of-fold 클래스 확률을 이어 붙여 상위 LR이 결합하는 late fusion). PLM fine-tuning은 재현하지 않는다. 재현 대상은 실험 구조다. `common.py`: 경로, 상수(원본 기록의 건수·감정 비중), 우울 진단용 공통 분할 `depression_split()`.
+`models.py`에 모델 셋이 있다. 텍스트는 char n-gram 2에서 4의 TF-IDF에 Logistic Regression, 음성은 표준화에 LR, multimodal은 두 채널의 out-of-fold 클래스 확률을 이어 붙여 상위 LR이 결합하는 late fusion이다. PLM fine-tuning은 재현하지 않는다. 재현 대상은 실험 구조다. `common.py`에 경로, 원본 기록의 건수와 감정 비중, 우울 진단용 공통 분할 `depression_split()`이 있다. `sitestyle.py`는 loyal 폴더에 같은 파일이 있어 한쪽을 고치면 다른 쪽도 같이 고쳐야 한다.
 
 ## 데이터 스키마
 
@@ -45,7 +49,7 @@ cd scripts && for s in 0*.py; do ../.venv/bin/python "$s"; done
 | `truth_depressed` | 실제 우울 여부. 상담 증상 발화는 1, 상담 일상 발화는 0, 일상 sadness 발화의 25%가 1 |
 | `truth_text_informative_dep`, `truth_text_informative_emo`, `truth_audio_informative` | 그 발화의 텍스트 내용 토큰·감정 토큰·음성 신호가 정답을 가리키는지. oracle 계산용 |
 
-`truth_*` 4열은 생성기의 잠재 변수다. 채점에만 쓰고 feature로는 쓰지 않는다. 상담 발화의 음성·화자 열은 빈값이다(원본에도 없다).
+`truth_*` 4열은 생성기의 잠재 변수다. 채점에만 쓰고 feature로는 쓰지 않는다. 상담 발화의 음성 열과 화자 열은 빈값이다. 원본에도 없었다.
 
 ## 심어둔 구조
 
@@ -69,7 +73,9 @@ cd scripts && for s in 0*.py; do ../.venv/bin/python "$s"; done
 | `multimodal_per_class_gain_speaker_split.csv`, `confusion_*.csv`, `fusion_channel_weight.csv` | 감정별 recall 차이, 혼동행렬 차이, 채널 가중치 | fig6, "음성 채널에 54.4%" |
 | `emotion_top_features_by_class.csv`, `shap_example_token_coverage.csv`, `shap_like_local_example.csv` | 감정별 global feature, 예문 토큰 coverage, 예문 한 건의 토큰별 기여 | 해석 절, fig8 |
 
-## 알려진 한계
+## 남은 것
 
-- 텍스트 분류기의 상위 feature 표에서 계수가 완전히 같은 char n-gram(항상 같이 나오는 n-gram, 예: '울'/'울었')은 정렬 동률이라 대표 n-gram이 플랫폼에 따라 다를 수 있다. 계수와 순위는 같고 표기만 다르다.
-- 토큰 조합 생성기라 완전히 같은 텍스트가 1,769건(4.5%) 있다. 우울 진단 분할에서는 테스트 11,813건 중 729건(6.2%)이 학습셋에 같은 텍스트가 있고, 대부분 짧은 상담 발화다. 감정 분류 분할에서는 5,813건 중 41건(0.7%)이고 그중 라벨까지 같은 것은 68%다. v1/v2, 프로토콜 (a)(b)(c)는 같은 분할 안에서의 비교라 결론에 영향은 없지만, 절대 accuracy는 그만큼 후하게 잡혀 있을 수 있다.
+- 텍스트 분류기의 상위 feature 표에서 계수가 완전히 같은 char n-gram, 예를 들어 항상 같이 나오는 '울'과 '울었'은 정렬 동률이라 대표 n-gram이 플랫폼에 따라 다를 수 있다. 계수와 순위는 같고 표기만 다르다.
+- 토큰 조합 생성기라 완전히 같은 텍스트가 1,769건(4.5%) 있다. 우울 진단 분할에서는 테스트 11,813건 중 729건(6.2%)이 학습셋에 같은 텍스트가 있고, 대부분 짧은 상담 발화다. 감정 분류 분할에서는 5,813건 중 41건(0.7%)이고 그중 라벨까지 같은 것은 68%다. v1과 v2, 프로토콜 (a)(b)(c)는 같은 분할 안에서의 비교라 결론에 영향은 없지만, 절대 accuracy는 그만큼 후하게 잡혀 있을 수 있다.
+- 일상 대화 안의 실제 우울 발화는 v2에서도 거의 못 잡는다. 테스트 224건 중 recall 0.03. 원 데이터에 그 라벨이 없어 0으로 학습되기 때문이고, 4,000건을 되살려도 이건 그대로다. 글은 이 숫자를 다루지 않는다.
+- 07의 `EMO_KO`는 감정 이름을 자기 자신으로 매핑하는 빈 dict다. 그림 라벨을 영어로 바꿀 때 한국어 매핑만 지우고 껍데기가 남았다. 쓰는 곳도 없다.
