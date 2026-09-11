@@ -1,24 +1,29 @@
-"""모델 비교: 95/5 분할 후 10-fold CV, LR / RF / XGBoost / LightGBM × feature 3종 (v1_asis, v1_pref, v2_pref).
-출력: outputs/results/model_comparison.csv, holdout_lightgbm.csv, importance_*.csv, outputs/figures/fig4, fig5
+"""모델 비교, v1 대 v2. 원래 노트북의 pipeline을 재현한다.
+
+95/5 무작위 분할 뒤 95%에 10-fold stratified CV로 Logistic Regression, Random Forest, XGBoost, LightGBM을
+비교한다. random_state 786과 123은 원본 노트북의 값이다. feature 테이블은 셋이다.
+  v1_asis   snapshot feature, 노트북의 feature 집합. 실제로 했던 것
+  v1_pref   snapshot feature에 선호 정보를 더한 것. 있었지만 쓰지 않은 것
+  v2_pref   시간 절단 feature에 선호 정보를 더한 것. 했어야 하는 것
+그다음 95% 분할에 LightGBM을 적합해 5% holdout을 채점하고 gain importance를 저장한다.
 """
-import sys, time, json
-from pathlib import Path
-import numpy as np
-import pandas as pd
+
+import time
+
 import matplotlib
-matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-from sklearn.model_selection import StratifiedKFold, cross_validate
-from sklearn.linear_model import LogisticRegression
+import pandas as pd
+from common import CAT_COLS, DATA, FIG, NOTEBOOK_FEATURES, PREF_FEATURES, RES, TARGET
+from lightgbm import LGBMClassifier
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score
+from sklearn.model_selection import StratifiedKFold, cross_validate
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score, roc_auc_score, recall_score, precision_score, f1_score
 from xgboost import XGBClassifier
-from lightgbm import LGBMClassifier
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import DATA, RES, FIG, NOTEBOOK_FEATURES, PREF_FEATURES, TARGET, CAT_COLS
+matplotlib.use("Agg")
 
 VARIANTS = {
     "v1_asis": ("features_v1_snapshot.csv", NOTEBOOK_FEATURES),
@@ -28,10 +33,12 @@ VARIANTS = {
 MODELS = {
     "Logistic Regression": lambda: make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000)),
     "Random Forest": lambda: RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=123),
-    "XGBoost": lambda: XGBClassifier(n_estimators=200, max_depth=6, learning_rate=0.1,
-                                     tree_method="hist", random_state=123, n_jobs=-1, verbosity=0),
-    "LightGBM": lambda: LGBMClassifier(n_estimators=200, learning_rate=0.1, num_leaves=31,
-                                       random_state=123, n_jobs=-1, verbose=-1),
+    "XGBoost": lambda: XGBClassifier(
+        n_estimators=200, max_depth=6, learning_rate=0.1, tree_method="hist", random_state=123, n_jobs=-1, verbosity=0
+    ),
+    "LightGBM": lambda: LGBMClassifier(
+        n_estimators=200, learning_rate=0.1, num_leaves=31, random_state=123, n_jobs=-1, verbose=-1
+    ),
 }
 SCORING = {"Accuracy": "accuracy", "AUC": "roc_auc", "Recall": "recall", "Prec.": "precision", "F1": "f1"}
 
@@ -47,7 +54,7 @@ def encode(df, cols):
 rows, holdout, importances = [], [], {}
 for vname, (fname, cols) in VARIANTS.items():
     df = pd.read_csv(DATA / fname)
-    train = df.sample(frac=0.95, random_state=786)
+    train = df.sample(frac=0.95, random_state=786)  # 원본 노트북의 값
     test = df.drop(train.index)
     Xtr, ytr = encode(train, cols), train[TARGET].values
     Xte = encode(test, cols).reindex(columns=Xtr.columns, fill_value=0)
@@ -57,18 +64,29 @@ for vname, (fname, cols) in VARIANTS.items():
     for mname, make in MODELS.items():
         t0 = time.time()
         r = cross_validate(make(), Xtr, ytr, cv=cv, scoring=SCORING, n_jobs=1)
-        rec = {"variant": vname, "model": mname, **{k: r[f"test_{k}"].mean() for k in SCORING},
-               "TT (Sec)": r["fit_time"].mean()}
+        rec = {
+            "variant": vname,
+            "model": mname,
+            **{k: r[f"test_{k}"].mean() for k in SCORING},
+            "TT (Sec)": r["fit_time"].mean(),
+        }
         rows.append(rec)
-        print(f"  {mname:20s} " + " ".join(f"{k} {rec[k]:.4f}" for k in SCORING) + f"  ({time.time()-t0:.0f}s)")
+        print(f"  {mname:20s} " + " ".join(f"{k} {rec[k]:.4f}" for k in SCORING) + f"  ({time.time() - t0:.0f}s)")
     lgbm = MODELS["LightGBM"]().fit(Xtr, ytr)
     p = lgbm.predict_proba(Xte)[:, 1]
     yhat = (p >= 0.5).astype(int)
-    holdout.append({"variant": vname, "Accuracy": accuracy_score(yte, yhat), "AUC": roc_auc_score(yte, p),
-                    "Recall": recall_score(yte, yhat), "Prec.": precision_score(yte, yhat),
-                    "F1": f1_score(yte, yhat)})
+    holdout.append(
+        {
+            "variant": vname,
+            "Accuracy": accuracy_score(yte, yhat),
+            "AUC": roc_auc_score(yte, p),
+            "Recall": recall_score(yte, yhat),
+            "Prec.": precision_score(yte, yhat),
+            "F1": f1_score(yte, yhat),
+        }
+    )
     gain = pd.Series(lgbm.booster_.feature_importance("gain"), index=Xtr.columns)
-    # one-hot 열을 원래 feature로 되돌려 합산 (importance를 feature 단위로 비교)
+    # one-hot 열을 원래 feature로 되돌려 합산한다
     src = gain.index.to_series().map(lambda c: next((k for k in cols if c == k or c.startswith(k + "_")), c))
     imp = gain.groupby(src.values).sum().sort_values(ascending=False)
     imp = imp / imp.sum()
@@ -81,10 +99,10 @@ pd.DataFrame(holdout).to_csv(RES / "holdout_lightgbm.csv", index=False)
 print("\n", comp.round(4).to_string(index=False))
 print("\nhold-out (LightGBM):\n", pd.DataFrame(holdout).round(4).to_string(index=False))
 
-# 그림
 fig, axes = plt.subplots(1, 2, figsize=(12, 5.2), sharex=False)
-for ax, vname, title in zip(axes, ["v1_asis", "v2_pref"],
-                            ["v1 — snapshot (as-was)", "v2 — time cut (+ preference fields)"]):
+for ax, vname, title in zip(
+    axes, ["v1_asis", "v2_pref"], ["v1 — snapshot (as-was)", "v2 — time cut (+ preference fields)"]
+):
     top = importances[vname].head(10)[::-1]
     ax.hlines(top.index, 0, top.values, color="#2b6cb0", lw=1.5)
     ax.plot(top.values, top.index, "o", color="#2b6cb0")

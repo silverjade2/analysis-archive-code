@@ -1,21 +1,68 @@
-"""그림 1~6을 사이트 톤으로 다시 그린다. 값은 data/와 outputs/results/에서 읽고 재계산하지 않는다.
-출력: outputs/figures/site/fig1~fig6 (webp + png)
+"""그림 1에서 6까지를 사이트 톤으로 다시 그린다.
+
+데이터와 축은 02, 05, 06이 그린 그림과 같고 색, 폰트, 한국어 라벨, 여백만 바뀐다. 예외는 fig4와 fig5로 여기서
+재설계했다. fig4는 심어둔 정답 AUC를 기준선으로 둔 dumbbell, fig5는 lollipop 패널 두 개 대신 순위 bump chart다.
+모든 값은 data/와 outputs/results/에서 읽고 어떤 숫자도 다시 계산하지 않는다.
 """
-import sys
-from pathlib import Path
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+from common import DATA, RES, SEASONS, SERVICE_START, SNAPSHOT
 from matplotlib.lines import Line2D
+from sitestyle import BLUE, DARK, GRAY, LIGHT, MUTED, ORANGE, save, setup
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import DATA, RES, SERVICE_START, SNAPSHOT, SEASONS
-from sitestyle import setup, save, name, AFTER_TARGET, PLANTED, BLUE, ORANGE, GRAY, LIGHT, DARK, MUTED
+# feature id의 한국어 라벨. 글의 위젯과 같은 매핑
+NAMES = {
+    "login_counts": "로그인 횟수 (6개월)",
+    "days_since_last_login": "마지막 로그인 경과일",
+    "user_cnt": "알림 응답 횟수",
+    "total_apply_cnt": "전체 지원 횟수",
+    "apply_try_cnt": "지원 시도 횟수",
+    "apply_cnt": "지원 완료 횟수",
+    "company_cnt": "지원 기업 수",
+    "acc_apply_counts": "검사 응시 횟수",
+    "test_cnt": "지원 후 검사 횟수",
+    "complete_cnt": "전형 완료 횟수",
+    "acca_t_score": "검사 점수",
+    "acca_grade": "검사 등급",
+    "mental_health_grade": "정서 등급",
+    "pref_welfare_cnt": "복지 선호 개수",
+    "pref_salary_default_yn": "연봉 기본값 여부",
+    "marketing_consent_yn": "마케팅 수신 동의",
+    "join_year": "가입연도",
+    "join_month": "가입월",
+    "age": "나이",
+    "career_year": "경력 연수",
+    "extra": "학교 등급",
+    "final_edu_level": "학력",
+    "gender": "성별",
+    "career_type": "신입/경력",
+}
+# 대부분 타깃의 결과인 feature. 동의 이후의 활동
+AFTER_TARGET = {
+    "login_counts",
+    "days_since_last_login",
+    "user_cnt",
+    "total_apply_cnt",
+    "apply_try_cnt",
+    "apply_cnt",
+    "company_cnt",
+    "acc_apply_counts",
+    "test_cnt",
+    "complete_cnt",
+}
+# 심어둔 동의의 동인
+PLANTED = {"acca_t_score", "pref_welfare_cnt", "pref_salary_default_yn", "marketing_consent_yn", "join_month"}
+
+
+def name(f):
+    return NAMES.get(f, f)
+
 
 setup()
 users = pd.read_csv(DATA / "users.csv")
 
-# fig1 퍼널
 funnel = pd.read_csv(RES / "journey_funnel.csv")
 names = ["가입만", "검사만", "프로필만", "검사 + 프로필", "그중 추천 동의 (핵심 유저)"]
 vals = funnel["users"].values.astype(float)
@@ -24,14 +71,13 @@ fig, ax = plt.subplots(figsize=(8, 3.8))
 colors = [GRAY, GRAY, GRAY, BLUE, ORANGE]
 ax.barh(names[::-1], vals[::-1], color=colors[::-1], height=0.62)
 for i, v in enumerate(vals[::-1]):
-    ax.text(v + 3000, i, f"{v/1000:,.1f}k  ({v/total:.1%})", va="center", fontsize=9, color=DARK)
+    ax.text(v + 3000, i, f"{v / 1000:,.1f}k  ({v / total:.1%})", va="center", fontsize=9, color=DARK)
 ax.set_xlim(0, total * 0.95)
 ax.set_xlabel("유저 수")
 ax.set_title("가입자 45만 명은 어디에 멈춰 있는가 (조회 시점)")
 ax.grid(axis="x")
 save(fig, "fig1_journey_funnel")
 
-# fig2 선호 정보
 by_consent = pd.read_csv(RES / "journey_preference_by_consent.csv").set_index("matching_use_yn")
 fig, axes = plt.subplots(1, 2, figsize=(11, 3.8))
 ax = axes[0]
@@ -57,7 +103,6 @@ for a in axes:
 fig.tight_layout()
 save(fig, "fig2_preference_fields")
 
-# fig3 주간 로그인
 logins = np.load(DATA / "logins.npz")["logins"]
 days = pd.date_range(SERVICE_START, SNAPSHOT, freq="D")
 weekly = pd.Series(logins.sum(0), index=days).resample("W").sum()[:-1]
@@ -76,7 +121,6 @@ ax.grid(axis="y")
 fig.tight_layout()
 save(fig, "fig3_weekly_logins")
 
-# fig4 AUC dumbbell
 comp = pd.read_csv(RES / "model_comparison.csv")
 oracle = pd.read_csv(RES / "oof_auc_vs_oracle.csv").set_index("model")["AUC"]["oracle (true propensity)"]
 models = ["Logistic Regression", "Random Forest", "XGBoost", "LightGBM"]
@@ -84,11 +128,36 @@ piv = comp.pivot(index="model", columns="variant", values="AUC").loc[models]
 fig, ax = plt.subplots(figsize=(8.5, 3.7))
 yy = np.arange(len(models))[::-1]
 for i, m in enumerate(models):
-    ax.plot([piv.loc[m, "v2_pref"], piv.loc[m, "v1_pref"]], [yy[i]] * 2, color=LIGHT, lw=3.5, zorder=1, solid_capstyle="round")
-    ax.text(piv.loc[m, "v2_pref"] - 0.008, yy[i], f"{piv.loc[m, 'v2_pref']:.3f}", ha="right", va="center", fontsize=9, color=DARK)
-    ax.text(piv.loc[m, "v1_pref"] + 0.008, yy[i], f"{piv.loc[m, 'v1_pref']:.3f}", ha="left", va="center", fontsize=9, color=DARK)
+    ax.plot(
+        [piv.loc[m, "v2_pref"], piv.loc[m, "v1_pref"]],
+        [yy[i]] * 2,
+        color=LIGHT,
+        lw=3.5,
+        zorder=1,
+        solid_capstyle="round",
+    )
+    ax.text(
+        piv.loc[m, "v2_pref"] - 0.008,
+        yy[i],
+        f"{piv.loc[m, 'v2_pref']:.3f}",
+        ha="right",
+        va="center",
+        fontsize=9,
+        color=DARK,
+    )
+    ax.text(
+        piv.loc[m, "v1_pref"] + 0.008,
+        yy[i],
+        f"{piv.loc[m, 'v1_pref']:.3f}",
+        ha="left",
+        va="center",
+        fontsize=9,
+        color=DARK,
+    )
 ax.scatter(piv["v1_asis"], yy, s=75, color=GRAY, zorder=3, label="v1 스냅샷")
-ax.scatter(piv["v1_pref"], yy, s=75, facecolor="white", edgecolor=MUTED, linewidth=1.8, zorder=4, label="v1 스냅샷 + 선호 정보")
+ax.scatter(
+    piv["v1_pref"], yy, s=75, facecolor="white", edgecolor=MUTED, linewidth=1.8, zorder=4, label="v1 스냅샷 + 선호 정보"
+)
 ax.scatter(piv["v2_pref"], yy, s=75, color=BLUE, zorder=3, label="v2 시간 절단 + 선호 정보")
 ax.axvline(oracle, color=ORANGE, ls="--", lw=1.2, zorder=2)
 ax.text(oracle + 0.004, yy.max() + 0.62, f"심어둔 정답 확률의 AUC {oracle:.3f}", color=ORANGE, fontsize=9, va="center")
@@ -103,14 +172,15 @@ ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), ncols=3)
 ax.set_title("feature 구성별 AUC — 스냅샷은 정답보다 잘 맞힌다")
 save(fig, "fig4_auc_by_variant")
 
-# fig5 importance 순위 bump
 imp1 = pd.read_csv(RES / "importance_v1_asis.csv", index_col=0)["importance"]
 imp2 = pd.read_csv(RES / "importance_v2_pref.csv", index_col=0)["importance"]
 TOP_N = 8
 feats = list(dict.fromkeys(list(imp1.index[:TOP_N]) + list(imp2.index[:TOP_N])))
 rank1 = {f: i + 1 for i, f in enumerate(imp1.index)}
 rank2 = {f: i + 1 for i, f in enumerate(imp2.index)}
-SHOWN = 13                                  # 실제 순위는 1..13, 그 밖은 "14위 밖" 행, feature에 없으면 "없음" 행
+SHOWN = 13  # 실제 순위는 1에서 13까지 그리고, 그 밖은 "14위 밖" 행, feature에 없으면 "없음" 행
+
+
 def positions(rank):
     """한쪽의 feature별 y 위치: 실제 순위, 그다음 순위 밖 / 없음 행."""
     pos, over, absent = {}, [], []
@@ -126,6 +196,8 @@ def positions(rank):
     for i, f in enumerate(absent):
         pos[f] = SHOWN + 1 + len(over) + i
     return pos, len(over), len(absent)
+
+
 pos1, over1, abs1 = positions(rank1)
 pos2, over2, abs2 = positions(rank2)
 n_over = max(over1, over2, 1)
@@ -135,7 +207,12 @@ for pos, n_o in ((pos1, over1), (pos2, over2)):
     for f, r in pos.items():
         if r > SHOWN + n_o:
             pos[f] = r + (n_over - n_o)
-ylabels = [str(i) for i in range(1, SHOWN + 1)] + ["14위 밖"] + [""] * (n_over - 1) + (["없음"] + [""] * (n_abs - 1) if n_abs else [])
+ylabels = (
+    [str(i) for i in range(1, SHOWN + 1)]
+    + ["14위 밖"]
+    + [""] * (n_over - 1)
+    + (["없음"] + [""] * (n_abs - 1) if n_abs else [])
+)
 NROWS = len(ylabels)
 fig, ax = plt.subplots(figsize=(10, 6.6))
 for f in feats:
@@ -157,14 +234,15 @@ ax.tick_params(axis="y", length=0)
 for s in ("left", "bottom"):
     ax.spines[s].set_visible(False)
 ax.grid(axis="y")
-handles = [Line2D([], [], color=ORANGE, lw=2.2, label="타깃 결정 이후의 행동"),
-           Line2D([], [], color=BLUE, lw=2.2, label="심어둔 전환 신호"),
-           Line2D([], [], color=GRAY, lw=2.2, label="그 외")]
+handles = [
+    Line2D([], [], color=ORANGE, lw=2.2, label="타깃 결정 이후의 행동"),
+    Line2D([], [], color=BLUE, lw=2.2, label="심어둔 전환 신호"),
+    Line2D([], [], color=GRAY, lw=2.2, label="그 외"),
+]
 ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.06), ncols=3)
 ax.set_title("feature importance 순위 — 시간을 자르면 무엇이 올라오고 무엇이 내려가나")
 save(fig, "fig5_importance_v1_vs_v2")
 
-# fig6 넛지 리스트
 out = pd.read_csv(RES / "nudge_list_comparison.csv")
 extra = pd.read_csv(RES / "nudge_list_overlap.csv").set_index("metric")["value"]
 overlap = extra["overlap between v1 and v2 top-10% lists"]
@@ -188,8 +266,14 @@ axes[1].set_ylim(0, 1)
 axes[1].set_ylabel("심어둔 동의 확률의 평균")
 axes[1].set_title("정답 확률로 채점하면")
 axes[1].grid(axis="y")
-fig.suptitle(f"넛지 리스트: 비동의 유저 상위 10% — 두 리스트의 겹침 {overlap:.0%}", x=0.02, ha="left",
-             fontsize=12, fontweight="semibold", color=DARK)
+fig.suptitle(
+    f"넛지 리스트: 비동의 유저 상위 10% — 두 리스트의 겹침 {overlap:.0%}",
+    x=0.02,
+    ha="left",
+    fontsize=12,
+    fontweight="semibold",
+    color=DARK,
+)
 fig.tight_layout()
 save(fig, "fig6_nudge_lists")
 print("font:", plt.rcParams["font.family"])

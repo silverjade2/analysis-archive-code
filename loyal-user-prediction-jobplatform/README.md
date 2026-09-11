@@ -2,7 +2,8 @@
 
 글: [핵심 유저 전환 예측: 저니맵이 가리킨 병목을 모델로 검증하기](https://analysis-archive.vercel.app/analyses/loyal-user-prediction-jobplatform)
 
-구직 플랫폼 유저 45만 명(저니맵)과 모델링 대상 38,355명을 생성해, snapshot feature(v1)와 타깃 결정 직전에 자른 feature(v2)로 핵심 유저 전환 예측을 나란히 채점한다.
+<!-- TODO: 배경 문단 직접 쓰기 -->
+<!-- 옛 문단: 원본 프로젝트(2023.07)는 구직 플랫폼 유저 45만 명을 저니맵으로 나누고, 프로필·검사를 마친 유저 중 누가 기업 추천에 동의하는지(핵심 유저 전환)를 분류 모델로 예측했다. 이 폴더는 그 pipeline을 같은 스키마의 가상데이터로 다시 돌리되, 당시 모델의 구조적 문제(타깃이 결정된 이후의 행동이 feature에 포함됨)를 데이터에 그대로 심어 놓고, 시점을 절단한 두 번째 버전과 나란히 채점한다. -->
 
 ## 실행
 
@@ -11,10 +12,13 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; done
 ```
 
-- Apple Silicon 기준 01\~06 약 2분, 07(절단 시점 sweep) 약 2분 30초, 09 약 15초, 08·10 수 초.
-- 환경: Python 3.14.6, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, XGBoost 3.4, matplotlib 3.11. macOS에서는 `brew install libomp`. 08·10의 한글 폰트는 Pretendard이고, 없으면 AppleGothic으로 대체된다.
-- seed 고정(`SEED=42`). `data/`를 지우고 다시 돌려도 데이터와 `outputs/results/*.csv`가 byte 단위로 같다(`model_comparison.csv`의 학습 시간 열만 예외).
-- 제대로 돌았는지 확인할 숫자: 01의 동의율 0.8056(30,898 / 38,355). 05의 v1_asis LightGBM 10-fold AUC 0.944, v2_pref 0.687. 06의 oracle AUC 0.716, v1 OOF 0.944, v2 OOF 0.687, 두 리스트 겹침 28.1%.
+- Apple Silicon 기준 01에서 06까지 약 2분, 07의 절단 시점 sweep이 약 2분 30초, 09 약 15초, 08과 10은 수 초.
+- 환경: Python 3.14.6, numpy 2.5.3, pandas 3.0.5, scikit-learn 1.9.0, LightGBM 4.7.0, XGBoost 3.4.1, matplotlib 3.11.1, Pillow 12.3.0. macOS에서는 `brew install libomp`가 먼저 필요하다. 08과 10의 한글 폰트는 Pretendard이고 없으면 AppleGothic으로 대체된다.
+- `data/`를 지우고 다시 돌려도 데이터와 `outputs/results/*.csv`가 byte 단위로 같다. `model_comparison.csv`의 학습 시간 열만 예외다.
+- 제대로 돌았는지 확인할 숫자
+  - 01의 동의율 0.8056, 30,898 / 38,355. 원본 기록 81%에 맞춰 절편을 푼 결과라 이 값에서 벗어나면 생성기가 달라진 것
+  - 05의 v1_asis LightGBM 10-fold AUC 0.944, v2_pref 0.687. 앞의 것이 정답 확률의 AUC 0.716보다 높다는 것이 leakage의 증거이고, 뒤의 것이 그 아래 붙어 있는 것이 정상
+  - 06의 oracle AUC 0.716, v1 OOF 0.944, v2 OOF 0.687. 05와 같은 순서여야 한다. 두 리스트 겹침 28.1%는 상위 10%를 뽑아도 열 명 중 일곱은 서로 다른 사람이라는 뜻
 
 ## Pipeline
 
@@ -31,7 +35,7 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 | `09_leakage_anatomy.py` | 그림 7\~11의 데이터: 동의 전후 일별 로그인 확률, 유저 12명 타임라인, v1/v2 OOF 점수와 ROC, 비동의 유저의 점수 분위·사분면. 06의 수치와 일치하는지 assert | `results/login_around_consent.csv`, `timeline_sample.csv`, `oof_scores.csv`, `roc_curves.csv`, `score_deciles.csv`, `score_quadrants.csv`, `leakage_anatomy_summary.csv` |
 | `10_site_figures_2.py` | 09의 CSV만 읽어 그림 7\~11 작도 | `outputs/figures/site/fig7~11.webp` |
 
-`common.py`: 경로, 상수(스냅샷일 2023-06-23, 공채 시즌 4개, 원본 노트북의 feature 목록 32개), `features.py`: v1·v2가 공유하는 feature 계산(`build_features(cutoff)`는 유저별 절단일 이하의 이벤트만 집계한다), `sitestyle.py`: 08·10이 공유하는 사이트 톤.
+`common.py`에 경로와 상수가 있다. 스냅샷일 2023-06-23, 공채 시즌 4개, 원본 노트북의 feature 목록 32개. `features.py`의 `build_features(cutoff)`는 유저별 절단일 이하의 이벤트만 집계하며 v1과 v2가 같이 쓴다. `sitestyle.py`는 08과 10이 쓰는 사이트 톤이고, depression 폴더에 같은 파일이 있어 한쪽을 고치면 다른 쪽도 같이 고쳐야 한다.
 
 ## 데이터 스키마
 
@@ -44,7 +48,7 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 | `events_test.csv`, `events_notice.csv` | 68,058 / 25,180 | 역량 진단 검사 응시, 알림 응답. `user`, `day`. 같은 유저·같은 날 행이 여러 개면 그날 여러 건이다 |
 | `features_v1_snapshot.csv`, `features_v2_timecut.csv` | 38,355 × 37 | 원본 노트북의 feature 32개 + 선호 정보 2개 + 타깃 + `cutoff_day`. v1은 모두 스냅샷일, v2는 유저별 절단일 |
 
-`truth_p_consent`(동의 확률), `truth_commit`(잠재 성실도), `truth_season_joiner`, `truth_pref_complete`는 생성기의 잠재 변수다. 채점에만 쓰고 feature로는 쓰지 않는다. `days_since_last_login`은 0 이상으로 clip한다(동의일 = 가입일인 유저는 절단일이 가입일 전날이라 음수가 나올 수 있다).
+`truth_p_consent`는 동의 확률, `truth_commit`은 잠재 성실도이고, `truth_season_joiner`, `truth_pref_complete`까지 넷이 생성기의 잠재 변수다. 채점에만 쓰고 feature로는 쓰지 않는다. `days_since_last_login`은 0 이상으로 clip한다. 동의일이 가입일과 같은 유저는 절단일이 가입일 전날이라 음수가 나오기 때문이다.
 
 ## 심어둔 구조
 
@@ -54,7 +58,7 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 | 2. 시즌 가입자. 공채 시즌 직전 가입자는 한 번 지원하고 떠난다. 가입 월이 그 동기의 proxy | `motive_pop`, `leave_day` | `journey_dormancy.csv`, fig3의 시즌 로그인 |
 | 3. 선호 정보 완성이 진짜 원인. 연봉을 기본값으로 두지 않고 복지 항목을 5개 이상 고른 유저의 동의 확률이 높다 | `pref_complete`, 동의 logit의 계수 1.30 | `journey_preference_by_consent.csv`, `importance_v2_pref.csv`(v2에서 선호 정보가 상위로 올라옴) |
 
-동의율은 절편을 풀어 81%로 맞춘다(원본 기록). oracle은 `truth_p_consent`로 순위를 매긴 AUC이고, v1(0.944)이 그것(0.716)을 넘는 것이 이 폴더가 보여주려는 leakage다.
+동의율은 원본 기록대로 81%가 되게 절편을 푼다. oracle은 `truth_p_consent`로 순위를 매긴 AUC이고, v1의 0.944가 oracle의 0.716을 넘는 것이 이 폴더가 보여주려는 leakage다.
 
 ## 결과 파일
 
@@ -70,4 +74,10 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 
 ## 원본과 다른 점
 
-원본 노트북의 PyCaret 호출은 scikit-learn의 StratifiedKFold·cross_validate로 옮겼다. 분할(95/5, `random_state=786`)과 fold 수(10), 비교 모델 4종은 원본과 같다. 원본 40개 컬럼 중 모델에 쓰인 32개 feature + 타깃을 그대로 쓰고, 저니맵에서 확인했지만 당시 모델에는 넣지 않았던 선호 정보 2개(`pref_salary_default_yn`, `pref_welfare_cnt`)를 더했다.
+원본 노트북의 PyCaret 호출은 scikit-learn의 StratifiedKFold와 cross_validate로 옮겼다. 95/5 분할과 `random_state=786`, 10-fold, 비교 모델 4종은 원본과 같다. 원본 40개 컬럼 중 모델에 쓰인 32개 feature와 타깃을 그대로 쓰고, 저니맵에서 확인했지만 당시 모델에는 넣지 않았던 선호 정보 2개, `pref_salary_default_yn`과 `pref_welfare_cnt`를 더했다.
+
+## 남은 것
+
+- 07의 음의 offset은 거의 의미가 없다. cutoff 하한이 프로필 완성 전날이고 동의 지연의 중앙값이 3일이라, −30일이든 −1일이든 대부분 유저에서 같은 날로 잘린다. AUC가 0.68 근처에서 움직이지 않는 이유다. 위젯에는 그대로 실려 있다.
+- 10의 fig8 제목에 "7,457명"과 "겹침 28%"가 숫자 그대로 박혀 있다. 다른 그림은 전부 CSV에서 읽는데 이것만 손으로 적었다. 데이터가 바뀌면 제목이 틀린다.
+- `model_comparison.csv`의 학습 시간 열은 실행마다 다르다. 이 파일만 두 번 실행 결과가 byte 단위로 같지 않다.

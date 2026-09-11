@@ -1,5 +1,10 @@
-"""v1(snapshot)과 v2(시간 절단)가 공유하는 feature 생성. 각 유저의 cutoff 당일까지의 이벤트만 집계.
+"""v1(snapshot)과 v2(시간 절단)가 공유하는 feature 생성.
+
+build_features(cutoff)는 모든 유저에 대해 노트북 feature 32개와 선호 정보 feature 2개를 그 유저의 cutoff
+당일까지의 이벤트만으로 계산한다. 전원의 cutoff를 snapshot 당일로 두면 원래 노트북의 snapshot 테이블 v1이
+그대로 나온다.
 """
+
 import numpy as np
 import pandas as pd
 from common import DATA, LOGIN_WINDOW_DAYS, N_DAYS, SERVICE_START
@@ -30,15 +35,15 @@ def build_features(cutoff, users=None, logins=None, ev_apply=None, ev_test=None,
     cutoff = np.asarray(cutoff, dtype=int)
     day = np.arange(N_DAYS)[None, :]
 
-    # 로그인
     upto = logins.astype(bool) & (day <= cutoff[:, None])
     last = np.where(upto.any(1), N_DAYS - 1 - np.argmax(upto[:, ::-1], axis=1), users["join_day"].values)
     window = upto & (day > (cutoff - LOGIN_WINDOW_DAYS)[:, None])
     f = pd.DataFrame({"user": users["user"].values})
-    f["days_since_last_login"] = np.maximum(cutoff - last, 0)   # 절단일이 가입일 전날이면(동의일 = 가입일) 0
+    f["days_since_last_login"] = np.maximum(
+        cutoff - last, 0
+    )  # 동의일 = 가입일이면 절단일이 가입일 전날이라 음수가 된다. 0으로 막는다
     f["login_counts"] = window.sum(1)
 
-    # 지원
     mid = ev_apply["midas"].values == 1
     f["total_apply_cnt"] = _count_upto(ev_apply, cutoff)
     f["apply_try_cnt"] = _count_upto(ev_apply, cutoff, "try")
@@ -56,17 +61,26 @@ def build_features(cutoff, users=None, logins=None, ev_apply=None, ev_test=None,
         c = _count_upto(ev_apply, cutoff, mask=(ev_apply["midas_kind"].values == kind))
         f[f"midas_{kind}_apply_yn"] = np.where(c > 0, "Y", "N")
     m = ev_apply["day"].values <= cutoff[ev_apply["user"].values]
-    f["company_cnt"] = (ev_apply[m].groupby("user")["company_id"].nunique()
-                        .reindex(range(n), fill_value=0).values)
+    f["company_cnt"] = ev_apply[m].groupby("user")["company_id"].nunique().reindex(range(n), fill_value=0).values
 
-    # 검사 응시, 알림 응답
     f["acc_apply_counts"] = _count_upto(ev_test, cutoff)
     f["user_cnt"] = _count_upto(ev_notice, cutoff)
 
-    # 정적 속성
-    static = ["gender", "marketing_consent_yn", "career_year", "age", "career_type", "extra",
-              "final_edu_level", "acca_grade", "acca_t_score", "mental_health_grade",
-              "pref_salary_default_yn", "pref_welfare_cnt", "matching_use_yn"]
+    static = [
+        "gender",
+        "marketing_consent_yn",
+        "career_year",
+        "age",
+        "career_type",
+        "extra",
+        "final_edu_level",
+        "acca_grade",
+        "acca_t_score",
+        "mental_health_grade",
+        "pref_salary_default_yn",
+        "pref_welfare_cnt",
+        "matching_use_yn",
+    ]
     for c in static:
         f[c] = users[c].values
     jd = SERVICE_START + pd.to_timedelta(users["join_day"].values, unit="D")

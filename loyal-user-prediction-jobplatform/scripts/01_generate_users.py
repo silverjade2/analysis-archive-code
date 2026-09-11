@@ -1,34 +1,39 @@
-"""가상 유저 생성: 전체 가입 유저(population)와 모델링 대상 유저(users) + 날짜 있는 이벤트.
-심어둔 구조 1: 동의 → 로그인 상승 (타깃 결정 이후 활동이 오른다)
-심어둔 구조 2: 시즌 코호트 (시즌 직전 가입자는 한 번 지원하고 떠난다, 가입월이 대리 변수)
-심어둔 구조 3: 선호 정보 완성이 진짜 동인
-출력: data/population.csv, users.csv, logins.npz, events_apply.csv, events_test.csv, events_notice.csv
+"""가상 유저 생성. 두 층으로 만든다.
+
+전체 가입 유저 45만 명은 저니 상태와 마지막 로그인 날짜만 가진다. 저니맵 절에서만 쓴다. 모델링 대상 38,355명은
+검사를 치르고 필수 프로필을 채운 유저로, 가입에서 검사, 프로필, 동의로 이어지는 타임라인과 날짜가 붙은 로그인,
+지원, 검사, 알림 이벤트를 만든다. feature를 snapshot(v1, 원래 노트북 방식)으로도 시점 절단(v2)으로도 계산할 수
+있게 하기 위해서다.
+
+세 가지를 의도적으로 심는다. 동의한 유저는 검사 결과표 확인과 지원 관리를 위해 다시 들어오므로 로그인이 타깃
+결정 이후에 오른다. 대규모 공채 시즌 직전에 가입한 유저는 한 번 지원하고 떠나는 "시즌 가입자"가 많고, 가입월이
+그 동기의 대리 변수다. 연봉과 복지 선호를 기본값으로 두지 않고 채운 유저는 동의 확률이 오른다. 이것이 저니맵이
+찾아낸 신호다. 동의율은 절편을 풀어 원본 기록의 81%에 맞춘다.
 """
-import sys
-from pathlib import Path
+
 import numpy as np
 import pandas as pd
-
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import (DATA, SEED, SERVICE_START, SNAPSHOT, N_TOTAL, N_MODEL, SEASONS,
-                    N_DAYS, day_index)
+from common import DATA, N_DAYS, N_MODEL, N_TOTAL, SEASONS, SEED, SERVICE_START, SNAPSHOT, day_index
 
 rng = np.random.default_rng(SEED)
-sig = lambda x: 1 / (1 + np.exp(-x))
 
-# 달력 보조 변수
+
+def sig(x):
+    return 1 / (1 + np.exp(-x))
+
+
 days = pd.date_range(SERVICE_START, SNAPSHOT, freq="D")
 assert len(days) == N_DAYS
 season_day = np.zeros(N_DAYS, dtype=bool)
-pre_season = np.zeros(N_DAYS, dtype=bool)          # 시즌 시작 전 21일 (가입 급증 구간)
+pre_season = np.zeros(N_DAYS, dtype=bool)  # 시즌 시작 전 21일, 가입 급증 구간
 for a, b in SEASONS:
     ia, ib = day_index(a), day_index(b)
-    season_day[ia:ib + 1] = True
-    pre_season[max(0, ia - 21):ia + 1] = True
+    season_day[ia : ib + 1] = True
+    pre_season[max(0, ia - 21) : ia + 1] = True
 season_end_after = np.full(N_DAYS, N_DAYS, dtype=int)  # 다음 시즌 종료일의 day index
 for a, b in reversed(SEASONS):
     ia, ib = day_index(a), day_index(b)
-    season_end_after[:ib + 1] = np.minimum(season_end_after[:ib + 1], ib)
+    season_end_after[: ib + 1] = np.minimum(season_end_after[: ib + 1], ib)
 
 
 def sample_join_days(n):
@@ -40,7 +45,6 @@ def sample_join_days(n):
     return rng.choice(N_DAYS, size=n, p=w)
 
 
-# (a) 전체 가입 유저
 print("generating full population ...")
 join_pop = sample_join_days(N_TOTAL)
 motive_pop = np.where(pre_season[join_pop], rng.random(N_TOTAL) < 0.6, rng.random(N_TOTAL) < 0.25)
@@ -62,86 +66,86 @@ last_pop = join_pop.copy()
 returned = rng.random(N_TOTAL) < np.where(status_pop == 0, 0.15, 0.55)
 extra = rng.integers(1, 400, N_TOTAL)
 last_pop = np.where(returned, np.minimum(join_pop + extra, N_DAYS - 1), join_pop)
-population = pd.DataFrame({
-    "join_date": days[join_pop],
-    "season_joiner": motive_pop.astype(int),
-    "status": pd.Categorical.from_codes(status_pop, ["join_only", "test_only", "profile_only", "test_and_profile"]),
-    "last_login_date": days[last_pop],
-})
+population = pd.DataFrame(
+    {
+        "join_date": days[join_pop],
+        "season_joiner": motive_pop.astype(int),
+        "status": pd.Categorical.from_codes(status_pop, ["join_only", "test_only", "profile_only", "test_and_profile"]),
+        "last_login_date": days[last_pop],
+    }
+)
 # 45만 행 그대로는 15MB, 대부분 완전 중복이라 조합별 인원(n)으로 집계해 저장
-population = (population.groupby(["join_date", "season_joiner", "status", "last_login_date"], observed=True)
-              .size().reset_index(name="n"))
+population = (
+    population.groupby(["join_date", "season_joiner", "status", "last_login_date"], observed=True)
+    .size()
+    .reset_index(name="n")
+)
 
-# (b) 모델링 대상 유저
 print("generating modeling population ...")
 n = N_MODEL
 sel = np.flatnonzero(status_pop == 3)
 join = join_pop[sel]
 season_joiner = motive_pop[sel]
-commit = rng.normal(0, 1, n)                                    # 잠재 성실도
+commit = rng.normal(0, 1, n)  # 잠재 성실도
 
-# 정적 속성
 gender = rng.choice(["남", "여"], n, p=[0.45, 0.55])
 age = np.clip(rng.normal(27, 3.5, n).round(), 19, 45).astype(int)
 career_year = np.where(rng.random(n) < 0.75, 0, rng.integers(1, 9, n))
 career_type = np.where(career_year == 0, "신입", "경력")
-extra_lv = rng.choice(["고등학교", "L1", "L2", "L3", "L4", "L5", "L6", "해외대"], n,
-                      p=[0.05, 0.06, 0.10, 0.22, 0.24, 0.18, 0.11, 0.04])
+extra_lv = rng.choice(
+    ["고등학교", "L1", "L2", "L3", "L4", "L5", "L6", "해외대"], n, p=[0.05, 0.06, 0.10, 0.22, 0.24, 0.18, 0.11, 0.04]
+)
 final_edu_level = np.select(
     [extra_lv == "고등학교", np.isin(extra_lv, ["L1", "L2"]), rng.random(n) < 0.12],
-    ["고졸", "전문대졸", "석사"], default="대졸")
+    ["고졸", "전문대졸", "석사"],
+    default="대졸",
+)
 acca_t_score = np.clip(rng.normal(60 + 3 * commit, 12, n).round(), 5, 100).astype(int)
 acca_grade = pd.cut(acca_t_score, [-1, 40, 52, 64, 76, 101], labels=["E", "D", "C", "B", "A"]).astype(str)
 mental_health_grade = rng.choice(["양호", "주의", "위험"], n, p=[0.80, 0.15, 0.05])
 
-# 선호 정보 (진짜 동인)
-pref_salary_default = rng.random(n) < sig(0.0 - 0.9 * commit + 0.6 * season_joiner)   # 1 = 기본값 그대로
+pref_salary_default = rng.random(n) < sig(0.0 - 0.9 * commit + 0.6 * season_joiner)  # 1 = 기본값 그대로
 pref_welfare_cnt = np.clip(rng.poisson(np.exp(1.2 + 0.35 * commit - 0.4 * season_joiner)), 0, 10)
 pref_complete = (~pref_salary_default) & (pref_welfare_cnt >= 5)
 marketing_consent = rng.random(n) < sig(0.2 + 0.7 * commit)
 
-# 타임라인: 가입 → 첫 검사 → 프로필 완성
 test1 = join + 1 + rng.geometric(1 / 5, n)
 profile = test1 + rng.geometric(1 / 4, n)
 profile = np.minimum(profile, N_DAYS - 2)
 test1 = np.minimum(test1, profile)
 
-# 동의 (타깃)
 z_score = (acca_t_score - 60) / 12
-logit = (1.30 * pref_complete + 0.35 * z_score - 0.80 * season_joiner
-         + 0.55 * marketing_consent + 0.30 * commit)
+logit = 1.30 * pref_complete + 0.35 * z_score - 0.80 * season_joiner + 0.55 * marketing_consent + 0.30 * commit
 b0 = 0.0
 for _ in range(60):  # 기저율 81%가 되도록 절편을 푼다
     b0 -= (sig(b0 + logit).mean() - 0.81) * 4
 p_true = sig(b0 + logit)
 consent = rng.random(n) < p_true
-delay = np.rint(np.exp(rng.normal(1.1, 1.0, n))).astype(int)          # 중앙값 약 3일, 긴 꼬리
+delay = np.rint(np.exp(rng.normal(1.1, 1.0, n))).astype(int)  # 중앙값 약 3일, 긴 꼬리
 consent_day = np.where(consent, np.minimum(profile + delay, N_DAYS - 1), -1)
 print(f"  consent rate {consent.mean():.4f} (intercept {b0:.3f})")
 
-# 로그인 행렬 (유저 × 일)
 print("simulating logins ...")
 day_grid = np.arange(N_DAYS)[None, :]
-base = np.exp(-2.4 + 0.45 * commit)[:, None]                       # 하루 약 0.09회 로그인
+base = np.exp(-2.4 + 0.45 * commit)[:, None]  # 하루 약 0.09회 로그인
 lam = np.broadcast_to(base, (n, N_DAYS)).copy()
 lam *= np.where(season_day[None, :], 3.0, 1.0)
 # 시즌 가입자는 가입 후 첫 시즌이 끝나면 떠난다
 leave_day = season_end_after[join]
 lam *= np.where(season_joiner[:, None] & (day_grid > leave_day[:, None]), 0.12, 1.0)
-# 동의 이후 로그인 상승 (심어둔 구조 1)
+# 동의 이후 로그인이 오른다. 심어둔 구조 1
 after = (consent_day[:, None] >= 0) & (day_grid > consent_day[:, None])
 lam *= np.where(after, 2.2, 1.0)
 lam = np.where(day_grid < join[:, None], 0.0, lam)
 logins = (rng.random((n, N_DAYS)) < (1 - np.exp(-lam))).astype(np.uint8)
 rows = np.arange(n)
-logins[rows, join] = 1                                             # 가입일은 로그인으로 센다
+logins[rows, join] = 1  # 가입일은 로그인으로 센다
 logins[rows, profile] = 1
 pos = np.flatnonzero(consent)
-for d in (1, 2):                                                    # 결과표 확인 급증
+for d in (1, 2):  # 결과표 확인 급증
     dd = np.minimum(consent_day[pos] + d, N_DAYS - 1)
     logins[pos, dd] = np.where(rng.random(len(pos)) < 0.7, 1, logins[pos, dd])
 
-# 검사 응시 이벤트
 n_pre = 1 + rng.poisson(0.35, n)
 n_post = np.where(consent, rng.poisson(0.5, n), rng.poisson(0.15, n))
 test_rows = []
@@ -153,7 +157,6 @@ for i in range(n):
         test_rows.append((i, int(d)))
 events_test = pd.DataFrame(test_rows, columns=["user", "day"])
 
-# 지원 이벤트
 n_apply_pre = rng.poisson(np.exp(-0.2 + 0.5 * commit + 0.6 * season_joiner))
 n_apply_post = np.where(consent, rng.poisson(np.exp(0.2 + 0.3 * commit)), rng.poisson(0.3))
 n_apply_post = np.where(season_joiner & ~consent, rng.poisson(0.05, n), n_apply_post)
@@ -170,12 +173,23 @@ for i in range(n):
         applied = tried and rng.random() < 0.80
         tested = applied and rng.random() < 0.60
         completed = tested and rng.random() < 0.75
-        apply_rows.append((i, int(d), int(is_midas), kind, int(tried), int(applied),
-                           int(tested), int(completed), int(rng.integers(1, 400))))
-events_apply = pd.DataFrame(apply_rows, columns=["user", "day", "midas", "midas_kind", "try",
-                                                 "apply", "test", "complete", "company_id"])
+        apply_rows.append(
+            (
+                i,
+                int(d),
+                int(is_midas),
+                kind,
+                int(tried),
+                int(applied),
+                int(tested),
+                int(completed),
+                int(rng.integers(1, 400)),
+            )
+        )
+events_apply = pd.DataFrame(
+    apply_rows, columns=["user", "day", "midas", "midas_kind", "try", "apply", "test", "complete", "company_id"]
+)
 
-# 알림 응답 이벤트
 n_notice = np.where(consent, rng.poisson(0.8, n), rng.poisson(0.15, n))
 notice_rows = []
 for i in range(n):
@@ -188,20 +202,33 @@ for i in range(n):
         notice_rows.append((i, int(d)))
 events_notice = pd.DataFrame(notice_rows, columns=["user", "day"])
 
-users = pd.DataFrame({
-    "user": rows,
-    "gender": gender, "age": age, "career_year": career_year, "career_type": career_type,
-    "extra": extra_lv, "final_edu_level": final_edu_level,
-    "acca_grade": acca_grade, "acca_t_score": acca_t_score, "mental_health_grade": mental_health_grade,
-    "marketing_consent_yn": np.where(marketing_consent, "Y", "N"),
-    "pref_salary_default_yn": np.where(pref_salary_default, "Y", "N"),
-    "pref_welfare_cnt": pref_welfare_cnt,
-    "join_day": join, "test1_day": test1, "profile_day": profile, "consent_day": consent_day,
-    "matching_use_yn": consent.astype(int),
-    # 잠재 정답 변수: 채점에만 쓰고 feature로는 쓰지 않는다
-    "truth_p_consent": p_true, "truth_commit": commit, "truth_season_joiner": season_joiner.astype(int),
-    "truth_pref_complete": pref_complete.astype(int),
-})
+users = pd.DataFrame(
+    {
+        "user": rows,
+        "gender": gender,
+        "age": age,
+        "career_year": career_year,
+        "career_type": career_type,
+        "extra": extra_lv,
+        "final_edu_level": final_edu_level,
+        "acca_grade": acca_grade,
+        "acca_t_score": acca_t_score,
+        "mental_health_grade": mental_health_grade,
+        "marketing_consent_yn": np.where(marketing_consent, "Y", "N"),
+        "pref_salary_default_yn": np.where(pref_salary_default, "Y", "N"),
+        "pref_welfare_cnt": pref_welfare_cnt,
+        "join_day": join,
+        "test1_day": test1,
+        "profile_day": profile,
+        "consent_day": consent_day,
+        "matching_use_yn": consent.astype(int),
+        # 잠재 정답 변수: 채점에만 쓰고 feature로는 쓰지 않는다
+        "truth_p_consent": p_true,
+        "truth_commit": commit,
+        "truth_season_joiner": season_joiner.astype(int),
+        "truth_pref_complete": pref_complete.astype(int),
+    }
+)
 
 population.to_csv(DATA / "population.csv", index=False)
 users.to_csv(DATA / "users.csv", index=False)
@@ -209,5 +236,7 @@ np.savez_compressed(DATA / "logins.npz", logins=logins)
 events_test.to_csv(DATA / "events_test.csv", index=False)
 events_apply.to_csv(DATA / "events_apply.csv", index=False)
 events_notice.to_csv(DATA / "events_notice.csv", index=False)
-print(f"saved: population {int(population.n.sum()):,} ({len(population):,} rows), users {len(users):,}, logins {logins.shape}, "
-      f"tests {len(events_test):,}, applies {len(events_apply):,}, notices {len(events_notice):,}")
+print(
+    f"saved: population {int(population.n.sum()):,} ({len(population):,} rows), users {len(users):,}, "
+    f"logins {logins.shape}, tests {len(events_test):,}, applies {len(events_apply):,}, notices {len(events_notice):,}"
+)

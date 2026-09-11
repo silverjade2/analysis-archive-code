@@ -1,18 +1,21 @@
-"""넛지 리스트 비교: 비동의 유저 상위 10%를 v1 / v2 OOF 점수로 뽑아 심어둔 동의 확률로 채점.
-출력: outputs/results/oof_auc_vs_oracle.csv, nudge_list_comparison.csv, nudge_list_overlap.csv, outputs/figures/fig6
+"""넛지 리스트 비교.
+
+모델의 운영 용도는 주간 리스트였다. 아직 동의하지 않은 유저를 채점해 상위 10%를 마케팅에 넘긴다. 그 리스트를
+v1 점수와 v2 점수로 각각 만들고 누가 오르는지 본다. 점수는 LightGBM out-of-fold 확률이다. 가상데이터라 각
+유저의 진짜 동의 성향을 알고 있으므로 두 리스트를 정답 기준으로 채점할 수 있다. 좋은 넛지 리스트는 단순히
+활동적인 유저가 아니라 전환에 가까운 유저로 채워져야 한다.
 """
-import sys
-from pathlib import Path
+
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from sklearn.model_selection import StratifiedKFold, cross_val_predict
+from common import CAT_COLS, DATA, FIG, NOTEBOOK_FEATURES, PREF_FEATURES, RES, TARGET
 from lightgbm import LGBMClassifier
+from sklearn.metrics import roc_auc_score
+from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from common import DATA, RES, FIG, NOTEBOOK_FEATURES, PREF_FEATURES, TARGET, CAT_COLS
+matplotlib.use("Agg")
 
 TOP = 0.10
 
@@ -36,11 +39,17 @@ for name, df, cols in [("v1", v1, NOTEBOOK_FEATURES), ("v2", v2, NOTEBOOK_FEATUR
     scores[name] = cross_val_predict(m, X, y, cv=cv, method="predict_proba")[:, 1]
     print(f"{name}: out-of-fold scores done")
 
-from sklearn.metrics import roc_auc_score
 oracle = roc_auc_score(y, users["truth_p_consent"].values)
-print(f"oracle AUC (true propensity): {oracle:.4f}   v1 OOF AUC {roc_auc_score(y, scores['v1']):.4f}   v2 OOF AUC {roc_auc_score(y, scores['v2']):.4f}")
-pd.DataFrame({"model": ["oracle (true propensity)", "v1 snapshot", "v2 time cut"],
-              "AUC": [oracle, roc_auc_score(y, scores["v1"]), roc_auc_score(y, scores["v2"])]}).round(4).to_csv(RES / "oof_auc_vs_oracle.csv", index=False)
+print(
+    f"oracle AUC (true propensity): {oracle:.4f}   v1 OOF AUC {roc_auc_score(y, scores['v1']):.4f}   "
+    f"v2 OOF AUC {roc_auc_score(y, scores['v2']):.4f}"
+)
+pd.DataFrame(
+    {
+        "model": ["oracle (true propensity)", "v1 snapshot", "v2 time cut"],
+        "AUC": [oracle, roc_auc_score(y, scores["v1"]), roc_auc_score(y, scores["v2"])],
+    }
+).round(4).to_csv(RES / "oof_auc_vs_oracle.csv", index=False)
 
 neg = np.flatnonzero(y == 0)
 k = int(len(neg) * TOP)
@@ -50,7 +59,7 @@ overlap = len(np.intersect1d(lists["v1"], lists["v2"])) / k
 
 def describe(idx, label):
     u = users.iloc[idx]
-    f = v1.iloc[idx]  # 리스트 특성은 현재 시점(snapshot) 기준으로 본다
+    f = v1.iloc[idx]  # 리스트의 특성은 현재 시점, 즉 snapshot 기준으로 본다
     return {
         "list": label,
         "n": len(idx),
@@ -62,9 +71,11 @@ def describe(idx, label):
     }
 
 
-rows = [describe(lists["v1"], "v1 top 10% (snapshot score)"),
-        describe(lists["v2"], "v2 top 10% (time-cut score)"),
-        describe(neg, "all non-consented users")]
+rows = [
+    describe(lists["v1"], "v1 top 10% (snapshot score)"),
+    describe(lists["v2"], "v2 top 10% (time-cut score)"),
+    describe(neg, "all non-consented users"),
+]
 out = pd.DataFrame(rows).round(4)
 out.to_csv(RES / "nudge_list_comparison.csv", index=False)
 print(f"\noverlap between the two top-10% lists: {overlap:.1%}\n")
@@ -72,9 +83,12 @@ print(out.to_string(index=False))
 
 rng = np.random.default_rng(0)
 rand_p = users.iloc[rng.choice(neg, k, replace=False)]["truth_p_consent"].mean()
-pd.DataFrame({"metric": ["overlap between v1 and v2 top-10% lists",
-                         "random 10% list: mean true consent propensity"],
-              "value": [overlap, rand_p]}).round(4).to_csv(RES / "nudge_list_overlap.csv", index=False)
+pd.DataFrame(
+    {
+        "metric": ["overlap between v1 and v2 top-10% lists", "random 10% list: mean true consent propensity"],
+        "value": [overlap, rand_p],
+    }
+).round(4).to_csv(RES / "nudge_list_overlap.csv", index=False)
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 3.8))
 metrics = ["logged in ≤ 30d (snapshot)", "preference complete", "salary left at default", "season joiner"]
@@ -82,7 +96,9 @@ x = np.arange(len(metrics))
 w = 0.26
 for i, (lab, col) in enumerate([("v1 list", "#a0aec0"), ("v2 list", "#2b6cb0"), ("all non-consented", "#e2e8f0")]):
     axes[0].bar(x + (i - 1) * w, out.iloc[i][metrics].values.astype(float), w, label=lab, color=col)
-axes[0].set_xticks(x, ["logged in\n≤ 30 days", "preference\ncomplete", "salary left\nat default", "season\njoiner"], fontsize=9)
+axes[0].set_xticks(
+    x, ["logged in\n≤ 30 days", "preference\ncomplete", "salary left\nat default", "season\njoiner"], fontsize=9
+)
 axes[0].set_ylim(0, 1)
 axes[0].legend(frameon=False, fontsize=9)
 axes[0].set_title("Who is on the list", loc="left", fontsize=11)
