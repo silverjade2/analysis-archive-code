@@ -2,7 +2,8 @@
 
 글: [사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering)
 
-기기 800대의 사용 프로파일(168개 feature + `total_usage`)에 진짜 군집 4개와 함정 3종을 심고, scaling·로그 변환·k 선택을 정답(`true_cluster`)으로 채점한다.
+<!-- TODO: 배경 문단 직접 쓰기 -->
+<!-- 옛 문단: 기기 800대의 시간대별 사용 프로파일(요일 7 × 시각 24 = 168개 feature + `total_usage`)에 진짜 군집 4개와 함정 3종을 심어 두고, scaling 없는 1차 시도의 실패, 로그 변환의 트레이드오프, k 선택 지표가 가리킨 k=5의 실체까지 정답을 알고 채점하며 기록한다. 클러스터링은 정답 라벨이 없어 결과가 틀려도 티가 나지 않는다. 그래서 정답을 심었다. -->
 
 ## 실행
 
@@ -12,9 +13,12 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
 - Apple Silicon 기준 전체 약 12초.
-- 환경: Python 3.14.6, pandas 3.0, scikit-learn 1.9, scipy 1.18, matplotlib 3.11.
-- seed 고정(`SEED=42`). `data/`를 지우고 다시 돌려도 CSV가 byte 단위로 같다.
-- 제대로 돌았는지 확인할 숫자: 02의 ARI 0.238과 분산 비율 99.8%, 03의 ARI 0.723(표준화만)·0.897(로그+표준화), 04의 k=5 silhouette 0.412·ARI 0.928.
+- 환경: Python 3.14.6, numpy 2.5.2, pandas 3.0.5, scipy 1.18.1, scikit-learn 1.9.0, matplotlib 3.11.1.
+- `data/`를 지우고 다시 돌려도 데이터와 결과 CSV가 byte 단위로 같다.
+- 제대로 돌았는지 확인할 숫자
+  - 02의 ARI 0.238, 사실상 랜덤. 분산 비율 99.8%는 거리 계산을 total_usage 한 열이 다 정했다는 뜻
+  - 03의 ARI 0.723(표준화만)과 0.897(로그 변환 뒤 표준화). 로그 변환이 낫지만 그 대가로 노이즈 15대가 allday_low에 흡수된다
+  - 04의 k=5 silhouette 0.412, ARI 0.928. 지표가 고른 k와 정답이 같은 k를 가리키고, 노이즈 15대가 독립 군집으로 돌아온다
 
 ## Pipeline
 
@@ -62,3 +66,10 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ## 후속 글
 
 세그멘테이션 시리즈 2편(발행 전)은 이 폴더의 생성기를 그대로 복사해 쓴다. 생성기(`01_`)를 고치면 이 폴더의 pipeline 전체를 다시 돌리고, 후속 글 폴더의 `00_generate_usage_profiles.py`도 같은 내용으로 바꾼다.
+
+## 남은 것
+
+- 함정 2의 애초 목적은 elbow를 애매하게 만드는 것이었다. 실패했고 글에 그렇게 적었다. 대신 night 군집에 intermittent 28대가 남는 흔적으로만 남았다.
+- 05의 비즈니스 라벨은 KMeans가 준 군집 번호에 손으로 붙인 것이다. 데이터나 seed가 바뀌면 번호가 뒤섞이므로 히트맵을 다시 읽고 라벨을 다시 붙여야 한다.
+- 03은 02의 결과를 읽지 않고 scaling 없는 K-means를 같은 seed로 다시 돌려 대조군으로 쓴다. 둘이 같다는 것은 stdout으로만 확인했다.
+- 02의 마지막 print는 그림 경로를 `figures/`로 찍지만 실제 저장 위치는 `outputs/figures/`다. 저장은 맞고 메시지만 틀렸다.
