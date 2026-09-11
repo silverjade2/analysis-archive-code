@@ -2,9 +2,6 @@
 
 글: [이상 이벤트 예측: 불균형 데이터에서 전조 신호 모델링](https://analysis-archive.vercel.app/analyses/precursor-prediction-imbalanced)
 
-<!-- TODO: 배경 문단 직접 쓰기 -->
-<!-- 옛 문단: 기기 로그로 심각 이벤트를 7일 전에 예측하는 이진 분류를 가상데이터로 재현한다. 기기 500대 × 180일 로그에 전조 신호 2종과 교란 신호 1종을 심고, device-day 단위 feature 테이블(양성 0.36%)을 만든 뒤 시간 기준 분할, leakage 검증, 불균형 처리 3종 비교, SHAP 해석과 ablation까지 간다. -->
-
 ## 실행
 
 ```bash
@@ -13,7 +10,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
 - Apple Silicon 기준 전체 약 35초. 05 학습 12초, 06 SHAP 11초.
-- 환경: Python 3.14.6, numpy 2.5.2, pandas 3.0.5, scikit-learn 1.9.0, LightGBM 4.7.0, shap 0.52.0, matplotlib 3.11.1. macOS에서는 `brew install libomp`가 먼저 필요하다.
+- 환경: Python 3.14.6, numpy 2.5.2, pandas 3.0.5, scikit-learn 1.9.0, LightGBM 4.7.0, shap 0.52.0, matplotlib 3.11.1. macOS는 `brew install libomp` 없이는 LightGBM이 import되지 않는다.
 - `data/`를 지우고 다시 돌려도 데이터와 결과 CSV가 byte 단위로 같다. fig5만 shap 라이브러리가 그리는 그림이라 픽셀이 조금 다를 수 있다.
 - 제대로 돌았는지 확인할 숫자
   - 03의 `rows: 77,446`, `positive: 279`. 양성 0.36%, 1:277. 이 불균형이 글 전체의 전제다
