@@ -1,0 +1,5 @@
+method,n,agree,agree_rate,score_more_lenient,score_harsher
+current,882,311,0.3526,545,26
+current_penalized,882,733,0.8311,0,149
+v2,882,168,0.1905,713,1
+v2_capped,882,881,0.9989,0,1

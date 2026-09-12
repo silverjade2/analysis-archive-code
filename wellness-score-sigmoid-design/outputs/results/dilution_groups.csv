@@ -1,0 +1,4 @@
+group,n,v2_min,v2_mean,v2_stage_stable,current_min,current_stage_stable,penalized_stage_warning
+single_warning_rest_normal,85,80.0,83.3,85,80.0,85,85
+caution_only,420,43.07,86.54,388,15.01,266,149
+one_item_off_only,300,80.0,89.47,300,80.0,300,85

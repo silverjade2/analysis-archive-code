@@ -1,0 +1,13 @@
+method,item_stage,score_안정,score_주의,score_경고
+current,안정,120,0,0
+current,주의,266,128,26
+current,경고,146,133,63
+current_penalized,안정,120,0,0
+current_penalized,주의,0,271,149
+current_penalized,경고,0,0,342
+v2,안정,120,0,0
+v2,주의,388,31,1
+v2,경고,226,99,17
+v2_capped,안정,120,0,0
+v2_capped,주의,0,419,1
+v2_capped,경고,0,0,342
