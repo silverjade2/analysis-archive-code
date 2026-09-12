@@ -1,6 +1,4 @@
-"""텍스트와 음성 모델 정의. PLM fine-tuning 대신 char n-gram TF-IDF와 Logistic Regression을 쓴다.
-재현 대상은 실험 구조이지 모델 자체가 아니다.
-"""
+"""텍스트/음성 모델. PLM fine-tuning 대신 char n-gram TF-IDF + LR (재현 대상은 실험 구조)"""
 
 import numpy as np
 import pandas as pd
@@ -64,9 +62,7 @@ class AudioClf:
 
 
 class MultimodalClf:
-    """late fusion. 채널별 분류기, 텍스트는 TF-IDF와 LR, 음성은 표준화와 LR의 클래스 확률을 이어 붙여 상위 분류기가
-    결합한다. 원본의 FC 한 층에 해당한다. 상위 분류기는 out-of-fold 확률로 학습해 채널 분류기의 과적합이 그대로
-    새지 않게 한다."""
+    """late fusion. 채널별 클래스 확률을 이어 붙여 상위 LR이 결합 (원본의 FC 한 층). 상위는 OOF 확률로 학습"""
 
     def __init__(self, seed, n_folds=5):
         from sklearn.model_selection import StratifiedKFold
@@ -82,7 +78,7 @@ class MultimodalClf:
         for tr, va in self.kf.split(X, y):
             m = make().fit(X[tr] if not isinstance(X, pd.Series) else X.iloc[tr], y[tr])
             p = m.predict_proba(X[va] if not isinstance(X, pd.Series) else X.iloc[va])
-            oof[va] = p  # StratifiedKFold라 fold마다 모든 클래스가 있어 classes_ 순서가 같다
+            oof[va] = p  # StratifiedKFold라 fold마다 classes_ 순서 같음
         return oof
 
     def fit(self, texts, A, y):

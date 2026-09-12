@@ -1,11 +1,10 @@
-"""모델 비교, v1 대 v2. 원래 노트북의 pipeline을 재현한다.
+"""모델 비교, v1 vs v2. 원본 노트북 pipeline 재현
 
-95/5 무작위 분할 뒤 95%에 10-fold stratified CV로 Logistic Regression, Random Forest, XGBoost, LightGBM을
-비교한다. random_state 786과 123은 원본 노트북의 값이다. feature 테이블 세 가지에 대해 실행한다.
-  v1_asis   snapshot feature, 노트북의 feature 집합. 실제로 했던 것
-  v1_pref   snapshot feature에 선호 정보를 더한 것. 있었지만 쓰지 않은 것
-  v2_pref   시간 절단 feature에 선호 정보를 더한 것. 했어야 하는 것
-그다음 95% 분할에 LightGBM을 적합해 5% holdout을 채점하고 gain importance를 저장한다.
+95/5 split 후 95%에 10-fold stratified CV, LR / RF / XGBoost / LightGBM. seed 786, 123은 원본 값
+  v1_asis   snapshot feature, 노트북 feature 집합 (실제로 했던 것)
+  v1_pref   + 선호 정보 (있었지만 안 쓴 것)
+  v2_pref   시간 절단 + 선호 정보 (했어야 하는 것)
+마지막에 LightGBM으로 5% holdout 채점 + gain importance
 """
 
 import time
@@ -54,7 +53,7 @@ def encode(df, cols):
 rows, holdout, importances = [], [], {}
 for vname, (fname, cols) in VARIANTS.items():
     df = pd.read_csv(DATA / fname)
-    train = df.sample(frac=0.95, random_state=786)  # 원본 노트북의 값
+    train = df.sample(frac=0.95, random_state=786)  # 원본 노트북 seed
     test = df.drop(train.index)
     Xtr, ytr = encode(train, cols), train[TARGET].values
     Xte = encode(test, cols).reindex(columns=Xtr.columns, fill_value=0)
@@ -86,7 +85,7 @@ for vname, (fname, cols) in VARIANTS.items():
         }
     )
     gain = pd.Series(lgbm.booster_.feature_importance("gain"), index=Xtr.columns)
-    # one-hot 열을 원래 feature로 되돌려 합산한다
+    # one-hot 열을 원 feature로 합산
     src = gain.index.to_series().map(lambda c: next((k for k in cols if c == k or c.startswith(k + "_")), c))
     imp = gain.groupby(src.values).sum().sort_values(ascending=False)
     imp = imp / imp.sum()
@@ -101,7 +100,7 @@ print("\nhold-out (LightGBM):\n", pd.DataFrame(holdout).round(4).to_string(index
 
 fig, axes = plt.subplots(1, 2, figsize=(12, 5.2), sharex=False)
 for ax, vname, title in zip(
-    axes, ["v1_asis", "v2_pref"], ["v1 — snapshot (as-was)", "v2 — time cut (+ preference fields)"]
+    axes, ["v1_asis", "v2_pref"], ["v1 snapshot (as-was)", "v2 time cut (+ preference fields)"]
 ):
     top = importances[vname].head(10)[::-1]
     ax.hlines(top.index, 0, top.values, color="#2b6cb0", lw=1.5)
@@ -110,7 +109,7 @@ for ax, vname, title in zip(
     ax.set_xlabel("normalized gain importance (LightGBM)")
     ax.grid(axis="x", alpha=0.3)
     ax.set_xlim(0, max(0.45, top.values.max() * 1.15))
-fig.suptitle("Top-10 feature importance: what the model learned", fontsize=12, x=0.02, ha="left")
+fig.suptitle("Top-10 feature importance (LightGBM gain)", fontsize=12, x=0.02, ha="left")
 fig.tight_layout()
 fig.savefig(FIG / "fig5_importance_v1_vs_v2.png", dpi=150)
 
@@ -125,7 +124,7 @@ ax.grid(axis="y", alpha=0.3)
 ax.legend(title="", frameon=False)
 for cont in ax.containers:
     ax.bar_label(cont, fmt="%.3f", fontsize=8, padding=2)
-ax.set_title("AUC by feature construction — the snapshot inflates every model", loc="left", fontsize=11)
+ax.set_title("10-fold CV AUC by feature construction", loc="left", fontsize=11)
 fig.tight_layout()
 fig.savefig(FIG / "fig4_auc_by_variant.png", dpi=150)
 print("figures saved")

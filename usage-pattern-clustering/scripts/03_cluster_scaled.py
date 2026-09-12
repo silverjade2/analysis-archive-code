@@ -1,10 +1,7 @@
-"""2차 시도. scaling을 넣고 다시, k=4 고정.
+"""2차 시도. scaling 넣고 k=4 고정
 
-02에서 확인한 것은 total_usage 혼자 분산의 99.8%를 차지해 군집이 하루 사용의 모양이 아니라 총량 크기로
-갈렸다는 것이다. 두 가지를 비교한다. 표준화만 하면 분산 지배는 없어지지만 치우친 분포는 그대로 남는다.
-로그 변환 뒤 표준화는 치우친 feature를 먼저 편다. total_usage뿐 아니라 intermittent 프로파일의 시간대 셀도
-"대부분 0에 가끔 버스트"라 치우쳐 있어서, 로그 변환은 거기에도 영향을 준다. 그래서 노이즈 소군집 15대가
-어느 예측 군집으로 가는지를 따로 추적한다.
+- 표준화만 vs log1p 후 표준화. 표준화만으로는 치우친 분포가 남음
+- 로그 변환은 intermittent의 "대부분 0 + 가끔 버스트" 셀에도 영향 -> 노이즈 15대 행방을 따로 추적
 """
 
 from pathlib import Path
@@ -33,7 +30,7 @@ X_raw = df[feature_cols].to_numpy()
 
 skew_hourly = skew(df[hour_cols].to_numpy(), axis=0)
 skew_total = skew(df["total_usage"].to_numpy())
-print("피처 치우침(skewness) — 0에 가까울수록 대칭")
+print("피처 skewness (0이면 대칭)")
 print(
     f"  시간대 피처 168개: 평균 {skew_hourly.mean():.2f}, 최대 {skew_hourly.max():.2f} "
     f"(intermittent류의 '대부분 0 + 가끔 버스트' 셀)"
@@ -48,7 +45,7 @@ def run_kmeans(X: np.ndarray, method: str) -> dict:
     ari = adjusted_rand_score(df["true_cluster"], pred)
 
     crosstab = pd.crosstab(df["true_cluster"], pred, margins=True)
-    print(f"── {method} — ARI={ari:.3f} ──")
+    print(f"── {method}: ARI={ari:.3f} ──")
     print(crosstab.to_string())
 
     noise_pred = pd.Series(pred)[df["true_cluster"] == "noise"]
@@ -56,7 +53,7 @@ def run_kmeans(X: np.ndarray, method: str) -> dict:
     recall = (noise_pred == top_cluster).sum() / len(noise_pred)
     purity = (df["true_cluster"][pred == top_cluster] == "noise").mean()
     print(
-        f"노이즈 소군집(15대) → 예측 군집 {top_cluster}로 최다 배정 "
+        f"노이즈 소군집(15대) -> 예측 군집 {top_cluster}로 최다 배정 "
         f"(재현율 {recall:.0%}, 그 군집 내 노이즈 순도 {purity:.0%})"
     )
     print()
@@ -99,7 +96,7 @@ def plot_result(pred: np.ndarray, method: str, fname: str) -> None:
         for _, row in sample.iterrows():
             ax.plot(np.arange(24), row.values, color="tab:gray", alpha=0.3, lw=0.8)
         ax.plot(np.arange(24), sub.mean().values, color="tab:red", lw=2.5, label="군집 평균")
-        ax.set_title(f"예측 군집 {c} — {len(sub)}대")
+        ax.set_title(f"예측 군집 {c} ({len(sub)}대)")
         ax.set_xticks(range(0, 24, 4))
         ax.grid(alpha=0.3)
     profile_axes[0].legend(loc="upper right", fontsize=8)
@@ -108,13 +105,13 @@ def plot_result(pred: np.ndarray, method: str, fname: str) -> None:
     for ax in [profile_axes[0], profile_axes[2]]:
         ax.set_ylabel("평균 사용 강도")
 
-    fig.suptitle(f"{method} — k={K} (total_usage 오름차순 정렬)")
+    fig.suptitle(f"{method}, k={K} (total_usage 오름차순)")
     fig.tight_layout()
     fig.savefig(fig_dir / fname, dpi=150)
-    print(f"플롯 저장 — {fig_dir / fname}\n")
+    print(f"플롯 저장: {fig_dir / fname}\n")
 
 
-# 02와 같은 seed로 다시 계산한 대조군
+# 02 결과를 읽지 않고 같은 seed로 재계산. 같다는 건 stdout으로만 확인
 naive = run_kmeans(X_raw, "스케일링 없음 (02 재계산)")
 
 X_std = StandardScaler().fit_transform(X_raw)

@@ -1,9 +1,4 @@
-"""생존분석. 이탈을 "상태"가 아니라 "시간"으로 다시 묻는다.
-
-원본 라벨은 REF 기준 스냅샷이라 최근 고객은 이탈할 기회가 없었다. 검열이다. 생존분석은 검열을 그대로 다룬다.
-Kaplan-Meier로 상품 구성별 계약 유지 곡선을, Cox PH로 심어둔 원인 변수의 계수와 concordance를 본다. 채점은
-Cox 위험도 순위와 truth_renew_p의 Spearman 상관이다.
-"""
+"""KM (상품별) + Cox PH. 최근 고객은 censored 처리"""
 
 import warnings
 

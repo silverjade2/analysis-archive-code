@@ -1,11 +1,8 @@
-"""device-day 단위 feature 테이블. 각 기기의 각 날짜가 한 행이다.
+"""device-day feature 테이블 (행 = 기기 x 날짜)
 
-feature는 그날을 포함한 과거 7일과 14일의 trailing window 집계이고, 타깃은 다음 날부터 7일 안에 심각 이벤트가
-있는지다. 누수를 막기 위한 설계 네 가지:
-- feature window는 t 이하만 쓴다. t-13에서 t까지
-- 타깃 window는 t 초과만 쓴다. t+1에서 t+7까지. 두 구간이 겹치지 않는다
-- 심각 이벤트 발생 이후의 행은 버린다. 이벤트 뒤의 데이터로 이벤트를 "예측"하는 누수를 막기 위해서다
-- 타깃 window가 관측 기간을 벗어나는 마지막 7일 행도 버린다. 라벨이 불완전하기 때문이다
+- feature: t-13~t trailing window (7d, 14d)
+- target: t+1~t+7 안에 심각 이벤트
+- 제거: 이벤트 이후 행, 마지막 7일(라벨 불완전), 초기 13일(window 미달)
 """
 
 from pathlib import Path
@@ -32,21 +29,21 @@ n_devices = len(device_ids)
 
 
 def daily_matrix(code: str) -> np.ndarray:
-    """기기 × 날짜 (n_devices, n_days) 그리드. 없는 날은 0건."""
+    """(n_devices, n_days) 그리드, 빈 날 0"""
     sub = df[df["event_code"] == code]
     wide = sub.pivot_table(index="device_id", columns="day", values="count", aggfunc="sum")
     return wide.reindex(index=device_ids, columns=range(n_days)).fillna(0).to_numpy()
 
 
 def trailing(mat: np.ndarray, w: int) -> np.ndarray:
-    """트레일링 윈도우 뷰: 결과 [:, t]는 원본 [:, t-w+1 : t+1]. t < w-1 구간은 NaN."""
+    """[:, t] = 원본 [:, t-w+1 : t+1]. t < w-1은 NaN"""
     view = np.lib.stride_tricks.sliding_window_view(mat, w, axis=1).astype(float)
     pad = np.full((mat.shape[0], w - 1, w), np.nan)
     return np.concatenate([pad, view], axis=1)  # (n_devices, n_days, w)
 
 
 def slope(win: np.ndarray) -> np.ndarray:
-    """윈도우 내 일별 값의 최소제곱 기울기 (하루당 증가량)."""
+    """최소제곱 기울기 (하루당)"""
     w = win.shape[-1]
     x = np.arange(w) - (w - 1) / 2
     return (win * x).sum(axis=-1) / (x**2).sum()
@@ -79,7 +76,7 @@ valid[:, : MAX_WINDOW - 1] = False  # 14일 윈도우가 안 차는 초기 구�
 valid[:, n_days - TARGET_HORIZON :] = False  # 타깃 윈도우가 잘리는 마지막 7일
 has_event = ~np.isnan(event_day)
 post_event = has_event[:, None] & (days[None, :] >= np.nan_to_num(event_day, nan=np.inf)[:, None])
-valid &= ~post_event  # 이벤트 발생일 이후 행 제거
+valid &= ~post_event
 
 dev_idx, day_idx = np.nonzero(valid)
 table = pd.DataFrame(

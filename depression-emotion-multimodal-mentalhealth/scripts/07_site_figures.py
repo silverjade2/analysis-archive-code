@@ -1,8 +1,6 @@
-"""그림 1에서 8까지를 사이트 톤으로 다시 그린다. Pretendard, 사이트 팔레트, webp.
+"""사이트용 그림 1~8. 값은 results/*.csv에서 읽음
 
-형식과 축, 데이터, 숫자는 02, 04, 05, 06이 그린 그림과 같다. 값은 outputs/results/*.csv에서 읽고 다시 계산하지
-않는다. 예외는 fig7의 PCA 좌표 하나로, 02와 같은 코드와 seed로 다시 구한 뒤 설명 분산이 eda_audio_pca.csv와
-같은지 assert한다.
+예외는 fig7의 PCA 좌표. 02와 같은 코드/seed로 다시 구하고 설명 분산이 eda_audio_pca.csv와 같은지 assert
 """
 
 import matplotlib.pyplot as plt
@@ -27,6 +25,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 setup()
+# 빈 매핑. 라벨 영어화하면서 껍데기만 남음, 쓰는 곳 없음
 EMO_KO = {
     "happiness": "happiness",
     "angry": "angry",
@@ -69,7 +68,7 @@ for src in ["counsel", "daily"]:
         ax.text(
             x + w / 2 - 0.01,
             1.03,
-            "라벨 1 · 0건\n(이 칸이 비어 있다)",
+            "라벨 1: 0건\n(이 칸이 비어 있음)",
             ha="center",
             va="bottom",
             color=DARK,
@@ -152,7 +151,7 @@ ax.set_yticks(range(3))
 ax.set_yticklabels([r[0] for r in rows_d[::-1]])
 orig = v1m[v1m.scoring == "train_label"].accuracy.iloc[0]
 ax.axvline(orig, color=MUTED, ls="--", lw=1.2)
-ax.text(orig, 2.55, f"v1 · 원 범위\n학습 라벨 기준 {orig:.3f}", ha="center", fontsize=8.5, color=DARK, linespacing=1.4)
+ax.text(orig, 2.55, f"v1, 원 범위\n학습 라벨 기준 {orig:.3f}", ha="center", fontsize=8.5, color=DARK, linespacing=1.4)
 ax.set_xlim(0.78, 1.02)
 ax.set_ylim(-0.5, 3.0)
 ax.set_xlabel("accuracy (실제 우울 기준)")
@@ -160,7 +159,7 @@ ax.legend(loc="lower left")
 ax.tick_params(axis="y", length=0)
 ax.spines["left"].set_visible(False)
 ax.grid(axis="x")
-ax.set_title("같은 테스트셋, 학습에 4,000건을 넣었는지만 다르다")
+ax.set_title("같은 테스트셋, v1 vs v2 accuracy")
 fig.tight_layout()
 save(fig, "fig2_depression_scoring")
 
@@ -181,8 +180,8 @@ ax.set_xlim(-12, 12)
 ax.set_xticks([-8, -4, 0, 4, 8])
 ax.set_xticklabels(["8", "4", "0", "4", "8"])
 ax.set_xlabel("|LR coef| (char n-gram, 우울 방향)")
-ax.text(-6, 12.3, "v1 · 상담 일상 의도 제외", ha="center", fontsize=10.5, color=DARK)
-ax.text(6, 12.3, "v2 · 상담 일상 의도 = 0", ha="center", fontsize=10.5, color=DARK)
+ax.text(-6, 12.3, "v1: 상담 일상 의도 제외", ha="center", fontsize=10.5, color=DARK)
+ax.text(6, 12.3, "v2: 상담 일상 의도 = 0", ha="center", fontsize=10.5, color=DARK)
 ax.legend(handles=[Patch(color=c, label=k) for k, c in KC.items()], loc="lower right", title="토큰 종류")
 ax.spines["left"].set_visible(False)
 ax.set_ylim(-0.8, 13)
@@ -198,7 +197,7 @@ def g(protocol, data, model, col="accuracy"):
 
 arrows = [
     (
-        "(a) 원 방식\n텍스트 전체 → multimodal 2,000\n(테스트셋이 다름)",
+        "(a) 원 방식\n텍스트 전체 -> multimodal 2,000\n(테스트셋이 다름)",
         g("a_original", "all_19374", "text"),
         g("a_original", "sub_2000", "multimodal"),
         f"n={g('a_original', 'all_19374', 'text', 'n_test'):,} "
@@ -206,28 +205,28 @@ arrows = [
         GRAY,
     ),
     (
-        "(b) 같은 2,000건 · 랜덤",
+        "(b) 같은 2,000건, 랜덤",
         g("b_same_subset", "sub_2000", "text"),
         g("b_same_subset", "sub_2000", "multimodal"),
         f"n={g('b_same_subset', 'sub_2000', 'text', 'n_test'):,}",
         ORANGE,
     ),
     (
-        "(c) 같은 2,000건 · 화자 분리",
+        "(c) 같은 2,000건, 화자 분리",
         g("c_speaker_split", "sub_2000", "text"),
         g("c_speaker_split", "sub_2000", "multimodal"),
         f"n={g('c_speaker_split', 'sub_2000', 'text', 'n_test'):,}",
         BLUE,
     ),
     (
-        "전체 · 랜덤",
+        "전체, 랜덤",
         g("a_original", "all_19374", "text"),
         g("c_random_all", "all_19374", "multimodal"),
         f"n={g('c_random_all', 'all_19374', 'multimodal', 'n_test'):,}",
         ORANGE,
     ),
     (
-        "(c) 전체 · 화자 분리",
+        "(c) 전체, 화자 분리",
         g("c_speaker_split", "all_19374", "text"),
         g("c_speaker_split", "all_19374", "multimodal"),
         f"n={g('c_speaker_split', 'all_19374', 'text', 'n_test'):,}",
@@ -245,8 +244,8 @@ ax.set_yticks(range(len(arrows)))
 ax.set_yticklabels([a[0] for a in arrows[::-1]], fontsize=9)
 ax.set_xlim(0.74, 0.87)
 ax.set_ylim(-0.6, len(arrows) - 0.2)
-ax.set_xlabel("accuracy   (● 텍스트 → ▶ multimodal)")
-ax.set_title("multimodal이 텍스트에 더한 것: 비교 조건에 따라 달라진다 (가상데이터)")
+ax.set_xlabel("accuracy   (● 텍스트 -> ▶ multimodal)")
+ax.set_title("프로토콜별 accuracy, 텍스트 vs multimodal (가상데이터)")
 ax.tick_params(axis="y", length=0)
 ax.spines["left"].set_visible(False)
 ax.grid(axis="x")
@@ -266,10 +265,10 @@ agg = pd.read_csv(RESULTS / "multimodal_n_curve.csv")
 gap = pd.read_csv(RESULTS / "multimodal_n_curve_gain.csv")
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8.5, 6.2), sharex=True, gridspec_kw={"height_ratios": [2, 1]})
 style = {
-    ("random", "text"): (GRAY, "--", "텍스트 · 랜덤"),
-    ("random", "multimodal"): (BLUE, "--", "multimodal · 랜덤"),
-    ("speaker", "text"): (GRAY, "-", "텍스트 · 화자 분리"),
-    ("speaker", "multimodal"): (BLUE, "-", "multimodal · 화자 분리"),
+    ("random", "text"): (GRAY, "--", "텍스트, 랜덤"),
+    ("random", "multimodal"): (BLUE, "--", "multimodal, 랜덤"),
+    ("speaker", "text"): (GRAY, "-", "텍스트, 화자 분리"),
+    ("speaker", "multimodal"): (BLUE, "-", "multimodal, 화자 분리"),
 }
 for (how, model), (c, ls, lab) in style.items():
     a = agg[(agg.split == how) & (agg.model == model)]
@@ -285,11 +284,11 @@ for how, c, ls, lab in [("random", ORANGE, "--", "랜덤 분할"), ("speaker", B
     gg = gap[gap.split == how]
     ax2.plot(gg.n, gg.gain, color=c, marker="o", ms=4, ls=ls, lw=1.7, label=lab)
 ax2.axhline(0, color=DARK, lw=0.8)
-ax2.set_ylabel("multimodal − 텍스트")
+ax2.set_ylabel("multimodal - 텍스트")
 ax2.set_xlabel("학습에 쓴 발화 수 N (log)")
 ax2.legend()
 ax2.grid(axis="y")
-ax1.set_title("N과 분할 방식에 따른 accuracy, 그리고 음성이 더한 것")
+ax1.set_title("N과 분할 방식별 accuracy, multimodal - 텍스트")
 fig.tight_layout()
 save(fig, "fig5_n_curve")
 
@@ -329,7 +328,7 @@ for i in range(7):
             )
 ax2.set_xlabel("예측")
 ax2.set_ylabel("정답")
-ax2.set_title("혼동행렬 차이: multimodal − 텍스트 (건수)")
+ax2.set_title("혼동행렬 차이: multimodal - 텍스트 (건수)")
 for s in ("top", "right", "left", "bottom"):
     ax2.spines[s].set_visible(False)
 ax2.tick_params(length=0)
@@ -338,7 +337,7 @@ cb.outline.set_visible(False)
 fig.tight_layout()
 save(fig, "fig6_audio_gain_by_class")
 
-# fig7. PCA는 02와 같은 코드와 seed로 다시 구한다
+# PCA는 02와 같은 코드/seed
 df = pd.read_csv(DATA / "utterances.csv", low_memory=False)
 daily = df[df.source == "daily"]
 top_spk = daily.speaker_id.value_counts().index[:8]
@@ -399,7 +398,7 @@ ax1.set_title(
 )
 ax2.barh([f"'{f.strip()}'" for f in glob_sad.feature[::-1]], glob_sad.coef[::-1], color=BLUE, height=0.68)
 ax2.set_xlabel("LR coef (sadness, char n-gram)")
-ax2.set_title("global: sadness 상위 feature (8위 안, 같은 계수는 하나로). '외롭', '무의미'는 없다", fontsize=10.5)
+ax2.set_title("global: sadness 상위 feature (8위 안, 같은 계수는 하나로)", fontsize=10.5)
 ax2.tick_params(axis="y", length=0)
 ax2.spines["left"].set_visible(False)
 ax2.grid(axis="x")

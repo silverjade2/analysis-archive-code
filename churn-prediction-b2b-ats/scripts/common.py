@@ -1,4 +1,4 @@
-"""공통 상수와 경로, 그림 스타일. 모든 스크립트가 import한다."""
+"""공통 상수, 경로, mpl 설정"""
 
 from pathlib import Path
 
@@ -13,10 +13,10 @@ FIGURES = ROOT / "outputs" / "figures"
 for p in (DATA, RESULTS, FIGURES):
     p.mkdir(parents=True, exist_ok=True)
 
-REF_DATE = pd.Timestamp("2024-02-15")  # 노트북 실행일. 라벨의 '오늘'
-CHURN_GRACE_DAYS = 90  # 최종 종료일에서 90일이 지나면 이탈
-CUTOFF_T = pd.Timestamp("2023-02-15")  # v2 시간 절단 시점. REF 12개월 전
-DATA_END = pd.Timestamp("2026-06-30")  # 기준일 sweep용 전체 이력 생성 상한
+REF_DATE = pd.Timestamp("2024-02-15")  # 원본 노트북 실행일
+CHURN_GRACE_DAYS = 90
+CUTOFF_T = pd.Timestamp("2023-02-15")  # v2 절단 시점 (REF - 12M)
+DATA_END = pd.Timestamp("2026-06-30")  # 06 sweep 때문에 미래까지 생성
 
 
 def rng(offset=0):
@@ -24,7 +24,7 @@ def rng(offset=0):
 
 
 def churn_label(last_end: pd.Series, ref: pd.Timestamp) -> pd.Series:
-    """원본 규칙: (ref - 최종종료일).days > 90 이면 이탈(1)."""
+    # 원본 Churn(): 최종 종료일 + 90일 지나면 1
     return ((ref - last_end).dt.days > CHURN_GRACE_DAYS).astype(int)
 
 

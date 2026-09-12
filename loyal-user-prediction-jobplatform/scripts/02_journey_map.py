@@ -1,8 +1,8 @@
-"""저니맵. 유저는 어디서 멈추는가.
+"""저니맵. 모델링 전에 나온 발견 3개 재현
 
-모델링 이전에 나온 발견 셋을 재현한다. 전체 가입 유저의 상태 퍼널은 대부분 가입 직후에서 멈춘다. 검사를 치르고
-필수 프로필까지 채운 유저 중에서도 비어 있는 것은 선호 정보다. 연봉은 기본값 그대로, 복지 항목은 몇 개만 고른다.
-휴면은 6개월에서 12개월간 로그인하지 않은 비중이 크고, 재방문은 공채 시즌 주변에 몰린다.
+- 상태 퍼널: 대부분 가입 직후에서 멈춤
+- 검사 + 프로필까지 채운 유저도 선호 정보는 비어 있음 (연봉 기본값, 복지 항목 몇 개)
+- 휴면 6~12개월 비중 큼, 재방문은 공채 시즌 주변
 """
 
 import matplotlib
@@ -82,7 +82,7 @@ ax.axvline(4.5, color="#c05621", ls="--", lw=1)
 ax.text(4.7, ax.get_ylim()[1] * 0.9, f"< 5 items: {(users['pref_welfare_cnt'] < 5).mean():.0%}", color="#c05621")
 ax.set_xlabel("welfare preferences selected")
 ax.set_ylabel("share of users")
-ax.set_title("Preference fields are what users skip", loc="left", fontsize=11)
+ax.set_title("Welfare preferences selected", loc="left", fontsize=11)
 ax = axes[1]
 x = np.arange(2)
 w = 0.35
@@ -92,7 +92,7 @@ ax.set_xticks(x, ["not consented", "consented"])
 ax.set_ylim(0, 1)
 ax.set_ylabel("share")
 ax.legend(frameon=False, fontsize=9)
-ax.set_title("…and it separates the two groups", loc="left", fontsize=11)
+ax.set_title("Preference fields by consent", loc="left", fontsize=11)
 for a in axes:
     a.grid(axis="y", alpha=0.3)
 fig.tight_layout()
@@ -113,7 +113,7 @@ dorm.to_csv(RES / "journey_dormancy.csv", index=False)
 print("\n", dorm.to_string(index=False))
 
 days = pd.date_range(SERVICE_START, SNAPSHOT, freq="D")
-weekly = pd.Series(logins.sum(0), index=days).resample("W").sum()[:-1]  # 마지막 불완전한 주는 제외
+weekly = pd.Series(logins.sum(0), index=days).resample("W").sum()[:-1]  # 마지막 주는 불완전
 pos = users["matching_use_yn"].values == 1
 weekly_pos = pd.Series(logins[pos].sum(0), index=days).resample("W").sum()[:-1]
 fig, ax = plt.subplots(figsize=(11, 3.8))
@@ -123,9 +123,7 @@ for a, b in SEASONS:
     ax.axvspan(a, b, color="#f6ad55", alpha=0.25, lw=0)
 ax.text(SEASONS[1][0], ax.get_ylim()[1] * 0.95, "recruiting seasons", color="#c05621", fontsize=9, va="top")
 ax.set_ylabel("weekly logins")
-ax.set_title(
-    "Returns cluster around recruiting seasons and, for consented users, after consent", loc="left", fontsize=11
-)
+ax.set_title("Weekly logins, recruiting seasons shaded", loc="left", fontsize=11)
 ax.legend(frameon=False, fontsize=9, loc="upper left")
 ax.grid(alpha=0.3)
 fig.tight_layout()

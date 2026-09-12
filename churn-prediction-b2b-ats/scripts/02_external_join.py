@@ -1,7 +1,4 @@
-"""원본 노트북의 결합 절차 재현. 빈값은 0으로, 연봉 3개는 중앙값으로, 그다음 dropna.
-
-탈락이 무작위인지, 규모와 이탈에 편중됐는지를 계량한다.
-"""
+"""외부데이터 결합. 원본 절차(fillna 0 -> 연봉 median -> right join -> dropna) 그대로 + 탈락 편향 집계"""
 
 import pandas as pd
 from common import DATA, REF_DATE, RESULTS, churn_label
@@ -10,7 +7,6 @@ companies = pd.read_csv(DATA / "companies.csv")
 contracts = pd.read_csv(DATA / "contracts.csv", parse_dates=["contract_date", "start_date", "end_date"])
 ext = pd.read_csv(DATA / "external.csv")
 
-# 실행일 이전에 체결된 계약만 있는 것으로 본다
 snap = contracts[contracts.contract_date <= REF_DATE]
 last_end = snap.groupby("company_id").end_date.max().rename("last_end")
 base = companies.drop(
@@ -29,12 +25,12 @@ fill0 = [
 ]
 ext2 = ext.copy()
 n_blank_fin = ext2.company_revenue.isna().sum()
-ext2[fill0] = ext2[fill0].fillna(0)  # 1) 빈값은 0으로
-for c in ["avg_salary", "entry_salary", "industry_salary"]:  # 2) 연봉은 중앙값으로
+ext2[fill0] = ext2[fill0].fillna(0)
+for c in ["avg_salary", "entry_salary", "industry_salary"]:
     ext2[c] = ext2[c].fillna(ext2[c].median())
-merged = ext2.merge(base, on="company_id", how="right")  # 3) 고객사 기준 right join
+merged = ext2.merge(base, on="company_id", how="right")
 n_before = len(merged)
-merged_kept = merged.dropna()  # 4) dropna
+merged_kept = merged.dropna()  # 여기서 799사 빠짐
 merged_kept.to_csv(DATA / "merged_v1.csv", index=False)
 
 base["kept"] = base.company_id.isin(merged_kept.company_id)

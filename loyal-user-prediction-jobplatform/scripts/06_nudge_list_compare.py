@@ -1,9 +1,7 @@
-"""넛지 리스트 비교.
+"""넛지 리스트 비교
 
-모델의 운영 용도는 주간 리스트였다. 아직 동의하지 않은 유저를 채점해 상위 10%를 마케팅에 넘긴다. 그 리스트를
-v1 점수와 v2 점수로 각각 만들고 누가 오르는지 본다. 점수는 LightGBM out-of-fold 확률이다. 가상데이터라 각
-유저의 진짜 동의 성향을 알고 있으므로 두 리스트를 정답 기준으로 채점할 수 있다. 좋은 넛지 리스트는 단순히
-활동적인 유저가 아니라 전환에 가까운 유저로 채워져야 한다.
+운영 용도는 주간 리스트 (비동의 유저 상위 10%를 마케팅에). v1, v2의 LightGBM OOF 점수로 각각 만들고
+심어둔 동의 성향으로 채점
 """
 
 import matplotlib
@@ -59,7 +57,7 @@ overlap = len(np.intersect1d(lists["v1"], lists["v2"])) / k
 
 def describe(idx, label):
     u = users.iloc[idx]
-    f = v1.iloc[idx]  # 리스트의 특성은 현재 시점, 즉 snapshot 기준으로 본다
+    f = v1.iloc[idx]  # 리스트 특성은 snapshot 기준
     return {
         "list": label,
         "n": len(idx),
@@ -97,7 +95,7 @@ w = 0.26
 for i, (lab, col) in enumerate([("v1 list", "#a0aec0"), ("v2 list", "#2b6cb0"), ("all non-consented", "#e2e8f0")]):
     axes[0].bar(x + (i - 1) * w, out.iloc[i][metrics].values.astype(float), w, label=lab, color=col)
 axes[0].set_xticks(
-    x, ["logged in\n≤ 30 days", "preference\ncomplete", "salary left\nat default", "season\njoiner"], fontsize=9
+    x, ["logged in\n<= 30 days", "preference\ncomplete", "salary left\nat default", "season\njoiner"], fontsize=9
 )
 axes[0].set_ylim(0, 1)
 axes[0].legend(frameon=False, fontsize=9)
@@ -111,7 +109,7 @@ axes[1].set_ylim(0, 1)
 axes[1].set_ylabel("mean true consent propensity")
 axes[1].set_title("Scored against the planted truth", loc="left", fontsize=11)
 axes[1].grid(axis="y", alpha=0.3)
-fig.suptitle(f"Nudge lists: top 10% of non-consented users — overlap {overlap:.0%}", x=0.02, ha="left", fontsize=12)
+fig.suptitle(f"Nudge lists: top 10% of non-consented users, overlap {overlap:.0%}", x=0.02, ha="left", fontsize=12)
 fig.tight_layout()
 fig.savefig(FIG / "fig6_nudge_lists.png", dpi=150)
 print("figure saved")

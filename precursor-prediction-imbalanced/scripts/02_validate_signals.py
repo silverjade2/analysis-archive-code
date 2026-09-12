@@ -1,7 +1,6 @@
-"""심은 신호가 정말 들어갔는지 이벤트 시점에 정렬해 확인한다.
+"""심은 신호 확인. 이벤트일 기준으로 정렬해서 봄
 
-일반 기기에는 가짜 이벤트일을 무작위로 주고 같은 방식으로 정렬한다. 대조군 없이 심각 기기만 그리면 램프가
-있어 보이는지 판단할 기준이 없다.
+일반 기기에는 가짜 이벤트일을 무작위로 줘서 대조군으로
 """
 
 from pathlib import Path
@@ -32,14 +31,14 @@ confounder = gt[gt["group"] == "confounder"]
 
 
 def daily_matrix(code: str) -> pd.DataFrame:
-    """기기 × 날짜 전체 그리드 (없는 날은 0건)."""
+    """기기 x 날짜 그리드, 빈 날 0"""
     sub = df[df["event_code"] == code]
     wide = sub.pivot_table(index="device_id", columns="day", values="count", aggfunc="sum")
     return wide.reindex(index=gt["device_id"], columns=range(n_days)).fillna(0)
 
 
 def align_to_event(wide: pd.DataFrame, devices: pd.DataFrame, rel_range: tuple[int, int]) -> np.ndarray:
-    """이벤트일 기준 상대 날짜(rel_range)로 정렬한 (기기 × 상대일) 행렬. 범위 밖은 NaN."""
+    """이벤트일 기준 상대일로 정렬. 범위 밖 NaN"""
     rel_days = np.arange(rel_range[0], rel_range[1] + 1)
     out = np.full((len(devices), len(rel_days)), np.nan)
     for r, (_, row) in enumerate(devices.iterrows()):
@@ -84,7 +83,7 @@ ax.axvline(-7, color="tab:blue", ls="--", lw=1, label="신호 시작 (-7일)")
 ax.axvline(0, color="black", ls=":", lw=1)
 ax.set_xlabel("심각 이벤트까지 남은 일수")
 ax.set_ylabel("W3 일 평균 발생 건수")
-ax.set_title("신호 (1) 검증 — W3 경고가 이벤트 7일 전부터 선형 증가")
+ax.set_title("신호 1 검증: W3 일 평균 발생 건수 (이벤트일 기준)")
 ax.legend()
 fig.tight_layout()
 fig.savefig(fig_dir / "fig1_w3_ramp.png", dpi=150)
@@ -100,7 +99,7 @@ rel_wide = np.arange(-60, 6)
 
 
 def normalize(mat: np.ndarray) -> np.ndarray:
-    # 신호 구간 밖의 평균으로 나눈다. 경계를 -14가 아니라 -15로 둔 것은 이벤트일이 이른 기기도 빈 구간이 없게 하려는 것
+    # 경계가 -14가 아니라 -15: 이벤트일 이른 기기도 base 구간이 비지 않게
     base_mean = np.nanmean(mat[:, rel_wide < -15], axis=1, keepdims=True)
     return mat / base_mean
 
@@ -114,7 +113,7 @@ axes[0].plot(rel_wide, np.nanstd(u1_control_n, axis=0), color="tab:gray", alpha=
 axes[0].axvline(-14, color="tab:blue", ls="--", lw=1, label="신호 시작 (-14일)")
 axes[0].axvline(0, color="black", ls=":", lw=1)
 axes[0].set_ylabel("정규화 사용량의 기기 간 표준편차")
-axes[0].set_title("신호 (2) 검증 — 이벤트 14일 전부터 사용량 분산 증가, 평균은 유지")
+axes[0].set_title("신호 2 검증: 사용량 분산과 평균 (이벤트일 기준)")
 axes[0].legend(fontsize=9)
 
 axes[1].plot(rel_wide, np.nanmean(u1_severe_n, axis=0), color="tab:red", label="심각 이벤트 기기")
@@ -150,7 +149,7 @@ for b, rate in zip(bars, severe_rate):
     )
 ax.set_ylabel("W7 일 평균 발생 건수")
 ax.set_ylim(0, max(means) * 1.25)
-ax.set_title("신호 (3) 검증 — W7이 상시 높은 군은 심각 이벤트와 무관 (교란 신호)")
+ax.set_title("신호 3 검증: 군별 W7 일 평균과 심각 이벤트 경험률")
 fig.tight_layout()
 fig.savefig(fig_dir / "fig3_w7_confounder.png", dpi=150)
 

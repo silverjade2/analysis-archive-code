@@ -1,8 +1,8 @@
-"""해석. 원 프로젝트는 SHAP 텍스트 플롯 예문 1건으로 "슬픔은 외로운, 무의미에서 온다"를 보였다.
+"""해석. 원 프로젝트는 SHAP 텍스트 플롯 예문 1건으로 "슬픔은 외로운, 무의미에서 온다"를 보였음
 
-여기서는 감정별 전역 상위 feature, 예문에서 본 토큰이 실제 sadness 발화 중 몇 %에 있는지, 융합 분류기가
-텍스트와 음성 채널에 준 가중치 합, 화자 분리 분할에서의 혼동행렬 차이, 그리고 SHAP 텍스트 플롯을 흉내낸 로컬
-토큰 기여를 기록한다. 로컬 기여는 각 char n-gram의 tfidf 값 × sadness 계수를 어절 단위로 합산한 것이다.
+- 감정별 global 상위 feature, 예문 토큰('외롭', '무의미')이 sadness 발화 중 몇 %에 있는지
+- 융합 분류기의 채널별 가중치 합, 화자 분리 분할 혼동행렬 차이
+- SHAP 텍스트 플롯 흉내: char n-gram tfidf x sadness 계수를 어절 단위로 합산
 """
 
 import numpy as np
@@ -128,7 +128,7 @@ for i in range(7):
             )
 ax2.set_xlabel("예측")
 ax2.set_ylabel("정답")
-ax2.set_title("혼동행렬 차이: 멀티모달 − 텍스트 (건수)")
+ax2.set_title("혼동행렬 차이: 멀티모달 - 텍스트 (건수)")
 plt.colorbar(im, ax=ax2, fraction=0.046, pad=0.03)
 plt.tight_layout()
 plt.savefig(FIGURES / "fig6_audio_gain_by_class.png")
@@ -181,7 +181,7 @@ ax1.set_title(
 ax2.barh([repr(f.strip()) for f in glob_sad.feature[::-1]], glob_sad.coef[::-1], color=EMO_COLORS["sadness"])
 hl = [i for i, f in enumerate(glob_sad.feature[::-1]) if "외롭" in f or "무의미" in f]
 ax2.set_xlabel("LR coef (sadness, char n-gram)")
-ax2.set_title("전역: sadness 상위 피처 8개 — '외롭', '무의미'는 없다", fontsize=10, loc="left")
+ax2.set_title("전역: sadness 상위 피처 8개", fontsize=10, loc="left")
 ax2.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.savefig(FIGURES / "fig8_local_vs_global.png")

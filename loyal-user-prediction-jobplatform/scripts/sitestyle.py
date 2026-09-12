@@ -1,7 +1,6 @@
-"""그림의 사이트 톤. Pretendard, 사이트 팔레트, webp 저장. 숫자는 만들지 않는다.
+"""사이트 톤 (Pretendard, 팔레트, webp 저장)
 
-loyal-user-prediction-jobplatform과 depression-emotion-multimodal-mentalhealth 두 폴더에 같은 파일이 있다.
-한쪽을 고치면 다른 쪽도 같이 고친다.
+loyal과 depression 폴더에 같은 파일. 한쪽 고치면 다른 쪽도
 """
 
 import io
@@ -18,9 +17,8 @@ matplotlib.use("Agg")
 OUT = Path(__file__).resolve().parents[1] / "outputs" / "figures" / "site"
 BLUE, ORANGE, GRAY, LIGHT, DARK = "#2563eb", "#ea580c", "#a1a1aa", "#e4e4e7", "#18181b"
 LIGHT_BLUE, LIGHT_ORANGE, MUTED, RED = "#bfdbfe", "#fed7aa", "#71717a", "#dc2626"
-# 화자 8명, 감정 7종처럼 범주가 많을 때만 쓰는 팔레트. tailwind 600 계열
+# 범주 많을 때만 (화자 8명, 감정 7종). tailwind 600
 CAT8 = ["#2563eb", "#ea580c", "#16a34a", "#7c3aed", "#db2777", "#ca8a04", "#0891b2", "#52525b"]
-# 발산 컬러맵. 음은 파랑, 0은 흰색, 양은 붉은색
 DIVERGING = LinearSegmentedColormap.from_list("site_diverging", [BLUE, "#ffffff", RED])
 
 

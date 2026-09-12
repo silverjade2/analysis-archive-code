@@ -1,4 +1,4 @@
-"""사이트 그림 7에서 11까지. 09의 CSV만 읽고 어떤 숫자도 다시 계산하지 않는다."""
+"""사이트용 그림 7~11. 09의 CSV만 읽음"""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,7 +8,7 @@ from matplotlib.lines import Line2D
 from matplotlib.patches import Patch
 from sitestyle import BLUE, DARK, GRAY, LIGHT, LIGHT_ORANGE, MUTED, ORANGE, save, setup
 
-GRAY_LINE = MUTED  # #a1a1aa는 얇은 선에서 흰 배경 대비 3:1을 못 넘긴다. 막대는 GRAY를 그대로 쓴다
+GRAY_LINE = MUTED  # a1a1aa는 얇은 선에서 대비 3:1 미달. 막대는 GRAY 그대로
 
 setup()
 summary = pd.read_csv(RES / "leakage_anatomy_summary.csv").set_index("metric")["value"]
@@ -39,7 +39,7 @@ ax.annotate(
 ax.text(
     -15,
     0.86,
-    f"절단 전 30일\n{pre_c:.2f} 대 {pre_n:.2f} — 거의 같다",
+    f"절단 전 30일\n{pre_c:.2f} 대 {pre_n:.2f} (거의 같음)",
     color=MUTED,
     fontsize=8.5,
     ha="center",
@@ -49,7 +49,7 @@ ax.text(
 ax.text(
     34,
     0.86,
-    f"절단 후 8~60일\n{post_c:.2f} 대 {post_n:.2f} — {ratio:.1f}배",
+    f"절단 후 8~60일\n{post_c:.2f} 대 {post_n:.2f} ({ratio:.1f}배)",
     color=DARK,
     fontsize=8.5,
     ha="center",
@@ -64,7 +64,7 @@ ax.set_ylim(0, 0.9)
 ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8])
 ax.set_xlabel("기준일로부터 일수", fontsize=9)
 ax.set_ylabel("일별 로그인 확률", fontsize=9)
-ax.set_title("두 집단을 가르는 신호는 v2 절단 이후에 있다", fontsize=11)
+ax.set_title("기준일 전후 일별 로그인 확률, 동의 vs 비동의", fontsize=11)
 ax.grid(axis="y")
 save(fig, "fig7_login_around_consent")
 
@@ -97,7 +97,7 @@ ax.axhline(t2, color=ORANGE, ls="--", lw=1.2)
 
 def q(name):
     r = quad.loc[name]
-    return f"{int(r['n']):,}명 · 정답 확률 {r['mean_truth_p']:.2f}"
+    return f"{int(r['n']):,}명, 정답 확률 {r['mean_truth_p']:.2f}"
 
 
 ax.text(
@@ -146,10 +146,12 @@ ax.text(
 )
 ax.set_xlim(0, 1)
 ax.set_ylim(0, 1)
-ax.set_xlabel(f"v1 스냅샷 점수 (OOF) — 점선 오른쪽이 상위 {k}명")
-ax.set_ylabel(f"v2 시간 절단 점수 (OOF) — 점선 위쪽이 상위 {k}명")
+ax.set_xlabel(f"v1 스냅샷 점수 (OOF). 점선 오른쪽이 상위 {k}명")
+ax.set_ylabel(f"v2 시간 절단 점수 (OOF). 점선 위쪽이 상위 {k}명")
 ax.grid()
-ax.set_title("비동의 유저 7,457명의 두 점수 — 겹침 28%, 색은 정답")
+ax.set_title(
+    "비동의 유저 7,457명의 두 점수 (겹침 28%, 색은 정답 확률)"
+)  # 7,457과 28%는 손으로 적음. 데이터 바뀌면 틀림
 save(fig, "fig8_score_plane")
 
 tl = pd.read_csv(RES / "timeline_sample.csv")
@@ -183,7 +185,7 @@ handles = [
     Patch(color=LIGHT, label="v1 스냅샷만 보는 구간"),
 ]
 ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncols=6)
-ax.set_title("유저 12명의 첫 1년 — v2는 파란 선 왼쪽만 본다")
+ax.set_title("유저 12명의 첫 1년 타임라인 (파란 선 = v2 절단)")
 save(fig, "fig9_timeline_sample")
 
 roc = pd.read_csv(RES / "roc_curves.csv")
@@ -193,7 +195,7 @@ SERIES = [
     ("v2 time cut", BLUE, "-", "v2 시간 절단"),
     ("oracle (true propensity)", ORANGE, "--", "심어둔 정답 확률"),
 ]
-fig = plt.figure(figsize=(9, 3.9))  # 정사각 ROC를 왼쪽에, 범례와 결론을 오른쪽에 두어 본문 폭에서 높이를 줄인다
+fig = plt.figure(figsize=(9, 3.9))  # ROC 왼쪽, 범례/설명 오른쪽. 본문 폭에서 높이 줄이려고
 ax = fig.add_axes([0.07, 0.14, 0.42, 0.76])
 ax.plot([0, 1], [0, 1], color=LIGHT, lw=1)
 for label, c, ls, kor in SERIES:
@@ -204,7 +206,7 @@ ax.set_ylim(0, 1)
 ax.set_aspect("equal")
 ax.set_xlabel("위양성률 (FPR)")
 ax.set_ylabel("재현율 (TPR)")
-ax.set_title("ROC — v1은 정답보다 위에 있다")
+ax.set_title("ROC (OOF)")
 ax.grid()
 tx = fig.add_axes([0.56, 0.14, 0.42, 0.76])
 tx.axis("off")
@@ -261,7 +263,7 @@ ax.set_xticks(range(1, 11), ["상위 10%"] + [f"{i}" for i in range(2, 10)] + ["
 ax.set_xlim(0.2, 12.4)
 ax.set_xlabel(f"모델 점수 분위 (비동의 유저 {n_neg:,}명)")
 ax.set_ylabel("심어둔 동의 확률의 평균")
-ax.set_title("점수 분위별 정답 확률 — 상위 분위에서 v2가 앞선다")
+ax.set_title("점수 분위별 심어둔 동의 확률 평균")
 ax.legend(loc="lower left")
 ax.grid(axis="y")
 save(fig, "fig11_score_deciles")

@@ -1,4 +1,4 @@
-"""위젯용 JSON. 05의 N 곡선 CSV 두 개를 합칠 뿐 숫자를 다시 계산하지 않는다."""
+"""위젯용 JSON. 05의 N 곡선 CSV 두 개를 합침"""
 
 import json
 
@@ -35,4 +35,4 @@ out = dict(
     points=points,
 )
 (RESULTS / "multimodal_n_curve.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
-print(f"{len(points)} points → multimodal_n_curve.json")
+print(f"{len(points)} points -> multimodal_n_curve.json")

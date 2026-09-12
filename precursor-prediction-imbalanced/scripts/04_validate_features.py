@@ -1,9 +1,8 @@
-"""feature 테이블에 미래가 섞였는지 세 가지로 확인한다.
+"""feature 테이블 누수 검증 3종
 
-핵심은 재계산 대조다. 표본 행마다 원천 데이터를 t 시점까지로 잘라낸 다음 feature를 처음부터 다시 계산해
-저장값과 맞춰 본다. 미래 데이터가 섞였다면 잘라낸 데이터로는 같은 값이 나올 수 없다. 세 번째 검증은 일부러
-만든 누수 feature를 이 방법이 잡아내는지 보는 것으로, 검증 도구 자체를 검증한다. 여기서 0건이 나오면 첫 번째
-검증의 통과도 믿을 수 없다.
+1. 재계산 대조: 원천을 t까지 잘라서 feature 다시 계산, 저장값과 비교
+2. 이벤트일 이후 행, target 정의
+3. 음성 대조: 일부러 만든 누수 feature를 1번이 잡는지. 0이면 검증 도구 쪽이 고장
 """
 
 from pathlib import Path
@@ -35,7 +34,7 @@ def slope(y: np.ndarray) -> float:
 
 
 def recompute_features(device_id: str, t: int, cutoff: pd.DataFrame) -> dict[str, float]:
-    """cutoff(잘라낸 원천 데이터)만으로 (device_id, t) 행의 모든 피처를 재계산."""
+    """cutoff만으로 (device_id, t) 행 feature 재계산"""
     sub = cutoff[(cutoff["device_id"] == device_id) & (cutoff["day"].between(t - 13, t))]
     out: dict[str, float] = {}
 
@@ -60,7 +59,7 @@ def recompute_features(device_id: str, t: int, cutoff: pd.DataFrame) -> dict[str
 mismatch = 0
 for _, row in sample.iterrows():
     t = int(row["day"])
-    cutoff = raw[raw["day"] <= t]  # t 이후 데이터를 아예 제거한 세계
+    cutoff = raw[raw["day"] <= t]  # t 이후 제거
     recomputed = recompute_features(row["device_id"], t, cutoff)
     for col in feature_cols:
         if not np.isclose(row[col], recomputed[col], rtol=1e-9, atol=1e-9):
@@ -68,8 +67,8 @@ for _, row in sample.iterrows():
             print(f"  불일치: {row['device_id']} day={t} {col}: 저장값 {row[col]} vs 재계산 {recomputed[col]}")
             break
 print(
-    f"[검증 1] 재계산 대조 — 표본 {N_SAMPLE}행 × 피처 {len(feature_cols)}개: "
-    f"불일치 {mismatch}건 {'→ 통과' if mismatch == 0 else '→ 실패!'}"
+    f"[검증 1] 재계산 대조, 표본 {N_SAMPLE}행 x 피처 {len(feature_cols)}개: "
+    f"불일치 {mismatch}건 {'ok' if mismatch == 0 else 'FAIL'}"
 )
 
 merged = table.merge(gt[["device_id", "event_day"]], on="device_id", how="left")
@@ -78,28 +77,25 @@ ev, t = merged["event_day"], merged["day"]
 post_event_rows = int((ev <= t).sum())  # NaN 비교는 False
 expected_target = ((ev > t) & (ev <= t + 7)).fillna(False).astype(int)
 target_mismatch = int((merged["target"] != expected_target).sum())
-incomplete_label = int((t > (table["day"].max() + 7) - 7).sum())  # 타깃 윈도우가 잘리는 행
+incomplete_label = int((t > (table["day"].max() + 7) - 7).sum())  # 계산만 하고 안 씀. 03이 이미 버려서 0이어야 함
 
 print(
     f"[검증 2] 이벤트일 이후 행: {post_event_rows}건, "
     f"타깃 정의 불일치: {target_mismatch}건 "
-    f"{'→ 통과' if post_event_rows == 0 and target_mismatch == 0 else '→ 실패!'}"
+    f"{'ok' if post_event_rows == 0 and target_mismatch == 0 else 'FAIL'}"
 )
 
 w3 = raw[raw["event_code"] == "W3"]
 leak_detected = 0
 for _, row in sample.head(50).iterrows():
     t = int(row["day"])
-    # 일부러 만든 누수 feature: t+1에서 t+3까지의 W3 건수
+    # 일부러 만든 누수 feature: t+1~t+3 W3 건수
     leaky_value = w3[(w3["device_id"] == row["device_id"]) & (w3["day"].between(t + 1, t + 3))]["count"].sum()
-    # t까지 잘라낸 데이터로 같은 feature를 계산하면 미래분은 항상 0
+    # t까지 자르면 미래분은 항상 0
     recomputed_value = 0
     if not np.isclose(leaky_value, recomputed_value):
         leak_detected += 1
-print(
-    f"[검증 3] 음성 대조 — 누수 피처 표본 50행 중 재계산 불일치 {leak_detected}건 "
-    f"(0보다 커야 정상: 검증 방법이 누수를 실제로 잡아낸다는 뜻)"
-)
+print(f"[검증 3] 음성 대조, 누수 피처 50행 중 불일치 {leak_detected}건 (0보다 커야 함)")
 
 n_pos = int(table["target"].sum())
 print(

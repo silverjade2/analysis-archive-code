@@ -1,14 +1,9 @@
-"""가상 유저 생성. 두 층으로 만든다.
+"""가상 유저 생성. 두 층
 
-전체 가입 유저 45만 명은 저니 상태와 마지막 로그인 날짜만 가진다. 저니맵 절에서만 쓴다. 모델링 대상 38,355명은
-검사를 치르고 필수 프로필을 채운 유저로, 가입에서 검사, 프로필, 동의로 이어지는 타임라인과 날짜가 붙은 로그인,
-지원, 검사, 알림 이벤트를 만든다. feature를 snapshot(v1, 원래 노트북 방식)으로도 시점 절단(v2)으로도 계산할 수
-있게 하기 위해서다.
-
-세 가지를 의도적으로 심는다. 동의한 유저는 검사 결과표 확인과 지원 관리를 위해 다시 들어오므로 로그인이 타깃
-결정 이후에 오른다. 대규모 공채 시즌 직전에 가입한 유저는 한 번 지원하고 떠나는 "시즌 가입자"가 많고, 가입월이
-그 동기의 대리 변수다. 연봉과 복지 선호를 기본값으로 두지 않고 채운 유저는 동의 확률이 오른다. 이것이 저니맵이
-찾아낸 신호다. 동의율은 절편을 풀어 원본 기록의 81%에 맞춘다.
+- 전체 가입 45만 명: 저니 상태와 마지막 로그인만 (저니맵용)
+- 모델링 대상 38355명: 가입 -> 검사 -> 프로필 -> 동의 타임라인 + 로그인/지원/검사/알림 이벤트
+- 심은 구조 3개: 동의 후 로그인 증가 / 시즌 가입자는 한 번 지원하고 떠남 / 선호 정보 완성이 동의 확률을 올림
+- 동의율은 절편을 풀어 원본 기록 81%에 맞춤
 """
 
 import numpy as np
@@ -37,10 +32,10 @@ for a, b in reversed(SEASONS):
 
 
 def sample_join_days(n):
-    """가입일 분포: 선형 증가 + 시즌 직전 급증."""
+    """선형 증가 + 시즌 직전 급증"""
     w = np.linspace(0.6, 1.4, N_DAYS)
     w = w * np.where(pre_season, 3.5, 1.0)
-    w[-1] = 0  # snapshot 당일 가입은 없다
+    w[-1] = 0  # snapshot 당일 가입 없음
     w = w / w.sum()
     return rng.choice(N_DAYS, size=n, p=w)
 
@@ -48,14 +43,14 @@ def sample_join_days(n):
 print("generating full population ...")
 join_pop = sample_join_days(N_TOTAL)
 motive_pop = np.where(pre_season[join_pop], rng.random(N_TOTAL) < 0.6, rng.random(N_TOTAL) < 0.25)
-# status: 0 가입만, 1 검사만, 2 프로필만, 3 검사+프로필 (모델링 대상 유저)
+# status 0 가입만 / 1 검사만 / 2 프로필만 / 3 검사+프로필 (모델링 대상)
 p_org = np.array([0.72, 0.06, 0.08, 0.14])
 p_sea = np.array([0.90, 0.05, 0.035, 0.015])
 u = rng.random(N_TOTAL)
 cum_org, cum_sea = np.cumsum(p_org), np.cumsum(p_sea)
 status_pop = np.where(motive_pop, np.searchsorted(cum_sea, u), np.searchsorted(cum_org, u))
 status_pop = np.clip(status_pop, 0, 3)
-# 모델링 대상 유저 수를 정확히 N_MODEL로 맞춘다
+# status 3을 정확히 N_MODEL로
 idx3 = np.flatnonzero(status_pop == 3)
 if len(idx3) > N_MODEL:
     status_pop[rng.choice(idx3, len(idx3) - N_MODEL, replace=False)] = 2
@@ -74,7 +69,7 @@ population = pd.DataFrame(
         "last_login_date": days[last_pop],
     }
 )
-# 45만 행 그대로는 15MB, 대부분 완전 중복이라 조합별 인원(n)으로 집계해 저장
+# 45만 행 그대로는 15MB. 조합별 n으로 집계
 population = (
     population.groupby(["join_date", "season_joiner", "status", "last_login_date"], observed=True)
     .size()
@@ -117,7 +112,7 @@ test1 = np.minimum(test1, profile)
 z_score = (acca_t_score - 60) / 12
 logit = 1.30 * pref_complete + 0.35 * z_score - 0.80 * season_joiner + 0.55 * marketing_consent + 0.30 * commit
 b0 = 0.0
-for _ in range(60):  # 기저율 81%가 되도록 절편을 푼다
+for _ in range(60):  # 동의율 81%가 되게 절편 풀기
     b0 -= (sig(b0 + logit).mean() - 0.81) * 4
 p_true = sig(b0 + logit)
 consent = rng.random(n) < p_true
@@ -130,10 +125,10 @@ day_grid = np.arange(N_DAYS)[None, :]
 base = np.exp(-2.4 + 0.45 * commit)[:, None]  # 하루 약 0.09회 로그인
 lam = np.broadcast_to(base, (n, N_DAYS)).copy()
 lam *= np.where(season_day[None, :], 3.0, 1.0)
-# 시즌 가입자는 가입 후 첫 시즌이 끝나면 떠난다
+# 시즌 가입자는 첫 시즌 끝나면 이탈
 leave_day = season_end_after[join]
 lam *= np.where(season_joiner[:, None] & (day_grid > leave_day[:, None]), 0.12, 1.0)
-# 동의 이후 로그인이 오른다. 심어둔 구조 1
+# 구조 1. 동의 후 로그인 2.2배
 after = (consent_day[:, None] >= 0) & (day_grid > consent_day[:, None])
 lam *= np.where(after, 2.2, 1.0)
 lam = np.where(day_grid < join[:, None], 0.0, lam)
@@ -222,7 +217,7 @@ users = pd.DataFrame(
         "profile_day": profile,
         "consent_day": consent_day,
         "matching_use_yn": consent.astype(int),
-        # 잠재 정답 변수: 채점에만 쓰고 feature로는 쓰지 않는다
+        # 채점용. feature에 안 씀
         "truth_p_consent": p_true,
         "truth_commit": commit,
         "truth_season_joiner": season_joiner.astype(int),

@@ -1,8 +1,6 @@
-"""그림 1에서 6까지를 사이트 톤으로 다시 그린다.
+"""사이트용 그림 1~6. 값은 data/, results/에서 읽음
 
-데이터와 축은 02, 05, 06이 그린 그림과 같고 색, 폰트, 한국어 라벨, 여백만 바뀐다. 예외는 fig4와 fig5로 여기서
-재설계했다. fig4는 심어둔 정답 AUC를 기준선으로 둔 dumbbell, fig5는 lollipop 패널 두 개 대신 순위 bump chart다.
-모든 값은 data/와 outputs/results/에서 읽고 어떤 숫자도 다시 계산하지 않는다.
+02, 05, 06 그림과 같은 데이터. fig4는 oracle 기준선 dumbbell, fig5는 순위 bump chart로 재설계
 """
 
 import matplotlib.pyplot as plt
@@ -12,7 +10,7 @@ from common import DATA, RES, SEASONS, SERVICE_START, SNAPSHOT
 from matplotlib.lines import Line2D
 from sitestyle import BLUE, DARK, GRAY, LIGHT, MUTED, ORANGE, save, setup
 
-# feature id의 한국어 라벨. 글의 위젯과 같은 매핑
+# 글의 위젯과 같은 라벨 매핑
 NAMES = {
     "login_counts": "로그인 횟수 (6개월)",
     "days_since_last_login": "마지막 로그인 경과일",
@@ -39,7 +37,7 @@ NAMES = {
     "gender": "성별",
     "career_type": "신입/경력",
 }
-# 대부분 타깃의 결과인 feature. 동의 이후의 활동
+# 동의 이후 활동 (타깃의 결과)
 AFTER_TARGET = {
     "login_counts",
     "days_since_last_login",
@@ -74,7 +72,7 @@ for i, v in enumerate(vals[::-1]):
     ax.text(v + 3000, i, f"{v / 1000:,.1f}k  ({v / total:.1%})", va="center", fontsize=9, color=DARK)
 ax.set_xlim(0, total * 0.95)
 ax.set_xlabel("유저 수")
-ax.set_title("가입자 45만 명은 어디에 멈춰 있는가 (조회 시점)")
+ax.set_title("가입자 45만 명의 상태 (조회 시점)")
 ax.grid(axis="x")
 save(fig, "fig1_journey_funnel")
 
@@ -87,7 +85,7 @@ ax.axvline(4.5, color=ORANGE, ls="--", lw=1)
 ax.text(4.7, ax.get_ylim()[1] * 0.9, f"5개 미만: {(users['pref_welfare_cnt'] < 5).mean():.0%}", color=ORANGE)
 ax.set_xlabel("선택한 복지 선호 항목 수")
 ax.set_ylabel("유저 비율")
-ax.set_title("비어 있는 건 선호 정보다")
+ax.set_title("선택한 복지 선호 항목 수 분포")
 ax = axes[1]
 x = np.arange(2)
 w = 0.35
@@ -97,7 +95,7 @@ ax.set_xticks(x, ["비동의", "동의"])
 ax.set_ylim(0, 1)
 ax.set_ylabel("비율")
 ax.legend()
-ax.set_title("…그리고 두 집단을 가른다")
+ax.set_title("동의 여부별 선호 정보")
 for a in axes:
     a.grid(axis="y")
 fig.tight_layout()
@@ -115,7 +113,7 @@ for a, b in SEASONS:
     ax.axvspan(a, b, color=ORANGE, alpha=0.12, lw=0)
 ax.text(SEASONS[1][0], ax.get_ylim()[1] * 0.95, "공채 시즌", color=ORANGE, fontsize=9, va="top")
 ax.set_ylabel("주간 로그인 수")
-ax.set_title("재방문은 공채 시즌에, 그리고 동의한 유저에게서 온다")
+ax.set_title("주간 로그인 수 (음영은 공채 시즌)")
 ax.legend(loc="upper left")
 ax.grid(axis="y")
 fig.tight_layout()
@@ -169,7 +167,7 @@ ax.tick_params(axis="y", length=0)
 ax.spines["left"].set_visible(False)
 ax.grid(axis="x")
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), ncols=3)
-ax.set_title("feature 구성별 AUC — 스냅샷은 정답보다 잘 맞힌다")
+ax.set_title("feature 구성별 AUC (10-fold CV) vs 정답 확률")
 save(fig, "fig4_auc_by_variant")
 
 imp1 = pd.read_csv(RES / "importance_v1_asis.csv", index_col=0)["importance"]
@@ -178,11 +176,11 @@ TOP_N = 8
 feats = list(dict.fromkeys(list(imp1.index[:TOP_N]) + list(imp2.index[:TOP_N])))
 rank1 = {f: i + 1 for i, f in enumerate(imp1.index)}
 rank2 = {f: i + 1 for i, f in enumerate(imp2.index)}
-SHOWN = 13  # 실제 순위는 1에서 13까지 그리고, 그 밖은 "14위 밖" 행, feature에 없으면 "없음" 행
+SHOWN = 13  # 13위까지 실제 순위, 그 밖은 "14위 밖" 행, feature에 없으면 "없음" 행
 
 
 def positions(rank):
-    """한쪽의 feature별 y 위치: 실제 순위, 그다음 순위 밖 / 없음 행."""
+    """feature별 y 위치. 실제 순위, 그다음 순위 밖 / 없음 행"""
     pos, over, absent = {}, [], []
     for f in feats:
         if f not in rank:
@@ -202,7 +200,7 @@ pos1, over1, abs1 = positions(rank1)
 pos2, over2, abs2 = positions(rank2)
 n_over = max(over1, over2, 1)
 n_abs = max(abs1, abs2)
-# 두 축이 행을 공유하므로 없음 행은 더 넓은 쪽의 순위 밖 구역 뒤로 민다
+# 없음 행은 더 넓은 쪽 순위 밖 구역 뒤로
 for pos, n_o in ((pos1, over1), (pos2, over2)):
     for f, r in pos.items():
         if r > SHOWN + n_o:
@@ -240,7 +238,7 @@ handles = [
     Line2D([], [], color=GRAY, lw=2.2, label="그 외"),
 ]
 ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.06), ncols=3)
-ax.set_title("feature importance 순위 — 시간을 자르면 무엇이 올라오고 무엇이 내려가나")
+ax.set_title("feature importance 순위, v1 vs v2")
 save(fig, "fig5_importance_v1_vs_v2")
 
 out = pd.read_csv(RES / "nudge_list_comparison.csv")
@@ -267,7 +265,7 @@ axes[1].set_ylabel("심어둔 동의 확률의 평균")
 axes[1].set_title("정답 확률로 채점하면")
 axes[1].grid(axis="y")
 fig.suptitle(
-    f"넛지 리스트: 비동의 유저 상위 10% — 두 리스트의 겹침 {overlap:.0%}",
+    f"넛지 리스트: 비동의 유저 상위 10%, 두 리스트 겹침 {overlap:.0%}",
     x=0.02,
     ha="left",
     fontsize=12,

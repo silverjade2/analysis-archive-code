@@ -1,11 +1,11 @@
-"""leakage 해부. 그림 7에서 11까지의 데이터.
+"""leakage 해부. 그림 7~11 데이터. pipeline은 안 바꾸고 data/와 v1, v2 테이블만 읽음
 
-pipeline은 바꾸지 않는다. data/와 v1, v2 feature 테이블을 읽어 10이 그릴 작은 CSV를 쓴다. 다섯 부분으로 구성한다.
-동의일 주변의 로그인 확률은 동의자는 consent_day, 비동의자는 v2 cutoff 다음 날을 기준일로 둔다. 04와 같은
-"프로필 + 지연" 공식이다. 유저 12명, 동의 6과 비동의 6의 타임라인 표본. v1과 v2의 LightGBM out-of-fold 점수와
-ROC 곡선. 비동의 유저의 점수 분위별 심어둔 동의 성향 평균. v1 × v2 점수 평면에서 두 상위 분위 리스트의 사분면.
-뒤의 셋은 06의 oof_auc_vs_oracle.csv, nudge_list_comparison.csv, nudge_list_overlap.csv와 assert로 대조한다.
-06과 같은 CV와 seed라 정확히 같아야 한다. 글의 캡션에 인용한 숫자는 leakage_anatomy_summary.csv에 모은다.
+1. 기준일(동의자 consent_day, 비동의자 v2 cutoff+1) 주변 일별 로그인 확률
+2. 유저 12명 (동의 6, 비동의 6) 타임라인
+3. v1, v2 LightGBM OOF 점수와 ROC
+4. 비동의 유저 점수 분위별 심어둔 동의 성향
+5. v1 x v2 점수 평면 사분면
+3~5는 06 결과와 assert로 대조 (같은 CV, seed). 캡션 숫자는 leakage_anatomy_summary.csv에
 """
 
 import numpy as np
@@ -16,8 +16,8 @@ from sklearn.metrics import roc_auc_score, roc_curve
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 
 PRE, POST = 30, 60  # 기준일 전과 후로 볼 일수
-N_SAMPLE = 6  # 타임라인 그림의 클래스별 유저 수
-TOP = 0.10  # 넛지 리스트 = 비동의 유저 상위 10%, 06과 같다
+N_SAMPLE = 6  # 타임라인 클래스별 유저 수
+TOP = 0.10  # 06과 같음
 ROC_POINTS = 300
 
 users = pd.read_csv(DATA / "users.csv")
@@ -102,7 +102,7 @@ ref = pd.read_csv(RES / "oof_auc_vs_oracle.csv").set_index("model")["AUC"]
 curves = {"v1 snapshot": scores["v1"], "v2 time cut": scores["v2"], "oracle (true propensity)": truth_p}
 for label, s in curves.items():
     auc = roc_auc_score(y, s)
-    assert abs(auc - ref[label]) < 5e-4, (label, auc, ref[label])  # 06을 정확히 재현해야 한다
+    assert abs(auc - ref[label]) < 5e-4, (label, auc, ref[label])  # 06과 같아야 함
     summary[f"AUC: {label}"] = auc
 pd.DataFrame(
     {"user": users["user"], TARGET: y, "truth_p_consent": truth_p, "score_v1": scores["v1"], "score_v2": scores["v2"]}
@@ -138,7 +138,7 @@ summary["deciles: non-consented mean truth propensity"] = truth_p[neg].mean()
 deciles.round(4).to_csv(RES / "score_deciles.csv", index=False)
 print("4. score_deciles.csv")
 
-lists = {vname: neg[np.argsort(-s[neg])[:k]] for vname, s in scores.items()}  # 06의 리스트와 정확히 같다
+lists = {vname: neg[np.argsort(-s[neg])[:k]] for vname, s in scores.items()}  # 06 리스트와 동일
 both = np.intersect1d(lists["v1"], lists["v2"])
 v1_only = np.setdiff1d(lists["v1"], both)
 v2_only = np.setdiff1d(lists["v2"], both)
