@@ -74,7 +74,7 @@ labels = {
     "class_weight": "class_weight='balanced'",
     "scale_pos_weight": f"scale_pos_weight={n_neg / n_pos:.0f}",
 }
-colors = {"no_handling": "tab:gray", "class_weight": "tab:blue", "scale_pos_weight": "tab:red"}
+colors = {"no_handling": "#B4B2A9", "class_weight": "#5B6B7A", "scale_pos_weight": "#9E3D22"}
 
 fig, ax = plt.subplots(figsize=(8, 5.5))
 for name in variants:

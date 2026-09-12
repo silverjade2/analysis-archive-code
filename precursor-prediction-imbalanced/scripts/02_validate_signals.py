@@ -67,7 +67,7 @@ ax.plot(
     np.nanmean(w3_severe, axis=0),
     marker="o",
     ms=3,
-    color="tab:red",
+    color="#9E3D22",
     label=f"심각 이벤트 기기 (n={len(severe)})",
 )
 ax.plot(
@@ -75,11 +75,11 @@ ax.plot(
     np.nanmean(w3_control, axis=0),
     marker="o",
     ms=3,
-    color="tab:gray",
+    color="#B4B2A9",
     alpha=0.7,
     label=f"일반 기기 + 가짜 이벤트일 (n={len(normal)})",
 )
-ax.axvline(-7, color="tab:blue", ls="--", lw=1, label="신호 시작 (-7일)")
+ax.axvline(-7, color="#5B6B7A", ls="--", lw=1, label="신호 시작 (-7일)")
 ax.axvline(0, color="black", ls=":", lw=1)
 ax.set_xlabel("심각 이벤트까지 남은 일수")
 ax.set_ylabel("W3 일 평균 발생 건수")
@@ -108,17 +108,17 @@ u1_severe_n = normalize(u1_severe)
 u1_control_n = normalize(u1_control)
 
 fig, axes = plt.subplots(2, 1, figsize=(8, 6.5), sharex=True)
-axes[0].plot(rel_wide, np.nanstd(u1_severe_n, axis=0), color="tab:red", label="심각 이벤트 기기")
-axes[0].plot(rel_wide, np.nanstd(u1_control_n, axis=0), color="tab:gray", alpha=0.7, label="일반 기기 + 가짜 이벤트일")
-axes[0].axvline(-14, color="tab:blue", ls="--", lw=1, label="신호 시작 (-14일)")
+axes[0].plot(rel_wide, np.nanstd(u1_severe_n, axis=0), color="#9E3D22", label="심각 이벤트 기기")
+axes[0].plot(rel_wide, np.nanstd(u1_control_n, axis=0), color="#B4B2A9", alpha=0.7, label="일반 기기 + 가짜 이벤트일")
+axes[0].axvline(-14, color="#5B6B7A", ls="--", lw=1, label="신호 시작 (-14일)")
 axes[0].axvline(0, color="black", ls=":", lw=1)
 axes[0].set_ylabel("정규화 사용량의 기기 간 표준편차")
 axes[0].set_title("신호 2 검증: 사용량 분산과 평균 (이벤트일 기준)")
 axes[0].legend(fontsize=9)
 
-axes[1].plot(rel_wide, np.nanmean(u1_severe_n, axis=0), color="tab:red", label="심각 이벤트 기기")
-axes[1].plot(rel_wide, np.nanmean(u1_control_n, axis=0), color="tab:gray", alpha=0.7, label="일반 기기 + 가짜 이벤트일")
-axes[1].axvline(-14, color="tab:blue", ls="--", lw=1)
+axes[1].plot(rel_wide, np.nanmean(u1_severe_n, axis=0), color="#9E3D22", label="심각 이벤트 기기")
+axes[1].plot(rel_wide, np.nanmean(u1_control_n, axis=0), color="#B4B2A9", alpha=0.7, label="일반 기기 + 가짜 이벤트일")
+axes[1].axvline(-14, color="#5B6B7A", ls="--", lw=1)
 axes[1].axvline(0, color="black", ls=":", lw=1)
 axes[1].set_ylim(0.8, 1.2)
 axes[1].set_xlabel("심각 이벤트까지 남은 일수")
@@ -142,7 +142,7 @@ means = [w7_daily_mean[gt.set_index("device_id")["group"].reindex(w7.index) == g
 severe_rate = [(gt[gt["group"] == g]["severe_event_date"].notna().mean()) for g in groups]
 
 fig, ax = plt.subplots(figsize=(8, 4.5))
-bars = ax.bar([labels[g] for g in groups], means, color=["tab:orange", "tab:red", "tab:gray"], width=0.55)
+bars = ax.bar([labels[g] for g in groups], means, color=["#9E3D22", "#9E3D22", "#B4B2A9"], width=0.55)
 for b, rate in zip(bars, severe_rate):
     ax.text(
         b.get_x() + b.get_width() / 2, b.get_height() + 0.06, f"심각 이벤트 경험률 {rate:.0%}", ha="center", fontsize=10

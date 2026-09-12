@@ -95,7 +95,7 @@ for i in range(K):
 fig.colorbar(im, ax=ax_hm, label="평균 z-score", shrink=0.85)
 ax_hm.set_title("군집별 평균 z-score")
 
-CLUSTER_COLORS = ["tab:orange", "tab:green", "tab:purple", "tab:red", "tab:blue"]
+CLUSTER_COLORS = ["#9E3D22", "#8A8F98", "tab:purple", "#9E3D22", "#5B6B7A"]
 for c in order:
     prof = hourly_mean[pred == c].mean(axis=0)
     ax_prof.plot(np.arange(24), prof, lw=2.2, color=CLUSTER_COLORS[c], label=f"군집 {c}: {LABELS[c].split(': ')[0]}")

@@ -75,15 +75,15 @@ for k in (4, 5):
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 
-axes[0].plot(sweep["k"], sweep["inertia"], marker="o", color="tab:blue")
+axes[0].plot(sweep["k"], sweep["inertia"], marker="o", color="#5B6B7A")
 axes[0].set_xlabel("k")
 axes[0].set_ylabel("inertia (군집 내 제곱합)")
 axes[0].set_title("elbow plot")
 axes[0].grid(alpha=0.3)
 
-axes[1].plot(sweep["k"], sweep["silhouette"], marker="o", color="tab:orange")
+axes[1].plot(sweep["k"], sweep["silhouette"], marker="o", color="#9E3D22")
 best_k = sweep.loc[sweep["silhouette"].idxmax(), "k"]
-axes[1].axvline(best_k, color="tab:red", ls="--", alpha=0.6, label=f"silhouette 최대 k={best_k}")
+axes[1].axvline(best_k, color="#9E3D22", ls="--", alpha=0.6, label=f"silhouette 최대 k={best_k}")
 axes[1].set_xlabel("k")
 axes[1].set_ylabel("silhouette 점수")
 axes[1].set_title("silhouette 점수")
@@ -99,11 +99,11 @@ print(f"플롯 저장: {fig_dir / 'fig5_k_sweep.png'}")
 
 LABEL_ORDER = ["morning", "allday_low", "night", "intermittent", "noise"]
 LABEL_COLORS = {
-    "morning": "tab:blue",
-    "allday_low": "tab:green",
+    "morning": "#5B6B7A",
+    "allday_low": "#8A8F98",
     "night": "tab:purple",
-    "intermittent": "tab:orange",
-    "noise": "tab:red",
+    "intermittent": "#9E3D22",
+    "noise": "#9E3D22",
 }
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), sharey=True)

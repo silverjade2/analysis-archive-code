@@ -28,7 +28,7 @@ def churn_label(last_end: pd.Series, ref: pd.Timestamp) -> pd.Series:
     return ((ref - last_end).dt.days > CHURN_GRACE_DAYS).astype(int)
 
 
-GRAY, BLUE, ORANGE, GREEN, RED = "#8a8f98", "#2f6fd6", "#e8833a", "#3a9d6b", "#c94a4a"
+GRAY, BLUE, ORANGE, GREEN, RED = "#B4B2A9", "#5B6B7A", "#9E3D22", "#8A8F98", "#9E3D22"
 
 
 def setup_mpl():
