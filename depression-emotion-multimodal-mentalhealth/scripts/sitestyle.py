@@ -1,6 +1,6 @@
 """사이트 톤 (Pretendard, 팔레트, webp 저장)
 
-loyal과 depression 폴더에 같은 파일. 한쪽 고치면 다른 쪽도
+loyal, depression, wellness 폴더에 같은 파일. 한쪽 고치면 나머지도
 """
 
 import io
