@@ -1,4 +1,4 @@
-"""그림 8장. 데이터와 축은 02에서 07까지의 결과 CSV 그대로. 색, 폰트, 여백만 사이트 톤."""
+"""사이트용 그림. 값은 전부 results/*.csv에서 읽음"""
 
 import matplotlib.dates as mdates
 import matplotlib.transforms as mtrans
@@ -52,7 +52,7 @@ ax2.plot(by.first_year.astype(str), by.mean_renewal_opportunities, color=ORANGE,
 ax2.set_ylabel("평균 갱신 결정 횟수", color=ORANGE)
 ax2.grid(False)
 ax2.spines["right"].set_visible(True)
-ax.set_title("최초 계약이 오래될수록 이탈률이 높다 — 갱신 결정을 그만큼 여러 번 했기 때문이다")
+ax.set_title("최초 계약 연도별 이탈률과 갱신 결정 횟수")
 fig.savefig(FIGURES / "fig2_churn_by_first_year.png")
 plt.close(fig)
 
@@ -79,7 +79,7 @@ ax.invert_yaxis()
 ax.set_xlim(0, 1)
 ax.set_xlabel("이탈률")
 ax.legend(fontsize=8, loc="lower right")
-ax.set_title("feature로 남은 열 하나가 라벨을 얼마나 가르는가")
+ax.set_title("feature별 라벨 분리도")
 fig.savefig(FIGURES / "fig3_future_revenue_leak.png")
 plt.close(fig)
 
@@ -95,7 +95,7 @@ for i, v in enumerate(order):
         ax.scatter(
             i, r.auc, color=colors[v], marker=markers[r.model], s=48, zorder=3, label=r.model if i == 0 else None
         )
-    ax.text(i + 0.1, d.auc.max() + 0.006, f"{d.auc.min():.3f}–{d.auc.max():.3f}", fontsize=7, color=colors[v])
+    ax.text(i + 0.1, d.auc.max() + 0.006, f"{d.auc.min():.3f}~{d.auc.max():.3f}", fontsize=7, color=colors[v])
 ax.legend(fontsize=7, loc="lower left", title="모델", title_fontsize=7)
 o688 = mc[(mc.variant == "oracle (688)")].auc.iloc[0]
 o1141 = mc[mc.model == "truth_churn_p (exposure-aware)"].auc.iloc[0]
@@ -107,10 +107,10 @@ ax.text(3.3, o688 + 0.004, f"oracle(688) {o688:.3f}", color=GREEN, fontsize=8, h
 ax.scatter([0], [reg], marker="x", color=RED, s=60, zorder=4)
 ax.text(-0.08, reg, "RF 회귀(원본)", fontsize=7, ha="right", va="center")
 ax.set_xticks(range(4))
-ax.set_xticklabels(["v1 스냅샷\n(1,141)", "v1 − 미래·누적 열\n(1,141)", "v1 스냅샷\n(688)", "v2 시간 절단\n(688)"])
+ax.set_xticklabels(["v1 스냅샷\n(1,141)", "v1 - 미래/누적 열\n(1,141)", "v1 스냅샷\n(688)", "v2 시간 절단\n(688)"])
 ax.set_ylim(0.80, 1.0)
 ax.set_ylabel("AUC (10-fold CV)")
-ax.set_title("정답보다 높은 AUC는 축하할 일이 아니다")
+ax.set_title("AUC 비교 (10-fold CV) vs oracle")
 fig.savefig(FIGURES / "fig4_auc_compare.png")
 plt.close(fig)
 
@@ -135,9 +135,9 @@ v1 = pd.read_csv(DATA / "features_v1.csv")
 v2 = pd.read_csv(DATA / "features_v2.csv")
 tr = v1.sample(frac=0.95, random_state=786).reset_index(drop=True)
 fig, ax = plt.subplots(1, 2, figsize=(11, 4.4))
-beeswarm(ax[0], "v1", "v1 스냅샷 — LightGBM OOF SHAP", tr)
-beeswarm(ax[1], "v2", "v2 시간 절단 — LightGBM OOF SHAP", v2)
-fig.text(0.5, -0.02, "점 색: feature 값의 백분위 (파랑 낮음 → 빨강 높음)", ha="center", fontsize=8, color=GRAY)
+beeswarm(ax[0], "v1", "v1 스냅샷 (LightGBM OOF SHAP)", tr)
+beeswarm(ax[1], "v2", "v2 시간 절단 (LightGBM OOF SHAP)", v2)
+fig.text(0.5, -0.02, "점 색: feature 값 백분위 (파랑 낮음, 빨강 높음)", ha="center", fontsize=8, color=GRAY)
 fig.savefig(FIGURES / "fig5_shap_v1_vs_v2.png")
 plt.close(fig)
 
@@ -227,11 +227,11 @@ a1.text(
 a1.xaxis.set_major_locator(mdates.MonthLocator(bymonth=[2, 8]))
 a1.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m"))
 a1.set_xlabel("노트북 실행일 (라벨의 today)", fontsize=9)
-fig.suptitle("같은 회사, 같은 규칙 — 실행일만 옮겼을 때의 이탈률", x=0.125, ha="left", fontsize=11.5, y=0.955)
+fig.suptitle("실행일에 따른 이탈률 (같은 회사, 같은 규칙)", x=0.125, ha="left", fontsize=11.5, y=0.955)
 fig.text(
     0.125,
     0.905,
-    "최종 종료일 + 90일 초과 → 이탈. 원본 실행일(2024-02) 이후 달라진 라벨은 전부 고객 → 이탈 방향.",
+    "이탈 = 최종 종료일 + 90일 초과. 2024-02 이후 바뀐 라벨은 전부 고객->이탈 방향",
     fontsize=8.5,
     color="#777",
 )
@@ -259,7 +259,7 @@ for prod, col, lab_ in series:
     ax0.fill_between(d.month, d.ci_lower, d.ci_upper, step="post", color=col, alpha=0.10, lw=0)
     ax0.step(d.month, d.survival, where="post", color=col, lw=2)
     ends[prod] = (col, lab_, d.iloc[-1].survival)
-# 선 끝 라벨. 겹치면 위아래로 벌린다
+# 끝 라벨 겹침 방지
 ys = sorted(ends.items(), key=lambda kv: kv[1][2])
 placed = []
 for prod, (col, lab_, yv) in ys:
@@ -327,11 +327,9 @@ ax1.minorticks_off()
 ax1.set_yticks(range(len(cx)))
 ax1.set_yticklabels([names[f] for f in cx.feature], fontsize=8.5)
 ax1.set_ylim(len(cx) - 0.4, -1.2)
-ax1.set_xlabel("이탈 위험비 (Cox PH) — 1보다 작으면 이탈 위험 감소", fontsize=9)
-ax1.set_title(f"Cox 비례위험 회귀 · concordance {cx.concordance.iloc[0]:.3f}", loc="left", fontsize=10.5)
-ax1.text(
-    0.0, -0.2, "파랑 위험 감소 · 주황 위험 증가 · 회색 p ≥ 0.05", transform=ax1.transAxes, fontsize=7.5, color="#777"
-)
+ax1.set_xlabel("이탈 위험비 (Cox PH). 1 미만이면 위험 감소", fontsize=9)
+ax1.set_title(f"Cox PH, concordance {cx.concordance.iloc[0]:.3f}", loc="left", fontsize=10.5)
+ax1.text(0.0, -0.2, "파랑 위험 감소, 주황 위험 증가, 회색 p>=0.05", transform=ax1.transAxes, fontsize=7.5, color="#777")
 fig.subplots_adjust(right=0.87, left=0.06, bottom=0.14, top=0.9)
 fig.savefig(FIGURES / "fig7_survival.png")
 plt.close(fig)

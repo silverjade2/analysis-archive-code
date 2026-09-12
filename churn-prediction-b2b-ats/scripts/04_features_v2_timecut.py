@@ -1,13 +1,8 @@
-"""v2 시간 절단 feature.
+"""v2: T(=REF-12M) 시점 절단 feature
 
-절단 시점 T는 REF_DATE 12개월 전. 모집단은 T 시점에 고객인 회사, 즉 최종 종료일이 T-90일 이후인 회사다.
-feature는 T 이전 정보만 쓴다. 기업 속성, 외부데이터, 그리고 T까지의 계약 이력에서 계약 건수, 재직 개월, 직전
-12개월 매출, 현재 계약의 잔여 개월, 상품 구성. 미래 매출 열과 총매출, 사용 유무는 없다. 라벨은 v1과 같은
-REF_DATE 기준 이탈이다. 질문이 "T 시점 고객 중 누가 12개월 안에 이탈하는가"로 바뀐다. oracle은 심어둔 갱신
-확률 p와 T에서 REF-90 사이의 갱신 결정 횟수 k로 1-p^k. 채점에만 쓴다.
-
-remaining_months_T는 36개 행에서 음수다. 모집단 정의가 "최종 종료일이 T-90일 이후"라서 T 직전에 계약이 끝났지만
-아직 이탈로 판정되지 않은 회사가 들어오기 때문이다. 정의상 맞는 값이고 그대로 둔다.
+- 모집단: T 시점 고객 (last_end >= T-90d)
+- feature는 T 이전 정보만. 라벨은 v1과 같은 REF 기준
+- oracle = 1 - p^k, k는 T~REF-90 사이 갱신 결정 횟수
 """
 
 import numpy as np
@@ -37,13 +32,13 @@ last12 = (
 )
 hist = hist.merge(last12, on="company_id", how="left").fillna({"revenue_last12m_T": 0})
 hist["tenure_months_T"] = ((T - hist.first_contract_T).dt.days / 30.44).round(1)
-hist["remaining_months_T"] = ((hist.last_end_T - T).dt.days / 30.44).round(1)
+hist["remaining_months_T"] = ((hist.last_end_T - T).dt.days / 30.44).round(1)  # 36건 음수, 정의상 맞음
 hist["active_at_T"] = ((T - hist.last_end_T).dt.days <= CHURN_GRACE_DAYS).astype(int)
 
 pop = hist[hist.active_at_T == 1].merge(snap, on="company_id", suffixes=("", "_snap"))
 pop = pop.merge(companies[["company_id", "truth_renew_p"]], on="company_id")
 
-# 갱신 결정 횟수 k는 12개월마다 한 번으로 센다. 24, 36개월 계약 회사는 k가 실제보다 커서 oracle이 조금 높다
+# TODO k를 12개월 단위로 세서 24/36개월 계약은 과대. oracle AUC 약간 높게 나옴
 horizon = REF_DATE - pd.Timedelta(days=CHURN_GRACE_DAYS)
 days_to_horizon = (horizon - pop.last_end_T).dt.days
 k = np.where(days_to_horizon <= 0, 0, 1 + np.floor(days_to_horizon / 365))

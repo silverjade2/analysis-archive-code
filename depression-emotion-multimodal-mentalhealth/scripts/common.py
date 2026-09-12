@@ -1,4 +1,4 @@
-"""공통 경로와 상수, 우울 진단용 분할, 분석 그림 팔레트. 경로는 이 파일 위치 기준이다."""
+"""공통 경로, 상수, 우울 진단용 분할, 분석 그림 팔레트"""
 
 from pathlib import Path
 
@@ -17,12 +17,12 @@ EMOTIONS = ["happiness", "angry", "neutral", "sadness", "disgust", "surprise", "
 EMOTION_P = np.array([0.235, 0.168, 0.168, 0.147, 0.120, 0.091, 0.072])
 EMOTION_P = EMOTION_P / EMOTION_P.sum()
 
-N_DAILY = 19374  # 원 프로젝트의 감정 대화 음성 데이터 활용 건수
-N_COUNSEL_SYMPTOM = 16000  # 원 프로젝트의 상담 스크립트 활용 건수 (증상 의도)
-N_COUNSEL_NORMAL = 4000  # 추출 20,000건 − 활용 16,000건. 일상 의도로 보고 학습에서 뺀 것으로 가정
+N_DAILY = 19374  # 원 기록 건수
+N_COUNSEL_SYMPTOM = 16000  # 원 기록 건수 (증상 의도)
+N_COUNSEL_NORMAL = 4000  # 추출 20000 - 활용 16000. 일상 의도로 보고 학습에서 뺀 것으로 가정
 TEST_SIZE = 0.3  # 원 프로젝트 홀드아웃 7:3
 N_SPEAKERS = 150  # 가정. 원 기록에 화자 수 없음
-N_MULTIMODAL = 2000  # 원 프로젝트의 멀티모달 학습 건수 (전체의 10%)
+N_MULTIMODAL = 2000  # 원 기록 multimodal 학습 건수
 
 AUDIO_COLS = (
     ["zcr_mean", "zcr_std", "rms_mean", "rms_std"]
@@ -48,14 +48,14 @@ def setup_mpl():
 
 
 def depression_split(df, seed=SEED):
-    """우울 진단용 7:3 홀드아웃. 출처 × 증상 의도로 층화해 v1(03)과 v2(04)가 같은 테스트셋을 쓰게 한다."""
+    """7:3 홀드아웃. 출처 x 증상 의도로 층화, v1(03)과 v2(04)가 같은 테스트셋"""
     from sklearn.model_selection import train_test_split
 
     strat = df.source + "_" + df.intent.fillna("").str.startswith("정신증상").astype(int).astype(str)
     return train_test_split(df, test_size=TEST_SIZE, stratify=strat, random_state=seed)
 
 
-# 분석 그림 팔레트. 사이트 톤은 sitestyle.py가 따로 맞춘다
+# 분석용 팔레트. 사이트 톤은 sitestyle.py
 C_TEXT, C_MM, C_AUDIO, C_NEG, C_GRAY, C_DARK = "#b8b8e0", "#6f6fd1", "#2e2e8a", "#d17f6f", "#c9c9c9", "#333333"
 EMO_COLORS = {
     "happiness": "#f2b134",

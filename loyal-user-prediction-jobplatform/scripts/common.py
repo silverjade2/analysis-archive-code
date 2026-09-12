@@ -1,4 +1,4 @@
-"""공통 설정. 경로, 상수, 원래 노트북의 feature 목록."""
+"""공통 설정. 경로, 상수, 원본 노트북 feature 목록"""
 
 from pathlib import Path
 
@@ -18,7 +18,7 @@ LOGIN_WINDOW_DAYS = 180  # login_counts = 최근 6개월 로그인 수
 N_TOTAL = 451_314
 N_MODEL = 38_355  # 검사 등급 + 필수 프로필을 채운 유저 (일반 트랙)
 
-# 대기업 공채 시즌. 원래 보고서에 적힌 날짜
+# 공채 시즌. 원본 보고서 날짜
 SEASONS = [
     ("2021-08-25", "2021-09-07"),
     ("2022-02-07", "2022-03-06"),
@@ -27,7 +27,7 @@ SEASONS = [
 ]
 SEASONS = [(pd.Timestamp(a), pd.Timestamp(b)) for a, b in SEASONS]
 
-# 원래 노트북에서 쓴 feature 32개. 타깃까지 33열
+# 원본 노트북 feature 32개
 NOTEBOOK_FEATURES = [
     "gender",
     "marketing_consent_yn",
@@ -82,7 +82,7 @@ CAT_COLS = [
 
 
 def day_index(ts):
-    """SERVICE_START 이후 경과 일수 (int)."""
+    """SERVICE_START 이후 경과 일수"""
     if hasattr(ts, "dt"):
         return (pd.to_datetime(ts) - SERVICE_START).dt.days
     return (ts - SERVICE_START).days

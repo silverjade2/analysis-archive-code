@@ -1,11 +1,7 @@
-"""가상 고객사 2,000사와 계약 이력, 외부데이터.
+"""가상 고객사 2000사 + 계약 이력 + 외부데이터 생성
 
-각 사에 연간 갱신 확률 truth_renew_p를 심고, 계약이 끝날 때마다 그 확률로 갱신 여부를 뽑아 이력을 만든다. 이탈
-라벨은 여기서 만들지 않는다. 03이 원본 규칙으로 도출한다. 갱신 확률을 정하는 원인으로는 여섯을 심었다. 인원
-성장률, 연간 채용 비율, 두 상품 동시 사용, 재직 인원은 갱신을 올리고 업력과 퇴사 비율은 내린다. 외부데이터는
-건강보험과 공시를 흉내낸 것인데 기업 규모가 클수록 존재 확률을 높게 심었다. 결합 탈락이 작은 회사에 몰리게
-하려는 것이다. 계약 이력은 DATA_END인 2026-06까지 만들어 두고 스냅샷 절단은 쓰는 쪽에서 한다. 06의 기준일
-sweep이 미래 계약을 필요로 하기 때문이다.
+- truth_renew_p(연간 갱신 확률)만 심고, 이탈 라벨은 안 만듦 (03에서 원본 규칙으로)
+- 외부데이터 존재 확률은 규모에 비례 -> 작은 회사가 결합에서 빠지도록
 """
 
 import numpy as np
@@ -22,7 +18,7 @@ def z(x):
 
 employees = np.clip(np.exp(r.normal(np.log(300), 1.1, N)), 3, 40000).round().astype(int)
 firm_age = np.clip(r.gamma(2.2, 12, N), 0, 130).round().astype(int)
-hiring_rate = np.clip(r.beta(1.6, 40, N), 0.002, 0.6)  # 연간 신규채용/재직
+hiring_rate = np.clip(r.beta(1.6, 40, N), 0.002, 0.6)  # 연간 채용/재직
 attrition_rate = np.clip(hiring_rate * r.lognormal(0, 0.45, N), 0.002, 0.8)
 headcount_growth = np.clip(r.normal(0.03, 0.10, N), -0.5, 1.5)
 hiring_growth = np.clip(headcount_growth * 1.8 + r.normal(0, 0.25, N), -0.9, 3)
@@ -33,6 +29,7 @@ both = (product == "both").astype(int)
 size_class = np.where(employees >= 1000, "LARGE", np.where(employees >= 300, "MEDIUM", "SMALL"))
 size_class = np.where(r.random(N) < 0.05, "ETC", size_class)
 
+# 갱신 확률 원인 6개. 부호는 cox_summary로 확인
 logit = (
     0.30
     + 0.70 * z(headcount_growth)
@@ -75,7 +72,7 @@ for i in range(N):
         amt = base_amt * (term / 12) * r.lognormal(0, 0.3)
         contract_date = start - pd.Timedelta(days=int(r.integers(0, 20)))
         end = start + pd.DateOffset(months=term) - pd.Timedelta(days=1)
-        # 다년 계약은 연 단위 세금계산서 행으로 나눈다. 원본의 공급가격/분할횟수, 시작일자 연도별 매출
+        # 24/36개월은 연 단위 세금계산서 행으로 split (원본 데이터 형태)
         n_split = term // 12
         for k in range(n_split):
             rows.append(
@@ -91,7 +88,7 @@ for i in range(N):
                     product=product[i],
                 )
             )
-        # 같은 달 추가 계약, 상품 추가. 10%
+        # 추가 계약 10%
         if r.random() < 0.10:
             cid += 1
             rows.append(
@@ -108,7 +105,7 @@ for i in range(N):
                 )
             )
         cid += 1
-        if r.random() > p:  # 갱신 실패. 이력이 여기서 끝난다
+        if r.random() > p:  # 갱신 안 함
             break
         gap = int(r.integers(0, 45)) if r.random() < 0.3 else 0
         start = end + pd.Timedelta(days=1 + gap)
@@ -120,7 +117,7 @@ has_ext = r.random(N) < p_ext
 ind_salary = np.clip(r.normal(55, 12, N), 25, 120)
 avg_salary = np.clip(ind_salary * r.lognormal(0.02, 0.25, N) + 2 * lz, 15, 200)
 entry_salary = np.clip(avg_salary * r.uniform(0.45, 0.7, N), 10, 100)
-rev = np.exp(r.normal(np.log(employees * 250.0), 0.8))  # 백만 원
+rev = np.exp(r.normal(np.log(employees * 250.0), 0.8))  # 단위 백만
 op = rev * r.normal(0.06, 0.09, N)
 ext = pd.DataFrame(
     {
@@ -140,13 +137,13 @@ ext = pd.DataFrame(
         "headcount_growth": headcount_growth,
     }
 )[has_ext].copy()
-# 공시 없는 비상장이 많다. 매출과 영업이익은 빈값, 연봉도 일부 빈값. 원본은 앞을 0으로, 뒤를 중앙값으로 채웠다
+# 비상장 -> 매출/영업이익 결측, 연봉도 일부 결측
 m = ext.shape[0]
 blank_fin = r.random(m) < 0.55
 blank_sal = r.random(m) < 0.30
 ext.loc[blank_fin, ["company_revenue", "operating_profit"]] = np.nan
 ext.loc[blank_sal, ["avg_salary", "entry_salary", "industry_salary"]] = np.nan
-# 단위 오류 이상치 1건. 원본의 산업 평균 연봉 max가 9,010이었다
+# 원본에 있던 단위 오류 1건 (industry_salary max 9010)
 ext.iloc[0, ext.columns.get_loc("industry_salary")] = 9010
 
 companies.to_csv(DATA / "companies.csv", index=False)

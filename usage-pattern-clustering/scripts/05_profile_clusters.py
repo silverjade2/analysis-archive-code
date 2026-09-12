@@ -1,10 +1,8 @@
-"""최종 군집을 비즈니스가 읽을 수 있는 말로 옮긴다. 04에서 정한 설정, 로그 변환 뒤 표준화에 k=5.
+"""최종 군집 (log1p + 표준화, k=5) 해석과 비즈니스 라벨
 
-168개 셀을 그대로 보여주면 아무도 못 읽는다. 시간대 5구간 평균, 주말 비율, 버스트성, total_usage로 접어
-z-score를 내고, 군집별 평균 z-score를 근거로 라벨을 손으로 붙인다. 자동화하지 않은 것이 의도다. 라벨링은
-z-score를 비즈니스 언어로 번역하는 판단이고, 그중 "행동 세그먼트"와 "이상집단"의 층위를 가르는 것이 핵심이다.
-앞 4개는 마케팅과 UX가 다룰 행동이고 마지막 1개는 행동이 아니라 상태다. 정답 라벨과의 대조는 맨 뒤에서
-사후 검증으로만 한다.
+- 168셀 대신 시간대 5구간 평균, 주말 비율, 버스트성, total_usage로 접어 z-score
+- 라벨은 군집별 평균 z-score 보고 손으로. 행동 세그먼트 4 + 이상집단 1 (행동이 아니라 상태)
+- 정답 라벨 대조는 맨 뒤 사후 검증만
 """
 
 from pathlib import Path
@@ -46,7 +44,7 @@ derived = pd.DataFrame({name: hourly_mean[:, list(hrs)].mean(axis=1) for name, h
 weekend = cube[:, 5:, :].mean(axis=(1, 2))
 overall = cube.mean(axis=(1, 2))
 derived["주말 비율"] = weekend / np.maximum(overall, 1e-9)
-# 버스트성: 상위 3개 시각의 강도 합이 하루 전체에서 차지하는 비율
+# 버스트성 = 상위 3시각 합 / 하루 합
 top3 = np.sort(hourly_mean, axis=1)[:, -3:].sum(axis=1)
 derived["버스트성 (상위3시간 집중도)"] = top3 / np.maximum(hourly_mean.sum(axis=1), 1e-9)
 derived["총사용량 (total_usage)"] = df["total_usage"]
@@ -54,13 +52,13 @@ derived["총사용량 (total_usage)"] = df["total_usage"]
 z = pd.DataFrame(StandardScaler().fit_transform(derived), columns=derived.columns, index=df.index)
 z_by_cluster = z.groupby(df["pred_cluster"]).mean()
 
-# 히트맵을 읽고 손으로 붙인 라벨. 군집 번호는 KMeans가 준 것이라 데이터나 seed가 바뀌면 다시 읽어야 한다
+# 히트맵 보고 손으로 붙임. 번호는 KMeans가 준 것이라 seed나 데이터 바뀌면 다시 읽어야 함
 LABELS = {
-    0: "간헐 버스트형 — 평소 무사용, 특정 시간대만 고강도",
-    1: "상시 저강도형 — 종일 낮은 강도로 고르게",
-    2: "심야 집중형 — 21시~새벽 2시 피크",
-    3: "[이상집단] 상시 고강도 — 데모/전시 기기 의심",
-    4: "아침 집중형 — 평일 6~10시 피크",
+    0: "간헐 버스트형: 평소 무사용, 특정 시간대만 고강도",
+    1: "상시 저강도형: 종일 낮은 강도로 고르게",
+    2: "심야 집중형: 21시~새벽 2시 피크",
+    3: "[이상집단] 상시 고강도: 데모/전시 기기 의심",
+    4: "아침 집중형: 평일 6~10시 피크",
 }
 
 print("── 군집별 평균 z-score (해석용 파생 피처) ──")
@@ -87,7 +85,7 @@ im = ax_hm.imshow(mat, cmap="RdBu_r", vmin=-2.5, vmax=2.5, aspect="auto")
 ax_hm.set_xticks(range(len(derived.columns)))
 ax_hm.set_xticklabels(derived.columns, rotation=30, ha="right", fontsize=9)
 ax_hm.set_yticks(range(K))
-ax_hm.set_yticklabels([f"군집 {c} (n={(pred == c).sum()})\n{LABELS[c].split(' — ')[0]}" for c in order], fontsize=9)
+ax_hm.set_yticklabels([f"군집 {c} (n={(pred == c).sum()})\n{LABELS[c].split(': ')[0]}" for c in order], fontsize=9)
 for i in range(K):
     for j in range(len(derived.columns)):
         val = mat[i, j]
@@ -95,12 +93,12 @@ for i in range(K):
             j, i, f"{val:+.1f}", ha="center", va="center", fontsize=8, color="white" if abs(val) > 1.4 else "black"
         )
 fig.colorbar(im, ax=ax_hm, label="평균 z-score", shrink=0.85)
-ax_hm.set_title("군집별 평균 z-score — 어떤 축에서 평균과 다른가")
+ax_hm.set_title("군집별 평균 z-score")
 
 CLUSTER_COLORS = ["tab:orange", "tab:green", "tab:purple", "tab:red", "tab:blue"]
 for c in order:
     prof = hourly_mean[pred == c].mean(axis=0)
-    ax_prof.plot(np.arange(24), prof, lw=2.2, color=CLUSTER_COLORS[c], label=f"군집 {c}: {LABELS[c].split(' — ')[0]}")
+    ax_prof.plot(np.arange(24), prof, lw=2.2, color=CLUSTER_COLORS[c], label=f"군집 {c}: {LABELS[c].split(': ')[0]}")
 ax_prof.set_xticks(range(0, 24, 4))
 ax_prof.set_xlabel("시각")
 ax_prof.set_ylabel("평균 사용 강도 (요일 평균)")
@@ -108,10 +106,10 @@ ax_prof.set_title("군집별 24시간 평균 프로파일")
 ax_prof.legend(fontsize=8)
 ax_prof.grid(alpha=0.3)
 
-fig.suptitle("최종 군집(k=5) 해석 — z-score 프로파일링과 비즈니스 라벨")
+fig.suptitle("최종 군집 (k=5) z-score 프로파일과 라벨")
 fig.tight_layout()
 fig.savefig(fig_dir / "fig7_cluster_zscore.png", dpi=150)
-print(f"\n플롯 저장 — {fig_dir / 'fig7_cluster_zscore.png'}")
+print(f"\n플롯 저장: {fig_dir / 'fig7_cluster_zscore.png'}")
 
 res_dir = base / "outputs" / "results"
 res_dir.mkdir(parents=True, exist_ok=True)

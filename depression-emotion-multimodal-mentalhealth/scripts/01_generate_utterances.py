@@ -1,13 +1,9 @@
-"""가상 발화 생성. 일상 대화와 상담 스크립트, 두 출처의 발화를 같은 스키마로 만든다.
+"""가상 발화 생성. 일상 대화 + 상담 스크립트, 같은 스키마
 
-심어둔 구조 3종.
-A. 문체는 출처를 따르고 우울 내용은 truth_depressed를 따른다. 둘이 따로 종속된다. 문체는 5% 확률로 출처와
-   어긋나게 했는데, 출처 분류가 100%가 되지 않게 하는 장치다. 상담 스크립트 20,000건 중 4,000건은 일상 의도라
-   우울이 아니고, 원 프로젝트는 이걸 학습에서 뺐다. 일상 대화의 sadness 발화 일부는 실제로 우울하다.
-B. 화자마다 음성 지문과 감정 분포 편향이 있다. 음성 채널이 감정에 대해 가진 진짜 정보는 고각성 감정인 angry,
-   fear, surprise에 몰려 있고 neutral과 disgust에는 거의 없다.
-C. 텍스트와 음성 신호가 정답을 가리키는지를 truth_*_informative에 기록해 oracle 상한을 계산할 수 있게 한다.
-truth_* 열은 채점 전용이다. feature로 쓰지 않는다.
+- A. 문체는 출처를, 우울 내용 토큰은 truth_depressed를 따름 (문체 5%는 출처와 어긋나게)
+     상담 20000건 중 4000건은 일상 의도, 원 프로젝트는 학습에서 뺐음. 일상 sadness 일부는 실제 우울
+- B. 화자별 음성 지문 + 감정 분포 편향. 음성의 감정 정보는 고각성(angry, fear, surprise)에 몰림
+- C. truth_*_informative로 oracle 상한 계산. truth_* 열은 채점 전용
 """
 
 import numpy as np
@@ -83,10 +79,9 @@ NORMAL_INTENT = ["일상/인사", "일상/취미", "일상/가족", "일상/직�
 
 P_DAILY_SAD_DEPRESSED = 0.25  # 일상 sadness 발화 중 실제 우울 비율
 Q_DEP_TEXT = 0.80  # 우울 내용 토큰이 정답을 가리킬 확률
-Q_EMO_TEXT = 0.82  # 감정 토큰이 정답 감정을 가리킬 확률 (나머지는 다른 감정 토큰)
+Q_EMO_TEXT = 0.82  # 감정 토큰이 정답 감정일 확률
 Q_EMO_AUDIO = 0.70  # 음성 오프셋이 실제로 실리는 확률
-# 감정별 음성 오프셋. 고각성 감정은 rms와 zcr에 크게, 저각성은 작게. 값이 큰 감정일수록 음성 채널이 그 감정을
-# 잘 구분한다. 심어둔 구조 B의 핵심 파라미터
+# 구조 B 핵심. 고각성은 rms/zcr에 크게, 저각성은 작게
 AUDIO_OFFSET = {
     "angry": {"rms_mean": 2.2, "rms_std": 1.4, "zcr_mean": 1.5, "mfcc1_mean": 1.2},
     "fear": {"rms_mean": 1.0, "zcr_mean": 2.0, "mfcc2_mean": 1.6, "zcr_std": 1.2},
@@ -96,12 +91,12 @@ AUDIO_OFFSET = {
     "disgust": {"mfcc6_mean": 0.9},
     "neutral": {},
 }
-SPEAKER_FP_SD = 1.5  # 화자 음성 지문 크기. 감정 오프셋보다 크다
-# 화자 지문은 음색 계열인 MFCC 7~13, chroma, duration에 실린다. 감정 오프셋은 에너지와 피치 계열에 실린다
+SPEAKER_FP_SD = 1.5  # 감정 오프셋보다 큼
+# 지문은 음색 계열(MFCC 7~13, chroma, duration), 감정은 에너지/피치 계열
 SPEAKER_FP_COLS = [f"mfcc{i}_mean" for i in range(7, 14)] + ["chroma_mean", "chroma_std", "duration"]
 AUDIO_NOISE_SD = 1.0
-SPEAKER_EMO_CONC = 0.4  # 화자별 감정 분포 편향. 작을수록 편향 큼
-P_STYLE_CROSS = 0.05  # 출처와 다른 문체로 말하는 발화 비율. 경어체와 반말이 바뀐다
+SPEAKER_EMO_CONC = 0.4  # 작을수록 화자 편향 큼
+P_STYLE_CROSS = 0.05  # 출처와 문체가 어긋나는 비율
 
 
 def pick(pool, k=1):

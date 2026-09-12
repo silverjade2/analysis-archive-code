@@ -1,6 +1,4 @@
-"""v1 feature. 원래 노트북의 구조대로 모든 유저를 snapshot 당일에서 자른다. 타깃이 결정된 이후의 이벤트도
-들어간다.
-"""
+"""v1 feature. 원본 노트북대로 전원 snapshot 당일 절단. 타깃 결정 이후 이벤트도 들어감"""
 
 import numpy as np
 from common import DATA, N_DAYS

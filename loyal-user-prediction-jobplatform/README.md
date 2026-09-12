@@ -1,6 +1,8 @@
 # loyal-user-prediction-jobplatform
 
-글: [핵심 유저 전환 예측: 저니맵이 가리킨 병목을 모델로 검증하기](https://analysis-archive.vercel.app/analyses/loyal-user-prediction-jobplatform)
+[핵심 유저 전환 예측: 저니맵이 가리킨 병목을 모델로 검증하기](https://analysis-archive.vercel.app/analyses/loyal-user-prediction-jobplatform) 재현 코드.
+
+원본은 채용 플랫폼 유저 데이터로 했던 추천 동의(핵심 유저 전환) 예측. 여기서는 같은 구조의 가상 유저와 이벤트를 만들어 원본 노트북 절차를 그대로 돌리고, snapshot feature가 왜 정답보다 잘 맞히는지 본다 (실제 데이터 없음).
 
 ## 실행
 
@@ -9,72 +11,52 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; done
 ```
 
-- Apple Silicon 기준 01에서 06까지 약 2분, 07의 절단 시점 sweep이 약 2분 30초, 09 약 15초, 08과 10은 수 초.
-- 환경: Python 3.14.6, numpy 2.5.3, pandas 3.0.5, scikit-learn 1.9.0, LightGBM 4.7.0, XGBoost 3.4.1, matplotlib 3.11.1, Pillow 12.3.0. macOS라면 `brew install libomp`부터. 08과 10의 한글 폰트는 Pretendard이고 없으면 AppleGothic으로 대체된다.
-- `data/`를 지우고 다시 돌려도 데이터와 `outputs/results/*.csv`가 byte 단위로 같다. `model_comparison.csv`의 학습 시간 열만 예외다.
-- 제대로 돌았는지 확인할 숫자
-  - 01의 동의율 0.8056, 30,898 / 38,355. 원본 기록 81%에 맞춰 절편을 푼 결과라 이 값에서 벗어나면 생성기가 달라진 것
-  - 05의 v1_asis LightGBM 10-fold AUC 0.944, v2_pref 0.687. 앞의 것이 정답 확률의 AUC 0.716보다 높다는 것이 leakage의 증거이고, 뒤의 것이 그 아래 붙어 있는 것이 정상
-  - 06의 oracle AUC 0.716, v1 OOF 0.944, v2 OOF 0.687. 05와 같은 순서여야 한다. 두 리스트 겹침 28.1%는 상위 10%를 뽑아도 열 명 중 일곱은 서로 다른 사람이라는 뜻
+01~06이 2분 정도, 07의 cutoff sweep이 2분 30초, 09가 15초. 08과 10은 몇 초. 경로는 `common.py`에서 파일 위치 기준으로 잡는다.
 
-## Pipeline
+재현에 쓴 버전: Python 3.14, numpy 2.5, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, XGBoost 3.4, matplotlib 3.11, Pillow 12. 이 조합에서는 `data/`를 지우고 다시 돌려도 데이터와 결과 CSV가 동일. `model_comparison.csv`의 학습 시간 열만 실행마다 다름. macOS는 `brew install libomp` 먼저. 08과 10의 폰트는 Pretendard, 없으면 AppleGothic.
 
-| 스크립트 | 역할 | 출력 |
+## 스크립트
+
+| | 역할 | 주요 출력 |
 | --- | --- | --- |
-| `01_generate_users.py` | 전체 가입 유저 45만 명(저니맵용 집계표) + 모델링 대상 38,355명과 이벤트 생성. 구조 3종 주입 | `data/population.csv`, `users.csv`, `logins.npz`, `events_apply.csv`, `events_test.csv`, `events_notice.csv` |
-| `02_journey_map.py` | 상태 퍼널, 선호 정보 미작성률, 휴면·시즌 로그인 | `results/journey_*.csv`, `figures/fig1~3` |
-| `03_features_v1_snapshot.py` | 조회 시점 snapshot feature(원본 노트북 구조) | `data/features_v1_snapshot.csv` |
-| `04_features_v2_timecut.py` | 타깃 결정 직전 시점으로 자른 feature | `data/features_v2_timecut.csv` |
-| `05_compare_models.py` | 95/5 분할 → 10-fold CV, LR·RF·XGBoost·LightGBM, v1_asis / v1_pref / v2_pref | `results/model_comparison.csv`, `holdout_lightgbm.csv`, `importance_*.csv`, `figures/fig4~5` |
-| `06_nudge_list_compare.py` | 두 버전의 넛지 리스트(비동의 유저 상위 10%)를 심어둔 동의 성향으로 채점 | `results/oof_auc_vs_oracle.csv`, `nudge_list_comparison.csv`, `nudge_list_overlap.csv`, `figures/fig6` |
-| `07_cutoff_sweep.py` | 절단 시점을 동의일 기준 −30일\~+365일·snapshot으로 옮기며 AUC와 상위 feature 기록. 글의 인터랙티브 위젯 데이터 | `results/cutoff_sweep.csv`, `cutoff_sweep.json`(사이트 `src/data/cutoff-sweep.json`으로 복사, 위젯 CutoffExplorer) |
-| `08_site_figures.py` | 02·05·06의 그림 1\~6을 사이트 톤으로 작도. fig4(AUC 덤벨 + oracle 기준선)·fig5(중요도 순위 범프)는 여기서 재설계 | `outputs/figures/site/fig1~6.webp` |
-| `09_leakage_anatomy.py` | 그림 7\~11의 데이터: 동의 전후 일별 로그인 확률, 유저 12명 타임라인, v1/v2 OOF 점수와 ROC, 비동의 유저의 점수 분위·사분면. 06의 수치와 일치하는지 assert | `results/login_around_consent.csv`, `timeline_sample.csv`, `oof_scores.csv`, `roc_curves.csv`, `score_deciles.csv`, `score_quadrants.csv`, `leakage_anatomy_summary.csv` |
-| `10_site_figures_2.py` | 09의 CSV만 읽어 그림 7\~11 작도 | `outputs/figures/site/fig7~11.webp` |
+| 01 | 전체 가입 45만 명 (집계표) + 모델링 대상 38355명과 이벤트 생성. 구조 3종 주입 | `data/population.csv`, `users.csv`, `logins.npz`, `events_*.csv` |
+| 02 | 저니맵. 상태 퍼널, 선호 정보 미작성률, 휴면과 시즌 로그인 | `journey_*.csv`, `fig1~3` |
+| 03 | v1 snapshot feature (원본 노트북 구조) | `data/features_v1_snapshot.csv` |
+| 04 | v2 시간 절단 feature (타깃 결정 직전) | `data/features_v2_timecut.csv` |
+| 05 | 95/5 split 후 10-fold CV. LR, RF, XGBoost, LightGBM x v1_asis / v1_pref / v2_pref | `model_comparison.csv`, `importance_*.csv`, `fig4~5` |
+| 06 | 넛지 리스트 (비동의 상위 10%) 두 버전을 심어둔 동의 성향으로 채점 | `oof_auc_vs_oracle.csv`, `nudge_list_*.csv`, `fig6` |
+| 07 | cutoff를 동의일 기준 -30일~+365일, snapshot으로 옮기며 AUC와 상위 feature 기록 | `cutoff_sweep.csv`, `cutoff_sweep.json` (사이트 `src/data/cutoff-sweep.json`) |
+| 08 | 그림 1~6 사이트 톤. fig4, fig5는 재설계 | `outputs/figures/site/fig1~6.webp` |
+| 09 | 그림 7~11 데이터. 동의 전후 로그인, 타임라인 12명, OOF 점수와 ROC, 분위와 사분면. 06과 assert 대조 | `login_around_consent.csv`, `oof_scores.csv`, `leakage_anatomy_summary.csv` 등 |
+| 10 | 09의 CSV만 읽어 그림 7~11 | `outputs/figures/site/fig7~11.webp` |
 
-`common.py`에 경로와 상수가 있다. 스냅샷일 2023-06-23, 공채 시즌 4개, 원본 노트북의 feature 목록 32개. `features.py`의 `build_features(cutoff)`는 유저별 절단일 이하의 이벤트만 집계하며 v1과 v2가 같이 쓴다. `sitestyle.py`는 08과 10이 쓰는 사이트 톤이고, depression 폴더에 같은 파일이 있어 한쪽을 고치면 다른 쪽도 같이 고쳐야 한다.
+`common.py`에 스냅샷일 2023-06-23, 공채 시즌 4개, 원본 노트북 feature 32개. `features.py`의 `build_features(cutoff)`는 유저별 절단일 이하 이벤트만 집계하고 v1, v2가 같이 쓴다. `sitestyle.py`는 depression 폴더에 같은 파일이 있어서 한쪽 고치면 다른 쪽도.
 
-## 데이터 스키마
+원본의 PyCaret 호출은 scikit-learn StratifiedKFold, cross_validate로 옮김. 95/5 split, random_state 786, 10-fold, 모델 4종은 원본과 같고, 저니맵에서 봤지만 당시 모델에 안 넣었던 선호 정보 2개(`pref_salary_default_yn`, `pref_welfare_cnt`)를 더했다.
 
-| 파일 | 행 | 내용 |
-| --- | --- | --- |
-| `population.csv` | 76,384 | 전체 가입 유저 451,314명의 집계표. `join_date`, `season_joiner`, `status`(join_only / test_only / profile_only / test_and_profile), `last_login_date` 조합별 인원 `n`. 저니맵(02)에서만 쓴다 |
-| `users.csv` | 38,355 | 모델링 대상. 정적 속성(`gender`, `age`, `career_year`, `career_type`, `extra`, `final_edu_level`, `acca_grade`, `acca_t_score`, `mental_health_grade`, `marketing_consent_yn`), 선호 정보(`pref_salary_default_yn`, `pref_welfare_cnt`), 타임라인(`join_day`, `test1_day`, `profile_day`, `consent_day`. 미동의는 −1), 타깃 `matching_use_yn`, **`truth_*`** 4열 |
-| `logins.npz` | 38,355 × 758 | 유저 × 일 로그인 행렬(uint8). 2021-05-27부터 스냅샷일까지 |
-| `events_apply.csv` | 77,179 | 지원 이벤트. `user`, `day`, `midas`(특정 채널 여부), `midas_kind`, 퍼널 플래그 `try`·`apply`·`test`·`complete`, `company_id` |
-| `events_test.csv`, `events_notice.csv` | 68,058 / 25,180 | 역량 진단 검사 응시, 알림 응답. `user`, `day`. 같은 유저·같은 날 행이 여러 개면 그날 여러 건이다 |
-| `features_v1_snapshot.csv`, `features_v2_timecut.csv` | 38,355 × 37 | 원본 노트북의 feature 32개 + 선호 정보 2개 + 타깃 + `cutoff_day`. v1은 모두 스냅샷일, v2는 유저별 절단일 |
+## 확인할 숫자
 
-`truth_p_consent`는 동의 확률, `truth_commit`은 잠재 성실도이고, `truth_season_joiner`, `truth_pref_complete`까지 넷이 생성기의 잠재 변수다. 채점에만 쓰고 feature로는 쓰지 않는다. `days_since_last_login`은 0 이상으로 clip한다. 동의일이 가입일과 같은 유저는 절단일이 가입일 전날이라 음수가 나오기 때문이다.
+- 01: 동의율 0.806 (30,898 / 38,355). 원본 기록 81%에 맞춰 절편을 푼 값이라 여기서 벗어나면 생성기가 달라진 것
+- 05: v1_asis LightGBM 10-fold AUC 0.944, v2_pref 0.687. 앞의 것이 정답 확률의 AUC 0.716보다 높은 게 leakage 증거, 뒤의 것이 그 아래 붙는 게 정상
+- 06: oracle 0.716, v1 OOF 0.944, v2 OOF 0.687. 두 리스트 겹침 28.1%, 상위 10%를 뽑아도 열에 일곱은 다른 사람
+
+## 데이터
+
+`population.csv` 76,384행은 전체 가입 45만 명을 `join_date`, `season_joiner`, `status`, `last_login_date` 조합별 인원 `n`으로 집계한 것. 저니맵(02)에서만 쓴다. `users.csv` 38,355행은 모델링 대상으로 정적 속성, 선호 정보 2열, 타임라인(`join_day`, `test1_day`, `profile_day`, `consent_day`. 미동의는 -1), 타깃 `matching_use_yn`, `truth_*` 4열. `logins.npz`는 유저 x 일(38,355 x 758) 로그인 행렬. 이벤트는 `events_apply.csv` 77,179행 (퍼널 플래그, 채널, `company_id`), `events_test.csv` 68,058행, `events_notice.csv` 25,180행.
+
+`features_v1_snapshot.csv`, `features_v2_timecut.csv`는 38,355 x 37. 원본 feature 32 + 선호 정보 2 + 타깃 + `cutoff_day`. v1은 전원 스냅샷일, v2는 유저별 절단일.
+
+`truth_p_consent`(동의 확률), `truth_commit`(잠재 성실도), `truth_season_joiner`, `truth_pref_complete`는 생성기의 잠재 변수라 채점에만 쓰고 feature에 안 들어간다. `days_since_last_login`은 0으로 clip. 동의일이 가입일과 같으면 절단일이 가입일 전날이라 음수가 나와서.
 
 ## 심어둔 구조
 
-| 구조 | 생성기 | 확인 |
-| --- | --- | --- |
-| 1. 동의 → 로그인. 동의한 유저는 검사 결과 확인·지원 관리로 다시 들어오므로 로그인이 타깃 결정 이후에 오른다 | 01의 `after` 마스크(강도 2.2배), 결과표 확인 burst | `leakage_anatomy_summary.csv`(동의 다음 날 로그인 확률 0.775 vs 비동의 0.103), `cutoff_sweep.csv`(절단일이 동의일을 넘는 순간 AUC 0.69 → 0.88) |
-| 2. 시즌 가입자. 공채 시즌 직전 가입자는 한 번 지원하고 떠난다. 가입 월이 그 동기의 proxy | `motive_pop`, `leave_day` | `journey_dormancy.csv`, fig3의 시즌 로그인 |
-| 3. 선호 정보 완성이 진짜 원인. 연봉을 기본값으로 두지 않고 복지 항목을 5개 이상 고른 유저의 동의 확률이 높다 | `pref_complete`, 동의 logit의 계수 1.30 | `journey_preference_by_consent.csv`, `importance_v2_pref.csv`(v2에서 선호 정보가 상위로 올라옴) |
+- 동의 후 로그인 증가 (01의 `after` 마스크 2.2배 + 결과표 확인 burst). 동의 다음 날 로그인 확률 0.775 vs 비동의 0.103, 절단일이 동의일을 넘는 순간 AUC 0.69 -> 0.88 (`cutoff_sweep.csv`)
+- 시즌 가입자. 공채 시즌 직전 가입자는 한 번 지원하고 떠남, 가입 월이 그 proxy (`journey_dormancy.csv`, fig3)
+- 선호 정보 완성이 진짜 원인. 연봉 기본값이 아니고 복지 5개 이상이면 동의 logit +1.30. v2에서 상위로 올라옴 (`importance_v2_pref.csv`)
 
-동의율은 원본 기록대로 81%가 되게 절편을 푼다. oracle은 `truth_p_consent`로 순위를 매긴 AUC이고, v1의 0.944가 oracle의 0.716을 넘는 것이 이 폴더가 보여주려는 leakage다.
+oracle은 `truth_p_consent`로 순위를 매긴 AUC. v1의 0.944가 oracle 0.716을 넘는 게 이 폴더가 보여주려는 leakage.
 
-## 결과 파일
+## 알려진 문제
 
-| 파일 | 내용 | 글에서 |
-| --- | --- | --- |
-| `journey_funnel.csv`, `journey_preference_fields.csv`, `journey_preference_by_consent.csv`, `journey_dormancy.csv` | 상태 퍼널, 선호 정보 미작성률, 동의 여부별 선호 정보, 휴면 비율 | 저니맵 절, fig1\~3 |
-| `model_comparison.csv`, `holdout_lightgbm.csv` | 10-fold CV 지표(모델 4 × feature 구성 3), 5% holdout | 모델 비교 표, fig4 |
-| `importance_v1_asis.csv`, `importance_v1_pref.csv`, `importance_v2_pref.csv` | LightGBM gain 중요도(one-hot을 원 feature로 합산) | fig5 |
-| `oof_auc_vs_oracle.csv` | oracle, v1, v2의 OOF AUC | "v1 0.944 > oracle 0.716" |
-| `nudge_list_comparison.csv`, `nudge_list_overlap.csv` | 두 리스트의 구성과 심어둔 동의 성향, 겹침, 무작위 baseline | 넛지 리스트 표, fig6 |
-| `cutoff_sweep.csv`, `cutoff_sweep.json` | 절단 시점별 AUC·상위 feature | 위젯 CutoffExplorer |
-| `login_around_consent.csv`, `timeline_sample.csv`, `oof_scores.csv`, `roc_curves.csv`, `score_deciles.csv`, `score_quadrants.csv`, `leakage_anatomy_summary.csv` | 그림 7\~11의 데이터. 캡션의 숫자는 `leakage_anatomy_summary.csv`에 모여 있다 | fig7\~11 |
-
-## 원본과 다른 점
-
-원본 노트북의 PyCaret 호출은 scikit-learn의 StratifiedKFold와 cross_validate로 옮겼다. 95/5 분할과 `random_state=786`, 10-fold, 비교 모델 4종은 원본과 같다. 원본 40개 컬럼 중 모델에 쓰인 32개 feature와 타깃을 그대로 쓰고, 저니맵에서 확인했지만 당시 모델에는 넣지 않았던 선호 정보 2개, `pref_salary_default_yn`과 `pref_welfare_cnt`를 더했다.
-
-## 남은 것
-
-- 07의 음의 offset은 거의 의미가 없다. cutoff 하한이 프로필 완성 전날이고 동의 지연의 중앙값이 3일이라, −30일이든 −1일이든 대부분 유저에서 같은 날로 잘린다. AUC가 0.68 근처에서 움직이지 않는 이유다. 위젯에는 그대로 실려 있다.
-- 10의 fig8 제목에 "7,457명"과 "겹침 28%"가 숫자 그대로 박혀 있다. 다른 그림은 전부 CSV에서 읽는데 이것만 손으로 적었다. 데이터가 바뀌면 제목이 틀린다.
-- `model_comparison.csv`의 학습 시간 열은 실행마다 다르다. 이 파일만 두 번 실행 결과가 byte 단위로 같지 않다.
+- 07의 음의 offset은 거의 의미 없음. cutoff 하한이 프로필 완성 전날이고 동의 지연 중앙값이 3일이라 -30일이든 -1일이든 대부분 같은 날로 잘림. AUC가 0.68 근처에서 안 움직이는 이유. 위젯에는 그대로
+- 10의 fig8 제목에 "7,457명"과 "겹침 28%"가 손으로 박혀 있음. 다른 그림은 전부 CSV에서 읽는데 이것만. 데이터 바뀌면 제목이 틀림

@@ -1,9 +1,8 @@
-"""기기 500대의 180일치 일별 로그를 만든다.
+"""기기 500대 x 180일 일별 로그 생성
 
-심각 이벤트 7일 전부터 W3 발생률이 선형으로 오르고, 14일 전부터는 사용량의 분산만 커지며 평균은 그대로다.
-여기까지가 진짜 전조다. 그리고 기기 12%는 W7이 상시 높지만 심각 이벤트와는 무관하다. 모델이 물어야 할
-함정으로 넣었다. 교란군과 심각 기기는 겹치지 않게 뽑았는데, 겹치면 W7이 진짜 신호처럼 보여서 함정이 함정이
-아니게 된다. 심각 이벤트는 기기당 한 번이고, 그날 이후의 행은 03이 잘라낸다.
+- 진짜 전조 2개: 이벤트 7일 전부터 W3 램프, 14일 전부터 사용량 분산만 증가 (평균 유지)
+- 함정: 기기 12%는 W7 상시 높음, 이벤트와 무관. severe 기기와 안 겹치게 뽑음 (겹치면 함정이 아니게 됨)
+- 심각 이벤트는 기기당 1회. 이후 행은 03에서 제거
 """
 
 from pathlib import Path
@@ -16,11 +15,11 @@ N_DEVICES = 500
 N_DAYS = 180
 START = pd.Timestamp("2025-01-01")
 
-SEVERE_FRAC = 0.08  # 심각 이벤트 경험 기기 비율
-CONFOUNDER_FRAC = 0.12  # 교란용(W7 상시 높음) 기기 비율, 심각 기기와 겹치지 않음
-MIN_EVENT_DAY = 30  # 전조 구간(최대 14일)이 온전히 들어가도록 여유
+SEVERE_FRAC = 0.08
+CONFOUNDER_FRAC = 0.12  # W7 상시 높음 군. severe와 안 겹침
+MIN_EVENT_DAY = 30  # 전조 14일이 다 들어가게
 
-# 경고 코드별 기본 발생률, 일 평균 건수. W3와 W7에 신호가 얹힌다
+# 일 평균 건수. W3, W7에 신호 얹힘
 WARNING_BASE_RATES = {
     "W1": 0.40,
     "W2": 0.25,
@@ -33,17 +32,17 @@ WARNING_BASE_RATES = {
     "W9": 0.08,
 }
 
-# 신호 (1): W3 발생률에 얹는 선형 램프. 7일 전 +0.5에서 당일 +4.0까지
+# 신호 1. W3 램프, -7일 +0.5 -> 당일 +4.0
 W3_RAMP_DAYS = 7
 W3_RAMP_START = 0.5
 W3_RAMP_END = 4.0
 
-# 신호 (2): 사용량 노이즈의 lognormal sigma를 14일 전부터 선형으로 키운다
+# 신호 2. 사용량 lognormal sigma, -14일부터 선형 증가
 USAGE_SIGMA_BASE = 0.08
 USAGE_SIGMA_PEAK = 0.60
 USAGE_VAR_DAYS = 14
 
-# 신호 (3): 교란 기기군의 W7 발생률 범위
+# 함정. 교란군 W7 발생률
 CONFOUNDER_W7_RANGE = (2.5, 4.0)
 
 rng = np.random.default_rng(SEED)
@@ -62,14 +61,13 @@ group = np.full(N_DEVICES, "normal", dtype=object)
 group[severe_idx] = "severe"
 group[confounder_idx] = "confounder"
 
-# 심각 이벤트 발생일 (기기당 1회)
 event_day = np.full(N_DEVICES, -1)
 event_day[severe_idx] = rng.integers(MIN_EVENT_DAY, N_DAYS, size=n_severe)
 
 usage_mu = np.clip(rng.normal(30, 8, size=N_DEVICES), 10, 60)
 warn_mult = rng.lognormal(0, 0.3, size=(N_DEVICES, len(WARNING_BASE_RATES)))
 
-# 사용량은 Poisson(mu * eps), eps는 평균이 1이 되게 보정한 lognormal. sigma만 키우면 평균은 그대로고 분산만 커진다
+# eps는 평균 1로 보정한 lognormal. sigma만 키우면 분산만 커짐
 sigma = np.full((N_DEVICES, N_DAYS), USAGE_SIGMA_BASE)
 for i in severe_idx:
     t = event_day[i]
@@ -85,7 +83,6 @@ for j, (code, base) in enumerate(WARNING_BASE_RATES.items()):
     lam = np.full((N_DEVICES, N_DAYS), base) * warn_mult[:, j][:, None]
 
     if code == "W3":
-        # 신호 (1): 이벤트 7일 전부터 선형 램프
         for i in severe_idx:
             t = event_day[i]
             for d in range(max(0, t - W3_RAMP_DAYS), t + 1):
@@ -98,7 +95,7 @@ for j, (code, base) in enumerate(WARNING_BASE_RATES.items()):
 
     warning_counts[code] = rng.poisson(lam)
 
-# count > 0인 행만 남긴다. 없는 날은 뒤에서 0으로 채운다
+# count > 0인 행만. 빈 날은 03에서 0 채움
 dates = START + pd.to_timedelta(np.arange(N_DAYS), unit="D")
 
 

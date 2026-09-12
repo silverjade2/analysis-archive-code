@@ -1,9 +1,8 @@
-"""k 선택. 로그 변환 뒤 표준화한 데이터로 k=2에서 10까지 훑는다.
+"""k 선택. log1p + 표준화, k=2~10
 
-elbow와 silhouette가 명확한 k를 가리키는지부터 본다. 그다음 03에서 본 트레이드오프, 즉 로그 변환이 노이즈
-15대의 극단성을 눌러 allday_low에 흡수시킨 문제가 k=5에서 풀리는지. 군집 예산이 하나 늘면 노이즈가 독립
-군집으로 복원되는지가 관건이다. 마지막으로 각 k에서 군집별 크기와 정답 구성을 기록해 "지표가 고르는 k"와
-"해석 가능성이 고르는 k"가 갈리는 지점을 남긴다.
+- elbow, silhouette가 어느 k를 가리키는지
+- 03에서 allday_low에 흡수된 노이즈 15대가 k=5에서 독립 군집으로 돌아오는지
+- k별 군집 크기와 정답 구성 기록
 """
 
 from pathlib import Path
@@ -62,7 +61,7 @@ for k in K_RANGE:
     print(f"k={k}: " + "  ".join(parts))
 print()
 
-print("── k=4 vs k=5 — 노이즈 소군집 15대 추적 ──")
+print("── k=4 vs k=5: 노이즈 소군집 15대 추적 ──")
 for k in (4, 5):
     pred = preds[k]
     crosstab = pd.crosstab(true, pred, margins=True)
@@ -72,7 +71,7 @@ for k in (4, 5):
     top_cluster = noise_pred.value_counts().idxmax()
     recall = (noise_pred == top_cluster).sum() / len(noise_pred)
     purity = (true[pred == top_cluster] == "noise").mean()
-    print(f"노이즈 15대 → 예측 군집 {top_cluster} (재현율 {recall:.0%}, 순도 {purity:.0%})\n")
+    print(f"노이즈 15대 -> 예측 군집 {top_cluster} (재현율 {recall:.0%}, 순도 {purity:.0%})\n")
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4))
 
@@ -93,10 +92,10 @@ axes[1].grid(alpha=0.3)
 
 for ax in axes:
     ax.set_xticks(list(K_RANGE))
-fig.suptitle("k 선택 sweep — 로그+표준화 K-means (k=2~10)")
+fig.suptitle("k sweep, 로그+표준화 K-means (k=2~10)")
 fig.tight_layout()
 fig.savefig(fig_dir / "fig5_k_sweep.png", dpi=150)
-print(f"플롯 저장 — {fig_dir / 'fig5_k_sweep.png'}")
+print(f"플롯 저장: {fig_dir / 'fig5_k_sweep.png'}")
 
 LABEL_ORDER = ["morning", "allday_low", "night", "intermittent", "noise"]
 LABEL_COLORS = {
@@ -122,10 +121,10 @@ for ax, k in zip(axes, (4, 5)):
     ax.grid(alpha=0.3, axis="y")
 axes[0].set_ylabel("기기 수")
 axes[1].legend(title="정답 레이블", fontsize=8, loc="upper right")
-fig.suptitle("k=4 vs k=5 — 예측 군집별 정답 레이블 구성 (노이즈 15대의 행방)")
+fig.suptitle("k=4 vs k=5: 예측 군집별 정답 레이블 구성")
 fig.tight_layout()
 fig.savefig(fig_dir / "fig6_k4_vs_k5.png", dpi=150)
-print(f"플롯 저장 — {fig_dir / 'fig6_k4_vs_k5.png'}")
+print(f"플롯 저장: {fig_dir / 'fig6_k4_vs_k5.png'}")
 
 res_dir = base / "outputs" / "results"
 res_dir.mkdir(parents=True, exist_ok=True)

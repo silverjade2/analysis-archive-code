@@ -1,8 +1,7 @@
-"""우울 진단 v1. 원 프로젝트 방식.
+"""우울 진단 v1. 원 방식
 
-상담 스크립트의 증상 의도 발화는 1, 일상 대화는 0. 상담 스크립트의 일상 의도 발화 4,000건은 학습에서 뺀다.
-홀드아웃 7:3. 같은 테스트셋을 학습 라벨과 truth_depressed 두 기준으로 채점하고, 학습에서 뺀 상담 일상 의도
-발화, 즉 모델이 한 번도 본 적 없는 4,000건을 넣어 우울로 찍는 비율을 본다.
+상담 증상 의도 = 1, 일상 = 0, 상담 일상 의도 4000건은 학습에서 제외. 7:3 홀드아웃
+같은 테스트셋을 학습 라벨과 truth_depressed로 각각 채점 + 학습에서 뺀 4000건의 우울 예측률
 """
 
 import numpy as np
@@ -15,7 +14,7 @@ df = pd.read_csv(DATA / "utterances.csv", low_memory=False)
 df["is_symptom"] = df.intent.fillna("").str.startswith("정신증상").astype(int)
 df["label_v1"] = df.is_symptom  # 상담 증상 = 1, 나머지 0
 tr, te = depression_split(df)
-tr_v1 = tr[~((tr.source == "counsel") & (tr.is_symptom == 0))]  # 원 방식: 상담 일상 의도는 학습에서 제외
+tr_v1 = tr[~((tr.source == "counsel") & (tr.is_symptom == 0))]  # 상담 일상 의도 제외
 te_v1 = te[~((te.source == "counsel") & (te.is_symptom == 0))]  # 원 프로젝트가 채점한 범위
 
 m = TextClf(SEED).fit(tr_v1.text, tr_v1.label_v1)
@@ -50,7 +49,7 @@ rows.append(
 res = pd.DataFrame(rows).round(4)
 res.to_csv(RESULTS / "depression_v1_metrics.csv", index=False)
 
-# 상담 일상 의도는 학습에 쓰지 않았으므로 4,000건 전부에 넣어 본다
+# 학습에 안 쓴 4000건 전부
 dropped = df[(df.source == "counsel") & (df.is_symptom == 0)]
 p_dropped = m.predict(dropped.text)
 d = te[te.source == "daily"]
@@ -79,8 +78,7 @@ detail = pd.DataFrame(
 ).round(4)
 detail.to_csv(RESULTS / "depression_v1_by_group.csv", index=False)
 
-# oracle. 내용 토큰이 정답을 가리키면 맞히고, 아니면 출처 안의 다수 클래스로 찍는다. 상담 발화의 80%가 우울이므로
-# 상담이면 1, 일상이면 0. 생성 모델을 아는 판정자의 상한이다
+# oracle. 내용 토큰이 정답을 가리키면 맞히고, 아니면 출처의 다수 클래스(상담 1, 일상 0). 생성 모델을 아는 판정자의 상한
 inf = te.truth_text_informative_dep.values.astype(bool)
 prior = (te.source == "counsel").astype(int).values
 op = np.where(inf, te.truth_depressed.values, prior)

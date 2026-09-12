@@ -1,8 +1,8 @@
-"""모델이 어떤 신호를 쓰는지 SHAP으로 본다. 대상은 05에서 PR-AUC가 가장 높았던 no_handling 모델이다.
+"""SHAP. 대상은 05의 no_handling (PR-AUC 최고)
 
-심어둔 진짜 신호인 W3 빈도와 사용량 표준편차가 상위에 오는지, 함정인 W7을 모델이 얼마나 쓰는지, W7을 빼고
-다시 학습하면 성능이 얼마나 변하는지를 본다. W7은 기여의 방향까지 본다. 교란군은 이벤트가 없으므로
-모델이 "W7 높음은 안전"으로 배웠을 가능성이 있는데, 그건 인과가 아니라 코호트 구성의 산물이다.
+- 진짜 신호(W3, u1_std)가 위에 오는지, 함정 W7을 얼마나 쓰는지
+- W7은 기여 방향도. 교란군에 이벤트가 없어서 "W7 높음 = 안전"으로 배웠을 수 있음
+- W7 제거 ablation
 """
 
 from pathlib import Path
@@ -33,7 +33,7 @@ model = joblib.load(base / "data" / "model_no_handling.joblib")
 
 explainer = shap.TreeExplainer(model)
 shap_values = explainer.shap_values(X_te)
-if isinstance(shap_values, list):  # 구버전 shap은 [음성, 양성] 리스트로 준다
+if isinstance(shap_values, list):  # 구버전 shap은 [neg, pos] 리스트
     shap_values = shap_values[1]
 
 mean_abs = pd.Series(np.abs(shap_values).mean(axis=0), index=feature_cols)
@@ -47,13 +47,13 @@ def rank_of(prefix: str) -> list[str]:
     return [f"{i + 1}위 {n}" for i, n in enumerate(ranking.index) if n.startswith(prefix)]
 
 
-print("\n진짜 신호 — W3:", ", ".join(rank_of("w3")))
-print("진짜 신호 — 사용량:", ", ".join(rank_of("u1")))
-print("함정 신호 — W7:", ", ".join(rank_of("w7")))
+print("\n진짜 신호 W3:", ", ".join(rank_of("w3")))
+print("진짜 신호 사용량:", ", ".join(rank_of("u1")))
+print("함정 신호 W7:", ", ".join(rank_of("w7")))
 
 fig = plt.figure()
 shap.summary_plot(shap_values, X_te, max_display=15, show=False)
-plt.title("SHAP summary — 테스트 구간, no_handling 모델", fontsize=12)
+plt.title("SHAP summary (test 구간, no_handling)", fontsize=12)
 plt.tight_layout()
 plt.savefig(base / "outputs" / "figures" / "fig5_shap_summary.png", dpi=150, bbox_inches="tight")
 plt.close("all")
@@ -65,11 +65,11 @@ ax.scatter(X_te[w7_feat], shap_values[:, idx], s=6, alpha=0.3, color="tab:orange
 ax.axhline(0, color="black", lw=0.8)
 ax.set_xlabel(f"{w7_feat} (14일 W7 발생 건수)" if "14d" in w7_feat else w7_feat)
 ax.set_ylabel("SHAP 값 (양수 = 위험 쪽 기여)")
-ax.set_title(f"함정 신호의 사용 방식 — {w7_feat}의 SHAP 기여")
+ax.set_title(f"함정 신호 {w7_feat}의 SHAP 기여")
 fig.tight_layout()
 fig.savefig(base / "outputs" / "figures" / "fig6_shap_w7.png", dpi=150)
 
-# 05와 같은 하이퍼파라미터. 05를 바꾸면 여기도 손으로 맞춰야 한다
+# 05 파라미터 복사. 05 바꾸면 여기도 손으로
 no_w7 = [c for c in feature_cols if not c.startswith("w7")]
 ablated = LGBMClassifier(
     n_estimators=400,

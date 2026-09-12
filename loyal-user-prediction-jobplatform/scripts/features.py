@@ -1,8 +1,6 @@
-"""v1(snapshot)과 v2(시간 절단)가 공유하는 feature 생성.
+"""v1(snapshot), v2(시간 절단) 공용 feature 생성
 
-build_features(cutoff)는 모든 유저에 대해 노트북 feature 32개와 선호 정보 feature 2개를 그 유저의 cutoff
-당일까지의 이벤트만으로 계산한다. 전원의 cutoff를 snapshot 당일로 두면 원래 노트북의 snapshot 테이블 v1이
-그대로 나온다.
+build_features(cutoff): 유저별 cutoff 당일까지 이벤트로 feature 32 + 선호 2. 전원 cutoff = snapshot이면 v1
 """
 
 import numpy as np
@@ -20,7 +18,7 @@ def load():
 
 
 def _count_upto(ev, cutoff, col=None, mask=None):
-    """유저별로 day <= cutoff[user]인 이벤트 수를 센다. 플래그 열 / 행 mask는 선택."""
+    """유저별 day <= cutoff[user] 이벤트 수"""
     m = ev["day"].values <= cutoff[ev["user"].values]
     if mask is not None:
         m &= mask
@@ -41,7 +39,7 @@ def build_features(cutoff, users=None, logins=None, ev_apply=None, ev_test=None,
     f = pd.DataFrame({"user": users["user"].values})
     f["days_since_last_login"] = np.maximum(
         cutoff - last, 0
-    )  # 동의일 = 가입일이면 절단일이 가입일 전날이라 음수가 된다. 0으로 막는다
+    )  # 동의일 = 가입일이면 절단일이 가입일 전날 -> 음수. 0으로 clip
     f["login_counts"] = window.sum(1)
 
     mid = ev_apply["midas"].values == 1

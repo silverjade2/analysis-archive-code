@@ -1,6 +1,8 @@
 # usage-pattern-clustering
 
-글: [사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering)
+[사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering) 재현 코드.
+
+원본은 실제 기기 사용 로그로 했던 사용 패턴 세그멘테이션. 클러스터링은 정답이 없어 틀려도 티가 안 나서, 여기서는 정답 군집과 함정을 심은 가상 프로파일을 만들어 같은 절차를 돌리고 어디서 틀리는지 본다 (실제 데이터 없음).
 
 ## 실행
 
@@ -9,64 +11,40 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
-- Apple Silicon 기준 전체 약 12초.
-- 환경: Python 3.14.6, numpy 2.5.2, pandas 3.0.5, scipy 1.18.1, scikit-learn 1.9.0, matplotlib 3.11.1.
-- `data/`를 지우고 다시 돌려도 데이터와 결과 CSV가 byte 단위로 같다.
-- 제대로 돌았는지 확인할 숫자
-  - 02의 ARI 0.238, 사실상 랜덤. 분산 비율 99.8%는 거리 계산을 total_usage 한 열이 다 정했다는 뜻
-  - 03의 ARI 0.723(표준화만)과 0.897(로그 변환 뒤 표준화). 로그 변환이 낫지만 그 대가로 노이즈 15대가 allday_low에 흡수된다
-  - 04의 k=5 silhouette 0.412, ARI 0.928. 지표가 고른 k와 정답이 같은 k를 가리키고, 노이즈 15대가 독립 군집으로 돌아온다
+전체 12초 정도. 경로는 파일 위치 기준이라 어디서 실행해도 된다.
 
-## Pipeline
+재현에 쓴 버전: Python 3.14, numpy 2.5, pandas 3.0, scipy 1.18, scikit-learn 1.9, matplotlib 3.11. 이 조합에서는 `data/`를 지우고 다시 돌려도 데이터와 결과 CSV가 동일.
 
-| 스크립트 | 역할 | 출력 |
+## 스크립트
+
+| | 역할 | 주요 출력 |
 | --- | --- | --- |
-| `01_generate_usage_profiles.py` | 가상데이터 생성(진짜 군집 4 + 함정 3종) + 정답 기준 검증 plot | `data/usage_profiles.csv`, `results/true_cluster_sizes.csv`, `figures/fig1` |
-| `02_cluster_naive.py` | 1차 시도: scaling 없는 K-means(k=4), 분산 지배 진단 | `results/naive_kmeans_summary.csv`, `naive_crosstab.csv`, `naive_usage_by_pred.csv`, `figures/fig2` |
-| `03_cluster_scaled.py` | 2차 시도: 표준화만 vs 로그+표준화(k=4), skewness 진단, 노이즈 15대 추적 | `results/skewness.csv`, `scaling_compare.csv`, `crosstab_standard.csv`, `crosstab_log_standard.csv`, `figures/fig3~4` |
-| `04_select_k.py` | k=2\~10 sweep(inertia·silhouette·ARI), k=4/5 대조 | `results/k_sweep.csv`, `k_composition.csv`, `crosstab_k4.csv`, `crosstab_k5.csv`, `figures/fig5~6` |
-| `05_profile_clusters.py` | 최종 군집(k=5) z-score 프로파일링과 비즈니스 라벨 | `results/cluster_zscore.csv`, `cluster_labels.csv`, `final_crosstab.csv`, `figures/fig7` |
+| 01 | 기기 800대 프로파일 생성. 진짜 군집 4 + 함정 3종, 정답 기준 검증 plot | `data/usage_profiles.csv`, `true_cluster_sizes.csv`, `fig1` |
+| 02 | 1차 시도. scaling 없는 K-means (k=4), 분산 지배 진단 | `naive_kmeans_summary.csv`, `naive_crosstab.csv`, `fig2` |
+| 03 | 2차 시도. 표준화만 vs log1p + 표준화 (k=4), skewness, 노이즈 15대 추적 | `scaling_compare.csv`, `crosstab_*.csv`, `fig3~4` |
+| 04 | k=2~10 sweep (inertia, silhouette, ARI), k=4 vs 5 대조 | `k_sweep.csv`, `k_composition.csv`, `fig5~6` |
+| 05 | 최종 군집 (k=5) z-score 프로파일과 비즈니스 라벨 | `cluster_zscore.csv`, `cluster_labels.csv`, `fig7` |
 
-## 데이터 스키마
+## 확인할 숫자
 
-`data/usage_profiles.csv` (800행 × 171열).
+- 02: ARI 0.238, 사실상 랜덤. 분산 비율 99.8%는 거리 계산을 total_usage 한 열이 다 정했다는 뜻
+- 03: ARI 0.723 (표준화만), 0.897 (log1p + 표준화). 로그 변환이 낫지만 노이즈 15대가 allday_low에 흡수됨 (순도 6%)
+- 04: k=5에서 silhouette 0.412, ARI 0.928. 지표가 고른 k와 정답 k가 같고 노이즈 15대가 독립 군집으로 돌아옴
 
-| 열 | 설명 |
-| --- | --- |
-| `device_id` | D0000\~D0799 |
-| `u_{dow}_h{HH}` × 168 | 요일(mon\~sun) × 시각(00\~23)의 평균 사용 강도, 0\~10 |
-| `total_usage` | 전체 사용량 합산 지표, 0\~5000. 셀 합 × 3.5 + 노이즈 |
-| `true_cluster` | 정답 라벨(morning / allday_low / night / intermittent / noise). 채점 전용, 클러스터링 입력에 쓰지 않는다 |
+## 데이터
+
+`usage_profiles.csv` 800행 x 171열. `device_id`(D0000~D0799), `u_{dow}_h{HH}` 168열 (요일 x 시각 평균 사용 강도, 0~10), `total_usage`(0~5000, 셀 합 x 3.5 + noise), `true_cluster`(morning / allday_low / night / intermittent / noise). 정답 열은 채점 전용이고 클러스터링 입력에 안 들어간다.
+
+세그멘테이션 시리즈 2편은 이 폴더의 생성기를 그대로 복사해 쓴다. 01을 고치면 여기 pipeline 전체를 다시 돌리고 2편 폴더의 생성기도 같이 바꿔야 함.
 
 ## 심어둔 구조
 
-| 구조 | 생성기 | 확인 |
-| --- | --- | --- |
-| 진짜 군집 4개: morning 230, allday_low 240, night 165, intermittent 150 | `CLUSTER_SIZES`, `*_profile()` | fig1, `true_cluster_sizes.csv` |
-| 함정 1. `total_usage`만 스케일이 커서 scaling 없이는 이 축이 거리를 지배 | `TOTAL_SCALE` | `naive_kmeans_summary.csv`의 `var_share_total_usage` 0.998, `naive_usage_by_pred.csv`(예측 군집이 total_usage 구간으로 정확히 갈림) |
-| 함정 2. night ↔ intermittent 기기의 35%는 상대 프로파일과 혼합. intermittent의 버스트 시간대도 저녁에 치우침 | `BLUR_FRAC`, `BLUR_ALPHA`, `intermittent_profile()` | `crosstab_k5.csv`(night 군집에 남는 intermittent 28대). 애초 목적(elbow를 애매하게)은 실패했고 글에 그렇게 적었다 |
-| 함정 3. 24시간 상시 고강도인 노이즈 소군집 15대 | `noise_profile()` | `scaling_compare.csv`(로그 변환에서 allday_low에 흡수, 순도 6%), `crosstab_k5.csv`(k=5에서 복원) |
+- 진짜 군집 4개: morning 230, allday_low 240, night 165, intermittent 150
+- 함정 1. `total_usage`만 스케일이 커서 scaling 없이는 이 축이 거리를 지배. `naive_kmeans_summary.csv`의 분산 비율 0.998
+- 함정 2. night, intermittent 기기의 35%는 상대 프로파일과 혼합. intermittent 버스트 시간대도 저녁에 치우침
+- 함정 3. 24시간 상시 고강도 노이즈 15대. 로그 변환에서 allday_low에 흡수됐다가 k=5에서 복원 (`crosstab_k5.csv`)
 
-## 결과 파일
+## 알려진 문제
 
-| 파일 | 내용 | 글에서 |
-| --- | --- | --- |
-| `naive_kmeans_summary.csv` | ARI, 시간대 feature 분산 합, total_usage 분산, 비율 | 1차 시도 절 (0.238, 497.8, 320,498.9, 99.8%) |
-| `naive_crosstab.csv`, `naive_usage_by_pred.csv` | 정답 × 예측 교차표, 예측 군집별 total_usage 범위 | 1차 시도 절의 표와 구간 |
-| `skewness.csv` | 시간대 feature skewness 평균·최대, total_usage skewness | 전처리 절 (2.3, 4.1, 5.1) |
-| `scaling_compare.csv` | 방법별 ARI, 노이즈 재현율·순도 | 전처리 절 비교 표 |
-| `crosstab_standard.csv`, `crosstab_log_standard.csv` | 두 방법의 교차표 | "121대가 allday_low에 흡수", "361대" |
-| `k_sweep.csv`, `k_composition.csv` | k별 inertia·silhouette·ARI, k별 군집 구성 | k 선택 표, "k=6은 morning을 109+121로" |
-| `crosstab_k4.csv`, `crosstab_k5.csv` | k=4/5 교차표 | fig6, 노이즈 15대의 행방 |
-| `cluster_zscore.csv`, `cluster_labels.csv`, `final_crosstab.csv` | 군집별 평균 z-score, 라벨, 최종 교차표 | 라벨링 표와 fig7 |
-
-## 후속 글
-
-세그멘테이션 시리즈 2편(발행 전)은 이 폴더의 생성기를 그대로 복사해 쓴다. 생성기(`01_`)를 고치면 이 폴더의 pipeline 전체를 다시 돌리고, 후속 글 폴더의 `00_generate_usage_profiles.py`도 같은 내용으로 바꾼다.
-
-## 남은 것
-
-- 함정 2의 애초 목적은 elbow를 애매하게 만드는 것이었다. 실패했고 글에 그렇게 적었다. 대신 night 군집에 intermittent 28대가 남는 흔적으로만 남았다.
-- 05의 비즈니스 라벨은 KMeans가 준 군집 번호에 손으로 붙인 것이다. 데이터나 seed가 바뀌면 번호가 뒤섞이므로 히트맵을 다시 읽고 라벨을 다시 붙여야 한다.
-- 03은 02의 결과를 읽지 않고 scaling 없는 K-means를 같은 seed로 다시 돌려 대조군으로 쓴다. 둘이 같다는 것은 stdout으로만 확인했다.
-- 02의 마지막 print는 그림 경로를 `figures/`로 찍지만 실제 저장 위치는 `outputs/figures/`다. 저장은 맞고 메시지만 틀렸다.
+- 함정 2는 elbow를 애매하게 만들려던 건데 실패. night 군집에 intermittent 28대가 남는 흔적 정도만 (글에 그렇게 적음)
+- 05의 라벨은 KMeans 군집 번호에 손으로 붙인 것. seed나 데이터가 바뀌면 번호가 섞이므로 히트맵을 다시 읽고 다시 붙여야 함

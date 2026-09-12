@@ -1,11 +1,9 @@
-"""감정 분류. multimodal 대 텍스트 비교를 세 가지 프로토콜로 돌린다.
+"""감정 분류. multimodal vs 텍스트, 프로토콜 3개
 
-(a) 원 프로젝트 방식. 텍스트는 전체 19,374건, multimodal은 2,000건 랜덤 subset. 각자 자기 데이터 안에서 랜덤
-    홀드아웃 70/30. 테스트셋이 다르다.
-(b) 같은 2,000건, 같은 랜덤 분할에서 텍스트, 음성, multimodal.
-(c) 전체 19,374건, 화자 분리 분할(GroupShuffleSplit)에서 텍스트, 음성, multimodal. 2,000건 화자 분리도 같이.
-추가로 화자 사전확률 baseline, 즉 학습셋에서 화자의 최빈 감정으로 찍기, oracle 상한, N × 분할 방식 × 모델 곡선을
-seed 3개 평균으로 구한다.
+(a) 원 방식. 텍스트는 전체 19374건, multimodal은 2000건 랜덤 subset, 각자 70/30 (테스트셋이 다름)
+(b) 같은 2000건, 같은 랜덤 분할
+(c) 화자 분리 분할(GroupShuffleSplit), 전체와 2000건
++ 화자 사전확률 baseline, oracle 상한, N x 분할 x 모델 곡선 (seed 3개)
 """
 
 import numpy as np
@@ -61,9 +59,7 @@ def run(tr, te, model, seed):
 
 
 def oracle_pred(te, rng):
-    """텍스트 신호가 정답을 가리키면 정답. 아니면 음성 신호가 실려 있으면 정답. 음성 오프셋이 감정마다 다른 축에
-    있으므로 신호가 실린 경우 구분 가능하다고 본다. 관대한 상한이다. neutral은 오프셋이 없어 제외. 둘 다 없으면
-    최빈 클래스 happiness."""
+    """텍스트 신호 있으면 정답, 아니면 음성 신호 있으면 정답(neutral 제외), 둘 다 없으면 happiness. 관대한 상한"""
     out = []
     for _, r in te.iterrows():
         if r.truth_text_informative_emo == 1:
@@ -142,7 +138,7 @@ for data_name, d in [("all_19374", daily), ("sub_2000", sub2000)]:
     if data_name == "all_19374":
         te_c_all, pred_c_mm = te, run(tr, te, "multimodal", SEED)["pred"]
         pred_c_text = run(tr, te, "text", SEED)["pred"]
-# 전체 랜덤 분할의 multimodal. (a)의 텍스트와 같은 테스트셋이라 나란히 놓을 수 있다
+# 전체 랜덤 분할 multimodal. (a) 텍스트와 같은 테스트셋
 r = run(tr_all, te_all, "multimodal", SEED)
 rows.append(
     dict(
@@ -228,7 +224,7 @@ def g(protocol, data, model, col="accuracy"):
 
 arrows = [
     (
-        "(a) 원 방식\n텍스트 전체 → 멀티모달 2,000\n(테스트셋이 다름)",
+        "(a) 원 방식\n텍스트 전체 -> 멀티모달 2,000\n(테스트셋이 다름)",
         g("a_original", "all_19374", "text"),
         g("a_original", "sub_2000", "multimodal"),
         f"n={g('a_original', 'all_19374', 'text', 'n_test'):,} "
@@ -236,28 +232,28 @@ arrows = [
         C_GRAY,
     ),
     (
-        "(b) 같은 2,000건 · 랜덤",
+        "(b) 같은 2,000건, 랜덤",
         g("b_same_subset", "sub_2000", "text"),
         g("b_same_subset", "sub_2000", "multimodal"),
         f"n={g('b_same_subset', 'sub_2000', 'text', 'n_test'):,}",
         C_MM,
     ),
     (
-        "(c) 같은 2,000건 · 화자 분리",
+        "(c) 같은 2,000건, 화자 분리",
         g("c_speaker_split", "sub_2000", "text"),
         g("c_speaker_split", "sub_2000", "multimodal"),
         f"n={g('c_speaker_split', 'sub_2000', 'text', 'n_test'):,}",
         C_AUDIO,
     ),
     (
-        "전체 · 랜덤",
+        "전체, 랜덤",
         g("a_original", "all_19374", "text"),
         g("c_random_all", "all_19374", "multimodal"),
         f"n={g('c_random_all', 'all_19374', 'multimodal', 'n_test'):,}",
         C_MM,
     ),
     (
-        "(c) 전체 · 화자 분리",
+        "(c) 전체, 화자 분리",
         g("c_speaker_split", "all_19374", "text"),
         g("c_speaker_split", "all_19374", "multimodal"),
         f"n={g('c_speaker_split', 'all_19374', 'text', 'n_test'):,}",
@@ -275,8 +271,8 @@ ax.set_yticks(range(len(arrows)))
 ax.set_yticklabels([a[0] for a in arrows[::-1]], fontsize=9)
 ax.set_xlim(0.74, 0.87)
 ax.set_ylim(-0.6, len(arrows) - 0.2)
-ax.set_xlabel("accuracy   (● 텍스트 → ▶ 멀티모달)")
-ax.set_title("멀티모달이 텍스트에 더한 것: 비교 조건에 따라 달라진다 (가상데이터)")
+ax.set_xlabel("accuracy   (● 텍스트 -> ▶ 멀티모달)")
+ax.set_title("프로토콜별 accuracy, 텍스트 vs 멀티모달 (가상데이터)")
 ax.spines[["top", "right"]].set_visible(False)
 plt.tight_layout()
 plt.savefig(FIGURES / "fig4_protocols.png")
@@ -301,7 +297,7 @@ for (how, model), (c, ls) in style.items():
         ls=ls,
         marker="o",
         ms=4,
-        label=f"{model} · {'랜덤' if how == 'random' else '화자 분리'}",
+        label=f"{model}, {'랜덤' if how == 'random' else '화자 분리'}",
     )
     ax1.fill_between(a.n, a["mean"] - a["std"], a["mean"] + a["std"], color=c, alpha=0.15)
 ax1.set_xscale("log")
@@ -322,11 +318,11 @@ for how, c in [("random", C_MM), ("speaker", C_AUDIO)]:
         label="랜덤 분할" if how == "random" else "화자 분리",
     )
 ax2.axhline(0, color=C_DARK, lw=0.8)
-ax2.set_ylabel("멀티모달 − 텍스트")
+ax2.set_ylabel("멀티모달 - 텍스트")
 ax2.set_xlabel("학습에 쓴 발화 수 N (log)")
 ax2.legend(fontsize=8)
 ax2.spines[["top", "right"]].set_visible(False)
-ax1.set_title("N과 분할 방식에 따른 accuracy, 그리고 음성이 더한 것")
+ax1.set_title("N과 분할 방식별 accuracy, 멀티모달 - 텍스트")
 plt.tight_layout()
 plt.savefig(FIGURES / "fig5_n_curve.png")
 plt.close()

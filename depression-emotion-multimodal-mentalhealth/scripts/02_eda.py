@@ -1,4 +1,4 @@
-"""EDA. 출처별 문체 통계, 상담 의도 분포, 감정 라벨 분포, 화자 편중, 음성 feature PCA."""
+"""EDA. 출처별 문체, 상담 의도, 감정 분포, 화자 편중, 음성 PCA"""
 
 import pandas as pd
 from common import (
@@ -57,7 +57,7 @@ spk_summary = pd.DataFrame(
 )
 spk_summary.to_csv(RESULTS / "eda_speaker_bias.csv", index=False)
 
-# fig1. 원 프로젝트의 학습 데이터에서 어느 칸이 비어 있었는지
+# fig1. 원 학습 데이터에서 빈 칸
 counsel = df[df.source == "counsel"]
 n_sym = int((counsel.intent.str.startswith("정신증상")).sum())
 n_norm = len(counsel) - n_sym
@@ -101,7 +101,7 @@ for src in ["counsel", "daily"]:
         ax.text(
             x + w / 2 - 0.01,
             1.03,
-            "라벨 1 · 0건\n(이 칸이 비어 있다)",
+            "라벨 1: 0건\n(이 칸이 비어 있음)",
             ha="center",
             va="bottom",
             color=C_DARK,
@@ -135,7 +135,7 @@ plt.tight_layout()
 plt.savefig(FIGURES / "fig1_data_structure.png")
 plt.close()
 
-# fig7. 같은 점을 화자 색과 감정 색으로 두 번 그린다. 음성 feature가 감정보다 화자를 먼저 가르는지 보려는 것
+# fig7. 같은 점을 화자 색, 감정 색으로 두 번
 top_spk = daily.speaker_id.value_counts().index[:8]
 sub = daily[daily.speaker_id.isin(top_spk)].sample(1200, random_state=SEED)
 Z = PCA(n_components=2, random_state=SEED).fit(StandardScaler().fit_transform(daily[AUDIO_COLS]))
@@ -147,9 +147,9 @@ pd.DataFrame(dict(component=["PC1", "PC2"], explained_variance_ratio=ev.round(4)
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.4), sharex=True, sharey=True)
 spk_colors = dict(zip(top_spk, plt.cm.tab10.colors[:8]))
 axes[0].scatter(P[:, 0], P[:, 1], c=[spk_colors[s] for s in sub.speaker_id], s=10, alpha=0.7)
-axes[0].set_title("음성 피처 PCA — 화자별 색 (상위 8명)")
+axes[0].set_title("음성 피처 PCA: 화자별 색 (상위 8명)")
 axes[1].scatter(P[:, 0], P[:, 1], c=[EMO_COLORS[e] for e in sub.emotion_label], s=10, alpha=0.7)
-axes[1].set_title("같은 점 — 감정별 색")
+axes[1].set_title("같은 점: 감정별 색")
 for ax in axes:
     ax.set_xlabel(f"PC1 ({ev[0]:.0%})")
     ax.spines[["top", "right"]].set_visible(False)

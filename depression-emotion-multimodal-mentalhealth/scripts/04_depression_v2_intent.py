@@ -1,7 +1,6 @@
-"""우울 진단 v2. 버린 4,000건을 되살린다.
+"""우울 진단 v2. 버린 4000건을 라벨 0으로 되살림
 
-상담 스크립트의 일상 의도 발화를 라벨 0으로 학습에 넣는다. 증상 의도는 1, 일상 대화는 0. 일상 대화 안의 실제
-우울 발화는 원 데이터에 라벨이 없으므로 0으로 남는다. 라벨 노이즈다. 03과 같은 테스트셋에서 v1과 비교한다.
+일상 대화 안의 실제 우울 발화는 원 데이터에 라벨이 없어 0으로 남음 (라벨 노이즈). 03과 같은 테스트셋에서 v1과 비교
 """
 
 import numpy as np
@@ -114,18 +113,18 @@ ax.set_yticks(range(3))
 ax.set_yticklabels([r[0] for r in rows_d[::-1]])
 orig = v1m[v1m.scoring == "train_label"].accuracy.iloc[0]
 ax.axvline(orig, color=C_TEXT, ls="--", lw=1.5)
-ax.text(orig, 2.55, f"v1 · 원 범위\n학습 라벨 기준 {orig:.3f}", ha="center", fontsize=8, color=C_DARK)
+ax.text(orig, 2.55, f"v1, 원 범위\n학습 라벨 기준 {orig:.3f}", ha="center", fontsize=8, color=C_DARK)
 ax.set_xlim(0.78, 1.02)
 ax.set_ylim(-0.5, 3.0)
 ax.set_xlabel("accuracy (실제 우울 기준)")
 ax.legend(loc="lower left", fontsize=8)
 ax.spines[["top", "right"]].set_visible(False)
-ax.set_title("같은 테스트셋, 학습에 4,000건을 넣었는지만 다르다")
+ax.set_title("같은 테스트셋, v1 vs v2 accuracy")
 plt.tight_layout()
 plt.savefig(FIGURES / "fig2_depression_scoring.png")
 plt.close()
 
-# 상위 feature를 어미, 관용어, 내용으로 나눈다. 어미와 관용어는 출처의 문체이고 내용만 우울 자체다
+# 상위 feature를 어미 / 관용어 / 내용으로. 앞 둘은 문체, 내용만 우울 자체
 ENDINGS = [
     "요",
     "어요",
@@ -205,8 +204,8 @@ ax.set_xlim(-12, 12)
 ax.set_xticks([-8, -4, 0, 4, 8])
 ax.set_xticklabels(["8", "4", "0", "4", "8"])
 ax.set_xlabel("|LR coef| (char n-gram, 우울 방향)")
-ax.text(-6, 12.3, "v1 · 상담 일상 의도 제외", ha="center", fontsize=10)
-ax.text(6, 12.3, "v2 · 상담 일상 의도 = 0", ha="center", fontsize=10)
+ax.text(-6, 12.3, "v1: 상담 일상 의도 제외", ha="center", fontsize=10)
+ax.text(6, 12.3, "v2: 상담 일상 의도 = 0", ha="center", fontsize=10)
 ax.legend(handles=[Patch(color=c, label=k) for k, c in KC.items()], loc="lower right", fontsize=9, title="토큰 종류")
 ax.spines[["top", "right", "left"]].set_visible(False)
 ax.set_ylim(-0.8, 13)

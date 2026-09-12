@@ -1,10 +1,6 @@
-"""회귀 대 분류, v1 대 v2, oracle.
+"""모델링. 원본 RF 회귀 재현 + 분류기 4종 x (v1 / v1 ablation / v2) + oracle + SHAP + calibration
 
-원본 절차는 95/5 분할 뒤 95% 안에서 10-fold. 원본은 이진 y를 회귀(RF)로 학습했다. 그대로 재현하고, 같은
-feature로 분류기 4종 LR, RF, XGBoost, LightGBM을 돌린다. v1 feature에서 미래 매출 열 rev_2024~2027과 누적
-열 총매출, 총계약수를 뺀 v1-ablation도 채점한다. v2는 T 시점 모집단 688사에서만 정의되므로 v1도 같은 688사로
-다시 채점해 나란히 놓는다. SHAP은 LightGBM TreeExplainer로 두 버전의 상위 feature를 비교하고, v2 OOF 확률로
-calibration을 본다.
+원본은 95/5 split 후 10-fold. 회귀로 이진 y를 맞췄음 (그대로 재현)
 """
 
 import warnings
@@ -38,7 +34,7 @@ CUM_COLS = ["total_revenue", "n_contracts", "rev_2015"]
 
 
 def split95(df):
-    train = df.sample(frac=0.95, random_state=786)  # 원본 노트북의 값
+    train = df.sample(frac=0.95, random_state=786)  # 원본 노트북 seed
     return train.reset_index(drop=True)
 
 
@@ -100,7 +96,7 @@ rows.append(
 oof_v1 = cv_auc(X, y, "v1", "v1 snapshot", rows)
 Xa = X.drop(columns=FUTURE_COLS + CUM_COLS)
 cv_auc(Xa, y, "v1a", "v1 minus future/cumulative", rows)
-# 계약 이력 열을 단계적으로 뺀다. 구분, 그다음 최초 계약 연월까지 빼면 무엇이 남는가. LightGBM만
+# gubun, first_year/month까지 순서대로 빼보기 (LightGBM만)
 skf10 = StratifiedKFold(10, shuffle=True, random_state=123)
 for label, extra in [
     ("v1 minus future/cumulative/gubun", ["gubun_신규", "gubun_재계약"]),
@@ -122,7 +118,7 @@ rows.append(
         auc=roc_auc_score(y2, truth2.truth_churn_p),
     )
 )
-# 전체 1,201사 oracle. 갱신 기회 k를 최초 계약 이후 12개월 단위로 센다
+# 1141사 oracle. k는 첫 계약 이후 12개월 단위
 comp = pd.read_csv(DATA / "companies.csv")[["company_id", "truth_renew_p"]]
 snap = pd.read_csv(DATA / "snapshot_v1.csv", parse_dates=["first_contract"]).merge(comp, on="company_id")
 horizon = REF_DATE - pd.Timedelta(days=CHURN_GRACE_DAYS)
@@ -189,7 +185,7 @@ sc = truth2.copy()
 sc["p_v2"] = oof_v2["LightGBM"]
 sc["p_v1"] = None
 sc["p_v1"] = pd.Series(oof_v1["LightGBM"], index=tr.company_id).reindex(sc.company_id).values
-# v1 OOF는 95% 분할 안에서만 있다. 없는 회사는 빼고 비교한다
+# v1 OOF는 95% 안에만 있음
 sc = sc.dropna(subset=["p_v1"])
 top = int(len(sc) * 0.2)
 lst = []

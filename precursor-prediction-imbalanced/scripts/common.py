@@ -1,4 +1,4 @@
-"""그림에 쓸 한글 폰트. 설치된 것 중 첫 번째를 고른다."""
+"""한글 폰트 선택. 설치된 것 중 첫 번째"""
 
 from matplotlib import font_manager, rcParams
 
