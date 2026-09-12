@@ -15,11 +15,12 @@ from PIL import Image
 matplotlib.use("Agg")
 
 OUT = Path(__file__).resolve().parents[1] / "outputs" / "figures" / "site"
-BLUE, ORANGE, GRAY, LIGHT, DARK = "#2563eb", "#ea580c", "#a1a1aa", "#e4e4e7", "#18181b"
-LIGHT_BLUE, LIGHT_ORANGE, MUTED, RED = "#bfdbfe", "#fed7aa", "#71717a", "#dc2626"
+BLUE, ORANGE, GRAY, LIGHT, DARK = "#5B6B7A", "#9E3D22", "#B4B2A9", "#e4e4e7", "#18181b"
+LIGHT_BLUE, LIGHT_ORANGE, MUTED, RED = "#bfdbfe", "#fed7aa", "#71717a", "#9E3D22"
 # 범주 많을 때만 (화자 8명, 감정 7종). tailwind 600
 CAT8 = ["#2563eb", "#ea580c", "#16a34a", "#7c3aed", "#db2777", "#ca8a04", "#0891b2", "#52525b"]
-DIVERGING = LinearSegmentedColormap.from_list("site_diverging", [BLUE, "#ffffff", RED])
+# 원래 파랑/빨강 유지
+DIVERGING = LinearSegmentedColormap.from_list("site_diverging", ["#2563eb", "#ffffff", "#dc2626"])
 
 
 def setup():

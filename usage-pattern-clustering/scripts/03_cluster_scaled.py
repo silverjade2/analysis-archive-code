@@ -94,8 +94,8 @@ def plot_result(pred: np.ndarray, method: str, fname: str) -> None:
         sub = hourly[hourly["pred_cluster"] == c].drop(columns="pred_cluster")
         sample = sub.sample(min(15, len(sub)), random_state=SEED)
         for _, row in sample.iterrows():
-            ax.plot(np.arange(24), row.values, color="tab:gray", alpha=0.3, lw=0.8)
-        ax.plot(np.arange(24), sub.mean().values, color="tab:red", lw=2.5, label="군집 평균")
+            ax.plot(np.arange(24), row.values, color="#B4B2A9", alpha=0.3, lw=0.8)
+        ax.plot(np.arange(24), sub.mean().values, color="#9E3D22", lw=2.5, label="군집 평균")
         ax.set_title(f"예측 군집 {c} ({len(sub)}대)")
         ax.set_xticks(range(0, 24, 4))
         ax.grid(alpha=0.3)

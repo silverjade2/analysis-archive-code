@@ -165,8 +165,8 @@ for ax, (label, title) in zip(axes.ravel(), TITLES.items()):
     sub = hourly[hourly["true_cluster"] == label].drop(columns="true_cluster")
     sample = sub.sample(min(15, len(sub)), random_state=SEED)
     for _, row in sample.iterrows():
-        ax.plot(HOURS, row.values, color="tab:gray", alpha=0.3, lw=0.8)
-    ax.plot(HOURS, sub.mean().values, color="tab:blue", lw=2.5, label="군집 평균")
+        ax.plot(HOURS, row.values, color="#B4B2A9", alpha=0.3, lw=0.8)
+    ax.plot(HOURS, sub.mean().values, color="#5B6B7A", lw=2.5, label="군집 평균")
     ax.set_title(f"{title} ({len(sub)}대)")
     ax.set_xticks(range(0, 24, 4))
     ax.grid(alpha=0.3)
