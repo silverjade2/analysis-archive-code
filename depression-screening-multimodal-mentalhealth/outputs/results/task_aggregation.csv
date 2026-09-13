@@ -1,0 +1,5 @@
+aggregation,n_tasks,par_auc,par_f1,par_accuracy,par_balanced_accuracy
+all_8_tasks,8,0.9446,0.8173,0.8625,0.8449
+narrative_5,5,0.9485,0.839,0.8705,0.8624
+fixed_text_3,3,0.8216,0.5683,0.7265,0.6837
+memory_2,2,0.9102,0.7833,0.8235,0.8157

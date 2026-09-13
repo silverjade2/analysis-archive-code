@@ -1,0 +1,10 @@
+stat,value
+n_participants,2000.0
+patient_share,0.564
+female_share,0.6545
+depressed_share,0.414
+employed_share,0.522
+patient_but_not_depressed,351.0
+control_but_depressed,51.0
+phq9_mean_patient,12.47
+phq9_mean_control,4.13

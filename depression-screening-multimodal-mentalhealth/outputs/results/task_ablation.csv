@@ -1,0 +1,25 @@
+task,task_ko,model,auc,f1,note
+happy_memory,행복했던 기억,text,0.8147,0.7096,
+happy_memory,행복했던 기억,audio,0.731,0.5943,
+happy_memory,행복했던 기억,fusion,0.8501,0.7146,
+hard_memory,힘들었던 기억,text,0.8248,0.7309,
+hard_memory,힘들었던 기억,audio,0.7473,0.6073,
+hard_memory,힘들었던 기억,fusion,0.8609,0.7379,
+pic_positive,긍정 그림 설명,text,0.7811,0.6814,
+pic_positive,긍정 그림 설명,audio,0.7639,0.6147,
+pic_positive,긍정 그림 설명,fusion,0.84,0.7196,
+pic_negative,부정 그림 설명,text,0.8012,0.7033,
+pic_negative,부정 그림 설명,audio,0.7252,0.5711,
+pic_negative,부정 그림 설명,fusion,0.8414,0.7018,
+pic_neutral,중립 그림 설명,text,0.7649,0.6596,
+pic_neutral,중립 그림 설명,audio,0.7196,0.5969,
+pic_neutral,중립 그림 설명,fusion,0.8148,0.6907,
+count_up,숫자 세기(오름),text,0.5,,identical text; skipped
+count_up,숫자 세기(오름),audio,0.721,0.5869,
+count_up,숫자 세기(오름),fusion,0.7197,0.5697,
+count_down,숫자 세기(내림),text,0.5,,identical text; skipped
+count_down,숫자 세기(내림),audio,0.736,0.6052,
+count_down,숫자 세기(내림),fusion,0.7356,0.595,
+reading,문단 낭독,text,0.5,,identical text; skipped
+reading,문단 낭독,audio,0.7361,0.6031,
+reading,문단 낭독,fusion,0.7351,0.5771,

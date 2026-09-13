@@ -1,0 +1,5 @@
+group,label_depressed,treatment_mention_rate
+control,0,0.0244
+control,1,0.0392
+patient,0,0.5208
+patient,1,0.487

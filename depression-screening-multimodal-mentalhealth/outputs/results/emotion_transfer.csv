@@ -1,0 +1,5 @@
+signal,level,auc,spearman_phq
+emotion_model_neg_affect (transfer),participant,0.6263,0.2349
+emotion_model_neg_affect (transfer),recording,0.5623,0.1183
+"dedicated_text_model (08, phq_label)",participant,0.9296,
+"dedicated_text_model (08, phq_label)",recording,0.7999,

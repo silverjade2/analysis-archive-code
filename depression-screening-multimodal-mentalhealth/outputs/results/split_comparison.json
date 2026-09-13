@@ -1,0 +1,118 @@
+{
+ "meta": {
+  "seeds": 3,
+  "nParticipants": 2000,
+  "nRecordings": 16000,
+  "folds": 5
+ },
+ "points": [
+  {
+   "model": "audio_gbm",
+   "split": "participant",
+   "rec": {
+    "mean": 0.7455,
+    "sd": 0.0009
+   },
+   "par": {
+    "mean": 0.8718,
+    "sd": 0.0018
+   }
+  },
+  {
+   "model": "audio_knn",
+   "split": "participant",
+   "rec": {
+    "mean": 0.6977,
+    "sd": 0.0025
+   },
+   "par": {
+    "mean": 0.8394,
+    "sd": 0.0027
+   }
+  },
+  {
+   "model": "fusion",
+   "split": "participant",
+   "rec": {
+    "mean": 0.8132,
+    "sd": 0.0006
+   },
+   "par": {
+    "mean": 0.9455,
+    "sd": 0.0014
+   }
+  },
+  {
+   "model": "text",
+   "split": "participant",
+   "rec": {
+    "mean": 0.7289,
+    "sd": 0.0017
+   },
+   "par": {
+    "mean": 0.9304,
+    "sd": 0.0008
+   }
+  },
+  {
+   "model": "audio_gbm",
+   "split": "recording_random",
+   "rec": {
+    "mean": 0.7724,
+    "sd": 0.0011
+   },
+   "par": {
+    "mean": 0.9076,
+    "sd": 0.0019
+   }
+  },
+  {
+   "model": "audio_knn",
+   "split": "recording_random",
+   "rec": {
+    "mean": 0.7716,
+    "sd": 0.0009
+   },
+   "par": {
+    "mean": 0.9271,
+    "sd": 0.0004
+   }
+  },
+  {
+   "model": "fusion",
+   "split": "recording_random",
+   "rec": {
+    "mean": 0.8299,
+    "sd": 0.0004
+   },
+   "par": {
+    "mean": 0.9583,
+    "sd": 0.0009
+   }
+  },
+  {
+   "model": "speaker_prior",
+   "split": "recording_random",
+   "rec": {
+    "mean": 1.0,
+    "sd": 0.0
+   },
+   "par": {
+    "mean": 1.0,
+    "sd": 0.0
+   }
+  },
+  {
+   "model": "text",
+   "split": "recording_random",
+   "rec": {
+    "mean": 0.7259,
+    "sd": 0.0007
+   },
+   "par": {
+    "mean": 0.9314,
+    "sd": 0.0009
+   }
+  }
+ ]
+}
