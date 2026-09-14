@@ -65,19 +65,19 @@ for i, (m, name) in enumerate(models[::-1]):
         ax.text(
             a + 0.004,
             i,
-            f"녹음 랜덤 {a:.3f} → 참가자 분리 {b:.3f} (Δ{b - a:+.3f})",
+            f"recording random {a:.3f} → speaker-independent {b:.3f} (Δ{b - a:+.3f})",
             ha="left",
             va="center",
             fontsize=8,
             color=DARK,
         )
     else:
-        ax.text(a + 0.002, i + 0.26, f"녹음 랜덤 {a:.3f}", ha="left", fontsize=8, color=MUTED)
-        ax.text(b - 0.002, i + 0.26, f"참가자 분리 {b:.3f}  (Δ{b - a:+.3f})", ha="right", fontsize=8, color=DARK)
+        ax.text(a + 0.002, i + 0.26, f"recording random {a:.3f}", ha="left", fontsize=8, color=MUTED)
+        ax.text(b - 0.002, i + 0.26, f"speaker-independent {b:.3f}  (Δ{b - a:+.3f})", ha="right", fontsize=8, color=DARK)
     ax.text(0.813, i, name, va="center", ha="left", fontsize=10, color=DARK)
 sp = gv("recording_random", "speaker_prior")
 ax.axvline(sp, color=MUTED, ls=":", lw=1)
-ax.text(sp, 3.6, f"화자 사전확률 상한 {sp:.2f}", ha="right", fontsize=8, color=MUTED)
+ax.text(sp, 3.6, f"speaker-lookup baseline {sp:.2f}", ha="right", fontsize=8, color=MUTED)
 ax.set_ylim(-0.5, 3.9)
 ax.set_xlim(0.81, 1.02)
 ax.set_yticks([])
@@ -109,15 +109,15 @@ for i in range(len(piv)):
             fontsize=8.5,
             color="white" if v > 0.72 else DARK,
         )
-ax1.set_title("과제 × 채널 AUC (참가자 분리, 단일 과제)")
+ax1.set_title("과제 × modality AUC (speaker-independent, 단일 과제)")
 ax1.spines[["top", "right", "left", "bottom"]].set_visible(False)
 plt.colorbar(im, ax=ax1, fraction=0.046, pad=0.03)
 agg = pd.read_csv(R / "task_aggregation.csv")
 names = {
     "all_8_tasks": "8과제 전체",
-    "narrative_5": "서술 5과제",
+    "narrative_5": "free-speech 5과제",
     "memory_2": "기억 2과제",
-    "fixed_text_3": "고정 텍스트 3과제",
+    "fixed_text_3": "read-speech 3과제",
 }
 agg = agg.set_index("aggregation").reindex(["all_8_tasks", "narrative_5", "memory_2", "fixed_text_3"])
 ax2.barh([names[i] for i in agg.index][::-1], agg.par_auc[::-1], color=[BLUE, BLUE, BLUE, GRAY][::-1])
@@ -125,7 +125,7 @@ for i, v in enumerate(agg.par_auc[::-1]):
     ax2.text(v - 0.01, i, f"{v:.3f}", ha="right", va="center", color="white", fontsize=9)
 ax2.set_xlim(0.5, 0.97)
 ax2.set_xlabel("참가자 단위 AUC")
-ax2.set_title("집계 범위별 AUC (융합, 참가자 분리)")
+ax2.set_title("집계 범위별 AUC (융합, speaker-independent)")
 fig.tight_layout()
 save(fig, "fig3_task_modality")
 
@@ -134,7 +134,7 @@ q = pd.read_csv(R / "label_definition_prob_quantiles.csv")
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.3), sharey=True)
 groups = [
     ("control", 0, "대조군, 우울 아님"),
-    ("patient", 0, "환자군, 우울 아님\n(관해)"),
+    ("patient", 0, "환자군, 우울 아님\n(remission)"),
     ("patient", 1, "환자군, 우울"),
 ]
 for ax, trained, title in [(axes[0], "group_label", "환자군 여부로 학습"), (axes[1], "phq_label", "PHQ-9 라벨로 학습")]:
@@ -155,8 +155,8 @@ for ax, trained, title in [(axes[0], "group_label", "환자군 여부로 학습"
 axes[0].set_ylabel("우울 예측 확률 (분위 10, 25, 50, 75, 90)")
 pnd_g = ld[(ld.trained_on == "group_label") & (ld.tokens == "full")].mean_prob_patient_not_depressed.iloc[0]
 pnd_p = ld[(ld.trained_on == "phq_label") & (ld.tokens == "full")].mean_prob_patient_not_depressed.iloc[0]
-axes[0].text(1, 0.92, f"관해 환자 평균 {pnd_g:.2f}", ha="center", fontsize=8, color=BLUE)
-axes[1].text(1, 0.92, f"관해 환자 평균 {pnd_p:.2f}", ha="center", fontsize=8, color=BLUE)
+axes[0].text(1, 0.92, f"remission 환자 평균 {pnd_g:.2f}", ha="center", fontsize=8, color=BLUE)
+axes[1].text(1, 0.92, f"remission 환자 평균 {pnd_p:.2f}", ha="center", fontsize=8, color=BLUE)
 fig.tight_layout()
 save(fig, "fig4_label_definition")
 
@@ -217,7 +217,7 @@ tr = pd.read_csv(R / "emotion_transfer.csv")
 tr_p = tr[(tr.signal.str.contains("transfer")) & (tr.level == "participant")]
 ax2.set_xlabel("PHQ-9")
 ax2.set_ylabel("감정 모델의 부정 정서 점수\nP(슬픔)+P(불안)+P(상처)")
-ax2.set_title(f"전이 점수와 PHQ-9 (Spearman {tr_p.spearman_phq.iloc[0]:.2f}, 참가자 AUC {tr_p.auc.iloc[0]:.2f})")
+ax2.set_title(f"transfer 점수와 PHQ-9 (Spearman {tr_p.spearman_phq.iloc[0]:.2f}, 참가자 AUC {tr_p.auc.iloc[0]:.2f})")
 fig.tight_layout()
 save(fig, "fig6_emotion")
 
