@@ -1,0 +1,9 @@
+attribution,ota_dt,off_n,off_n_multiple,off_ratio_drop,mode_share,detected_as_spike
+startdate,2025-06-24,706,1.74,0.148,0.516,1
+startdate,2025-07-17,818,2.02,0.154,0.504,1
+startdate,2025-08-06,782,1.93,0.146,0.493,1
+startdate,2025-08-28,814,2.01,0.132,0.502,1
+midnight,2025-06-24,723,1.14,0.047,0.516,0
+midnight,2025-07-17,835,1.32,0.052,0.504,1
+midnight,2025-08-06,815,1.29,0.05,0.493,1
+midnight,2025-08-28,840,1.32,0.033,0.502,1

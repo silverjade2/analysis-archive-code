@@ -1,0 +1,11 @@
+threshold,attribution,tp,fp,fn,precision,recall,fp_days
+0.3,startdate,4,0,0,1.0,1.0,-
+0.3,midnight,4,0,0,1.0,1.0,-
+0.4,startdate,4,0,0,1.0,1.0,-
+0.4,midnight,4,0,0,1.0,1.0,-
+0.5,startdate,3,0,1,1.0,0.75,-
+0.5,midnight,3,0,1,1.0,0.75,-
+0.6,startdate,0,0,4,0.0,0.0,-
+0.6,midnight,0,0,4,0.0,0.0,-
+0.7,startdate,0,0,4,0.0,0.0,-
+0.7,midnight,0,0,4,0.0,0.0,-
