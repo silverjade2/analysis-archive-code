@@ -12,6 +12,7 @@
 | [`depression-screening-multimodal-mentalhealth/`](./depression-screening-multimodal-mentalhealth) | [직장인 번아웃 조기 탐지: 발화로 우울을 분류하는 모델이 실제로 배운 것](https://analysis-archive.vercel.app/analyses/depression-screening-multimodal-mentalhealth) | 35분 |
 | [`churn-prediction-b2b-ats/`](./churn-prediction-b2b-ats) | [B2B 고객사 이탈 분류: 타깃을 정의한 열이 feature로 남았을 때](https://analysis-archive.vercel.app/analyses/churn-prediction-b2b-ats) | 3분 |
 | [`wellness-score-sigmoid-design/`](./wellness-score-sigmoid-design) | [지금 바이탈 어때요? rPPG Vital sign Data로 만드는 Wellness score: 의료 데이터를 이해할 수 있는 웰니스 언어로](https://analysis-archive.vercel.app/analyses/wellness-score-sigmoid-design) | 10초 |
+| [`ota-reboot-spike-iot/`](./ota-reboot-spike-iot) | [사용량이 튀는 날은 정말 많이 쓴 날인가: IoT 가전 fleet의 OTA 재부팅 스파이크](https://analysis-archive.vercel.app/analyses/ota-reboot-spike-iot) | 10초 |
 
 ## 실행
 
