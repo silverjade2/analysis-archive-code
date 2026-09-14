@@ -175,7 +175,7 @@ for ax in axes[1]:
     ax.set_xlabel("시각")
 for ax in axes[:, 0]:
     ax.set_ylabel("평균 사용 강도 (요일 평균)")
-fig.suptitle("정답 레이블 기준 시간대별 사용 프로파일 (노이즈 소군집 15대 제외)")
+fig.suptitle("ground truth 레이블 기준 시간대별 사용 프로파일 (노이즈 소군집 15대 제외)")
 fig.tight_layout()
 fig.savefig(fig_dir / "fig1_true_profiles.png", dpi=150)
 print(f"검증 플롯 저장: {fig_dir / 'fig1_true_profiles.png'}")

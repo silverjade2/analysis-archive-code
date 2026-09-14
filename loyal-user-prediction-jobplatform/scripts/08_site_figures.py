@@ -72,7 +72,7 @@ for i, v in enumerate(vals[::-1]):
     ax.text(v + 3000, i, f"{v / 1000:,.1f}k  ({v / total:.1%})", va="center", fontsize=9, color=DARK)
 ax.set_xlim(0, total * 0.95)
 ax.set_xlabel("유저 수")
-ax.set_title("가입자 45만 명의 상태 (조회 시점)")
+ax.set_title("가입자 45만 명의 상태 (as-of snapshot)")
 ax.grid(axis="x")
 save(fig, "fig1_journey_funnel")
 
@@ -156,9 +156,9 @@ ax.scatter(piv["v1_asis"], yy, s=75, color=GRAY, zorder=3, label="v1 스냅샷")
 ax.scatter(
     piv["v1_pref"], yy, s=75, facecolor="white", edgecolor=MUTED, linewidth=1.8, zorder=4, label="v1 스냅샷 + 선호 정보"
 )
-ax.scatter(piv["v2_pref"], yy, s=75, color=BLUE, zorder=3, label="v2 시간 절단 + 선호 정보")
+ax.scatter(piv["v2_pref"], yy, s=75, color=BLUE, zorder=3, label="v2 cutoff + 선호 정보")
 ax.axvline(oracle, color=ORANGE, ls="--", lw=1.2, zorder=2)
-ax.text(oracle + 0.004, yy.max() + 0.62, f"심어둔 정답 확률의 AUC {oracle:.3f}", color=ORANGE, fontsize=9, va="center")
+ax.text(oracle + 0.004, yy.max() + 0.62, f"ground truth 확률의 oracle AUC {oracle:.3f}", color=ORANGE, fontsize=9, va="center")
 ax.set_yticks(yy, models)
 ax.set_ylim(-0.7, len(models) - 0.1)
 ax.set_xlim(0.6, 1.0)
@@ -167,7 +167,7 @@ ax.tick_params(axis="y", length=0)
 ax.spines["left"].set_visible(False)
 ax.grid(axis="x")
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.18), ncols=3)
-ax.set_title("feature 구성별 AUC (10-fold CV) vs 정답 확률")
+ax.set_title("feature 구성별 AUC (10-fold CV) vs oracle")
 save(fig, "fig4_auc_by_variant")
 
 imp1 = pd.read_csv(RES / "importance_v1_asis.csv", index_col=0)["importance"]
@@ -226,15 +226,15 @@ ax.set_xlim(-0.75, 1.75)
 ax.set_ylim(NROWS + 0.6, 0.3)
 ax.set_yticks(range(1, NROWS + 1), ylabels)
 ax.set_ylabel("중요도 순위 (LightGBM gain)")
-ax.set_xticks([0, 1], ["v1 스냅샷 (당시 구조)", "v2 시간 절단 (+ 선호 정보)"])
+ax.set_xticks([0, 1], ["v1 스냅샷 (당시 구조)", "v2 cutoff (+ 선호 정보)"])
 ax.tick_params(axis="x", labelsize=10.5, length=0)
 ax.tick_params(axis="y", length=0)
 for s in ("left", "bottom"):
     ax.spines[s].set_visible(False)
 ax.grid(axis="y")
 handles = [
-    Line2D([], [], color=ORANGE, lw=2.2, label="타깃 결정 이후의 행동"),
-    Line2D([], [], color=BLUE, lw=2.2, label="심어둔 전환 신호"),
+    Line2D([], [], color=ORANGE, lw=2.2, label="라벨 확정 이후의 행동"),
+    Line2D([], [], color=BLUE, lw=2.2, label="가상데이터에 넣은 전환 신호"),
     Line2D([], [], color=GRAY, lw=2.2, label="그 외"),
 ]
 ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.06), ncols=3)
@@ -261,8 +261,8 @@ axes[1].bar(["무작위 10%", "v1 리스트", "v2 리스트"], vals, color=[LIGH
 for i, v in enumerate(vals):
     axes[1].text(i, v + 0.01, f"{v:.3f}", ha="center", fontsize=9, color=DARK)
 axes[1].set_ylim(0, 1)
-axes[1].set_ylabel("심어둔 동의 확률의 평균")
-axes[1].set_title("정답 확률로 채점하면")
+axes[1].set_ylabel("ground truth 동의 확률의 평균")
+axes[1].set_title("ground truth 확률로 평가하면")
 axes[1].grid(axis="y")
 fig.suptitle(
     f"넛지 리스트: 비동의 유저 상위 10%, 두 리스트 겹침 {overlap:.0%}",

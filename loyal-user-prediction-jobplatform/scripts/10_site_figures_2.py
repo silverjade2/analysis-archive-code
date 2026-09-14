@@ -39,7 +39,7 @@ ax.annotate(
 ax.text(
     -15,
     0.86,
-    f"절단 전 30일\n{pre_c:.2f} 대 {pre_n:.2f} (거의 같음)",
+    f"cutoff 전 30일\n{pre_c:.2f} 대 {pre_n:.2f} (거의 같음)",
     color=MUTED,
     fontsize=8.5,
     ha="center",
@@ -49,7 +49,7 @@ ax.text(
 ax.text(
     34,
     0.86,
-    f"절단 후 8~60일\n{post_c:.2f} 대 {post_n:.2f} ({ratio:.1f}배)",
+    f"cutoff 후 8~60일\n{post_c:.2f} 대 {post_n:.2f} ({ratio:.1f}배)",
     color=DARK,
     fontsize=8.5,
     ha="center",
@@ -58,7 +58,7 @@ ax.text(
 )
 ax.text(60.5, yc[-1], f"동의 {post_c:.2f}", color=ORANGE, fontsize=8.5, va="center", fontweight="semibold")
 ax.text(60.5, yn[-1], f"비동의 {post_n:.2f}", color=GRAY_LINE, fontsize=8.5, va="center", fontweight="semibold")
-ax.text(-0.5, 0.02, " v2 절단 ", color=MUTED, fontsize=8, ha="left", va="bottom")
+ax.text(-0.5, 0.02, " v2 cutoff ", color=MUTED, fontsize=8, ha="left", va="bottom")
 ax.set_xlim(-30, 60)
 ax.set_ylim(0, 0.9)
 ax.set_yticks([0, 0.2, 0.4, 0.6, 0.8])
@@ -89,7 +89,7 @@ hb = ax.hexbin(
     edgecolors="white",
 )
 cb = fig.colorbar(hb, ax=ax, fraction=0.04, pad=0.02)
-cb.set_label("칸 안 유저의 심어둔 동의 확률 (평균, 3명 이상)")
+cb.set_label("칸 안 유저의 ground truth 동의 확률 (평균, 3명 이상)")
 cb.outline.set_visible(False)
 ax.axvline(t1, color=ORANGE, ls="--", lw=1.2)
 ax.axhline(t2, color=ORANGE, ls="--", lw=1.2)
@@ -97,7 +97,7 @@ ax.axhline(t2, color=ORANGE, ls="--", lw=1.2)
 
 def q(name):
     r = quad.loc[name]
-    return f"{int(r['n']):,}명, 정답 확률 {r['mean_truth_p']:.2f}"
+    return f"{int(r['n']):,}명, ground truth 확률 {r['mean_truth_p']:.2f}"
 
 
 ax.text(
@@ -147,10 +147,10 @@ ax.text(
 ax.set_xlim(0, 1)
 ax.set_ylim(0, 1)
 ax.set_xlabel(f"v1 스냅샷 점수 (OOF). 점선 오른쪽이 상위 {k}명")
-ax.set_ylabel(f"v2 시간 절단 점수 (OOF). 점선 위쪽이 상위 {k}명")
+ax.set_ylabel(f"v2 cutoff 점수 (OOF). 점선 위쪽이 상위 {k}명")
 ax.grid()
 ax.set_title(
-    "비동의 유저 7,457명의 두 점수 (겹침 28%, 색은 정답 확률)"
+    "비동의 유저 7,457명의 두 점수 (겹침 28%, 색은 ground truth 확률)"
 )  # 7,457과 28%는 손으로 적음. 데이터 바뀌면 틀림
 save(fig, "fig8_score_plane")
 
@@ -181,19 +181,19 @@ handles = [
     Line2D([], [], marker="^", color=GRAY, ls="none", ms=6.5, label="검사 응시"),
     Line2D([], [], marker="s", color=GRAY, ls="none", ms=5.5, label="프로필 완성"),
     Line2D([], [], marker="o", color=ORANGE, ls="none", ms=8, label="추천 동의 (타깃)"),
-    Line2D([], [], color=BLUE, lw=2, label="v2 절단 시점"),
+    Line2D([], [], color=BLUE, lw=2, label="v2 cutoff 시점"),
     Patch(color=LIGHT, label="v1 스냅샷만 보는 구간"),
 ]
 ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncols=6)
-ax.set_title("유저 12명의 첫 1년 타임라인 (파란 선 = v2 절단)")
+ax.set_title("유저 12명의 첫 1년 타임라인 (파란 선 = v2 cutoff)")
 save(fig, "fig9_timeline_sample")
 
 roc = pd.read_csv(RES / "roc_curves.csv")
 auc = pd.read_csv(RES / "oof_auc_vs_oracle.csv").set_index("model")["AUC"]
 SERIES = [
     ("v1 snapshot", GRAY_LINE, "-", "v1 스냅샷"),
-    ("v2 time cut", BLUE, "-", "v2 시간 절단"),
-    ("oracle (true propensity)", ORANGE, "--", "심어둔 정답 확률"),
+    ("v2 time cut", BLUE, "-", "v2 cutoff"),
+    ("oracle (true propensity)", ORANGE, "--", "ground truth 확률 (oracle)"),
 ]
 fig = plt.figure(figsize=(9, 3.9))  # ROC 왼쪽, 범례/설명 오른쪽. 본문 폭에서 높이 줄이려고
 ax = fig.add_axes([0.07, 0.14, 0.42, 0.76])
@@ -230,9 +230,9 @@ tx.plot([0, 1], [y + 0.06, y + 0.06], color=LIGHT, lw=1, transform=tx.transAxes,
 tx.text(
     0,
     y - 0.05,
-    "정답 확률로 그린 곡선(주황 점선)이 모델이 닿을 수 있는 상한이다.\n"
+    "ground truth 확률로 그린 곡선(주황 점선)이 모델이 닿을 수 있는 oracle 상한이다.\n"
     "v2는 그 바로 아래에 붙어 있고, v1은 전 구간에서 그 위에 있다.\n"
-    "정답보다 잘 맞히는 모델은 정답 이후의 정보를 쓰고 있다.",
+    "oracle보다 잘 맞히는 모델은 라벨 확정 이후의 정보를 쓰고 있다.",
     fontsize=9.5,
     color="#3f3f46",
     va="top",
@@ -247,7 +247,7 @@ n_neg = int(float(summary["deciles: non-consented users"]))
 fig, ax = plt.subplots(figsize=(8.5, 3.9))
 ax.axhline(base, color=ORANGE, ls="--", lw=1.1)
 ax.text(10.55, base + 0.004, f"비동의 전체 평균\n{base:.3f}", color=ORANGE, fontsize=9, va="bottom")
-for vname, c, lab in [("v1", GRAY_LINE, "v1 스냅샷 점수"), ("v2", BLUE, "v2 시간 절단 점수")]:
+for vname, c, lab in [("v1", GRAY_LINE, "v1 스냅샷 점수"), ("v2", BLUE, "v2 cutoff 점수")]:
     d = dc[dc["score"] == vname]
     ax.plot(d["decile"], d["mean_truth_p"], marker="o", ms=6, color=c, lw=1.9, label=lab)
     ax.text(
@@ -262,8 +262,8 @@ for vname, c, lab in [("v1", GRAY_LINE, "v1 스냅샷 점수"), ("v2", BLUE, "v2
 ax.set_xticks(range(1, 11), ["상위 10%"] + [f"{i}" for i in range(2, 10)] + ["하위 10%"])
 ax.set_xlim(0.2, 12.4)
 ax.set_xlabel(f"모델 점수 분위 (비동의 유저 {n_neg:,}명)")
-ax.set_ylabel("심어둔 동의 확률의 평균")
-ax.set_title("점수 분위별 심어둔 동의 확률 평균")
+ax.set_ylabel("ground truth 동의 확률의 평균")
+ax.set_title("점수 분위별 ground truth 동의 확률 평균")
 ax.legend(loc="lower left")
 ax.grid(axis="y")
 save(fig, "fig11_score_deciles")
