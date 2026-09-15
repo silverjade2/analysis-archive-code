@@ -1,0 +1,15 @@
+figure,group,item,value_pct,note
+fig1,fallback,1위 문구,39.8,운영 로그 분석 기록
+fig1,fallback,2위 문구,17.6,상위 2개 57.4에서 1위를 뺀 값
+fig1,fallback,3~15위 인식 실패 문구,9.7,상위 15개 67.6에서 상위 2개와 정보 부재를 뺀 값
+fig1,fallback,상위 15개 밖,32.4,100에서 상위 15개 67.6을 뺀 값
+fig1,fallback,정보 부재 문구,0.5,운영 로그 분석 기록
+fig2,최신성 요구 있음,normal,75.7,운영 로그 분석 기록
+fig2,최신성 요구 있음,fallback,23.3,운영 로그 분석 기록
+fig2,최신성 요구 있음,none,0.95,운영 로그 분석 기록
+fig2,최신성 요구 없음,normal,64.7,운영 로그 분석 기록
+fig2,최신성 요구 없음,fallback,25.9,운영 로그 분석 기록
+fig2,최신성 요구 없음,none,9.4,운영 로그 분석 기록
+fig3,retry,fallback,0.54,운영 로그 분석 기록
+fig3,retry,normal,1.22,운영 로그 분석 기록
+fig3,retry,none,3.37,운영 로그 분석 기록
