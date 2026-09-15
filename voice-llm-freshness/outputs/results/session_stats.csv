@@ -1,0 +1,5 @@
+metric,value
+user_turns_per_session,1.1986281284663343
+single_turn_share,0.8366886387107467
+session_len_median_sec,0.0
+sessions_with_retry,0.008618821159460941
