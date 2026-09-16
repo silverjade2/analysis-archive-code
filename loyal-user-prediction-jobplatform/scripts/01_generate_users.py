@@ -57,6 +57,19 @@ if len(idx3) > N_MODEL:
 elif len(idx3) < N_MODEL:
     cand = np.flatnonzero(status_pop == 2)
     status_pop[rng.choice(cand, N_MODEL - len(idx3), replace=False)] = 3
+# 상태 비율을 원본(가입만 80 / 검사만 9 / 프로필만 3)에 맞춘다. status 3은 이미 N_MODEL로 고정됐고
+# 주 rng의 소비 순서를 바꾸면 모델링 층이 통째로 달라지므로, 나머지 유저의 상태만 별도 스트림으로 다시 배정한다
+rng_pop = np.random.default_rng(SEED + 1)
+rest = np.flatnonzero(status_pop != 3)
+target3 = np.array([0.80, 0.09, 0.03]) / 0.92
+s_share = motive_pop[rest].mean()
+p_sea3 = np.array([0.90, 0.07, 0.03])
+p_org3 = (target3 - s_share * p_sea3) / (1 - s_share)
+u2 = rng_pop.random(len(rest))
+status_pop[rest] = np.where(
+    motive_pop[rest], np.searchsorted(np.cumsum(p_sea3), u2), np.searchsorted(np.cumsum(p_org3), u2)
+)
+status_pop = np.clip(status_pop, 0, 3)
 last_pop = join_pop.copy()
 returned = rng.random(N_TOTAL) < np.where(status_pop == 0, 0.15, 0.55)
 extra = rng.integers(1, 400, N_TOTAL)
