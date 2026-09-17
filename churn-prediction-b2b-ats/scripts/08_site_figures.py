@@ -107,7 +107,9 @@ ax.text(3.3, o688 + 0.004, f"oracle(688) {o688:.3f}", color=GREEN, fontsize=8, h
 ax.scatter([0], [reg], marker="x", color=RED, s=60, zorder=4)
 ax.text(-0.08, reg, "RF 회귀(원본)", fontsize=7, ha="right", va="center")
 ax.set_xticks(range(4))
-ax.set_xticklabels(["v1 스냅샷\n(1,141)", "v1 - future/cumulative\nfeature (1,141)", "v1 스냅샷\n(688)", "v2 cutoff\n(688)"])
+ax.set_xticklabels(
+    ["v1 스냅샷\n(1,141)", "v1 - future/cumulative\nfeature (1,141)", "v1 스냅샷\n(688)", "v2 cutoff\n(688)"]
+)
 ax.set_ylim(0.80, 1.0)
 ax.set_ylabel("AUC (10-fold CV)")
 ax.set_title("AUC 비교 (10-fold CV) vs oracle")

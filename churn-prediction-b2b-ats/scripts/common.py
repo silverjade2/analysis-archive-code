@@ -15,7 +15,7 @@ for p in (DATA, RESULTS, FIGURES):
 
 REF_DATE = pd.Timestamp("2024-02-15")  # 원본 노트북 실행일
 CHURN_GRACE_DAYS = 90
-CUTOFF_T = pd.Timestamp("2023-02-15")  # v2 절단 시점 (REF - 12M)
+CUTOFF_T = pd.Timestamp("2023-02-15")  # v2 절단 시점 (REF - 12M). 12개월 = 계약 주기
 DATA_END = pd.Timestamp("2026-06-30")  # 06 sweep 때문에 미래까지 생성
 
 
