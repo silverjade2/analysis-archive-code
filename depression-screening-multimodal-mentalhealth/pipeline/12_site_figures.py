@@ -1,7 +1,4 @@
-"""사이트용 그림 8장. 값은 11과 같은 CSV에서 읽고 다시 계산하지 않는다.
-
-예외는 fig5의 PCA 좌표. 11과 같은 피처·seed로 다시 맞춘다.
-"""
+"""사이트용 그림 8장. 값은 11과 같은 CSV. 예외는 fig5 PCA 좌표 (같은 피처, seed로 재계산)"""
 
 import _path  # noqa: F401
 import matplotlib.pyplot as plt
@@ -65,7 +62,7 @@ for i, (m, name) in enumerate(models[::-1]):
         ax.text(
             a + 0.004,
             i,
-            f"recording random {a:.3f} → speaker-independent {b:.3f} (Δ{b - a:+.3f})",
+            f"recording random {a:.3f} -> speaker-independent {b:.3f} (Δ{b - a:+.3f})",
             ha="left",
             va="center",
             fontsize=8,
@@ -73,7 +70,9 @@ for i, (m, name) in enumerate(models[::-1]):
         )
     else:
         ax.text(a + 0.002, i + 0.26, f"recording random {a:.3f}", ha="left", fontsize=8, color=MUTED)
-        ax.text(b - 0.002, i + 0.26, f"speaker-independent {b:.3f}  (Δ{b - a:+.3f})", ha="right", fontsize=8, color=DARK)
+        ax.text(
+            b - 0.002, i + 0.26, f"speaker-independent {b:.3f}  (Δ{b - a:+.3f})", ha="right", fontsize=8, color=DARK
+        )
     ax.text(0.813, i, name, va="center", ha="left", fontsize=10, color=DARK)
 sp = gv("recording_random", "speaker_prior")
 ax.axvline(sp, color=MUTED, ls=":", lw=1)
@@ -231,7 +230,7 @@ def stem(f):
 
 tf["label"] = tf.feature.map(stem)
 tf = tf.drop_duplicates("label").head(14)
-KC = {"머뭇거림": GRAY, "치료맥락": RED, "증상": BLUE, "무쾌감·무망": DARK, "긍정회상": LIGHT_BLUE, "기타": MUTED}
+KC = {"머뭇거림": GRAY, "치료맥락": RED, "증상": BLUE, "무쾌감/무망": DARK, "긍정회상": LIGHT_BLUE, "기타": MUTED}
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.6), gridspec_kw={"width_ratios": [1.5, 1]})
 ax1.barh(range(len(tf))[::-1], tf.coef, color=[KC.get(k, MUTED) for k in tf.kind])
 ax1.set_yticks(range(len(tf))[::-1])

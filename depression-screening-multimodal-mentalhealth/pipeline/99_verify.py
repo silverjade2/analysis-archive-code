@@ -1,6 +1,8 @@
-"""99. 자동 검증. (1) 누수 점검: 어떤 피처 행렬에도 truth_*·라벨·participant_id가 없는지.
-(2) 오라클/상한: 화자 사전확률이 녹음 랜덤에서 1.0인지(누수 상한 존재), 참가자 분할에서 모델이 오라클을 넘지 않는지.
-(3) 숫자 manifest: 글에서 인용할 값을 한 파일로 모은다."""
+"""검증 + 글에 쓰는 숫자 manifest
+
+- 피처 행렬에 truth_*, 라벨, participant_id 없음
+- speaker_prior가 녹음 랜덤에서 1.0 (누수 상한), 참가자 분할 융합이 0.99 넘으면 의심
+"""
 
 import _path  # noqa: F401
 import pandas as pd
@@ -10,7 +12,7 @@ from evalutil import load_recordings
 
 problems = []
 df = load_recordings()
-# (1) 음성 피처에 잠재변수/식별자가 섞이지 않았는지
+# 음성 피처에 잠재변수/식별자 없나
 leaked = set(AUDIO_COLS) & {
     c
     for c in df.columns
@@ -21,10 +23,10 @@ if leaked:
 # 토큰에 라벨 흔적이 없는지
 if df.tokens.str.contains("label|phq", case=False).any():
     problems.append("token contains label string")
-# truth_ 컬럼이 존재하고 채점 전용인지 (recordings.csv에는 있어야 하고, 어떤 스크립트도 피처로 쓰지 않음)
+# truth_ 컬럼은 recordings.csv에 있어야 하고 피처로는 안 씀
 truth_cols = [c for c in df.columns if c.startswith("truth_")]
 
-# (2) 화자 사전확률 상한
+# speaker_prior 상한
 sc = pd.read_csv(RESULTS / "split_comparison.csv")
 sp = sc[(sc.split == "recording_random") & (sc.model == "speaker_prior")]
 if len(sp) and sp.rec_auc_mean.iloc[0] < 0.999:
@@ -32,10 +34,10 @@ if len(sp) and sp.rec_auc_mean.iloc[0] < 0.999:
 # 참가자 분할 융합이 완벽(1.0)이면 의심
 fus = sc[(sc.split == "participant") & (sc.model == "fusion")].par_auc_mean.iloc[0]
 if fus > 0.99:
-    problems.append(f"participant fusion AUC too high ({fus}) — possible leak")
+    problems.append(f"participant fusion AUC too high ({fus}), possible leak")
 
 
-# (3) manifest
+# manifest
 def g(csv, q):
     return pd.read_csv(RESULTS / csv).query(q)
 

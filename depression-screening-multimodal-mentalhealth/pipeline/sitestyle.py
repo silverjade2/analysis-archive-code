@@ -1,6 +1,6 @@
 """사이트 톤 (Pretendard, 팔레트, webp 저장)
 
-loyal, wellness, depression-screening 폴더에 같은 파일. 한쪽 고치면 나머지도
+loyal, voice, wellness에 같은 파일 + 여기만 SEQUENTIAL. 한쪽 고치면 나머지도
 """
 
 import io
@@ -21,7 +21,7 @@ LIGHT_BLUE, LIGHT_ORANGE, MUTED, RED = "#bfdbfe", "#fed7aa", "#71717a", "#9E3D22
 CAT8 = ["#2563eb", "#ea580c", "#16a34a", "#7c3aed", "#db2777", "#ca8a04", "#0891b2", "#52525b"]
 # 원래 파랑/빨강 유지
 DIVERGING = LinearSegmentedColormap.from_list("site_diverging", ["#2563eb", "#ffffff", "#dc2626"])
-# 히트맵용 단색 계열 (연회색 → 슬레이트 → 먹색)
+# 히트맵용 단색 계열, 연회색에서 슬레이트, 먹색으로
 SEQUENTIAL = LinearSegmentedColormap.from_list("site_sequential", ["#f4f4f5", BLUE, DARK])
 
 

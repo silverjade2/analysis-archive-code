@@ -1,5 +1,4 @@
-"""모델. 텍스트: 형태소 TF-IDF(1~2gram) + 로지스틱 회귀. 음성: 표준화 + HistGradientBoosting.
-융합: 두 채널의 out-of-fold 확률을 로지스틱 회귀로 결합(late fusion). OOF는 참가자 단위로 접는다."""
+"""텍스트: 형태소 TF-IDF(1~2gram) + LR. 음성: 표준화 + HistGradientBoosting. 융합: 채널 OOF 확률 -> LR (late fusion)"""
 
 import numpy as np
 import pandas as pd
@@ -61,7 +60,7 @@ class AudioModel:
 
 
 class FusionModel:
-    """채널별 OOF 확률 → 상위 로지스틱 회귀. groups를 주면 OOF도 참가자 단위로 접는다."""
+    """채널별 OOF 확률 -> 상위 LR. groups 주면 OOF도 참가자 단위"""
 
     def __init__(self, seed, n_folds=5):
         self.seed, self.n_folds = seed, n_folds

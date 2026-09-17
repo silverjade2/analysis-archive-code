@@ -1,6 +1,7 @@
-"""07. 과제별 신호. 참가자 단위 5-fold에서 과제 하나씩만 써서 텍스트/음성/융합 AUC.
-그리고 참가자 단위 집계를 (전체 8과제 / 서술 5과제 / 고정 텍스트 3과제)로 나눠 본다.
-숫자 세기·낭독은 텍스트가 모두 같으므로 텍스트 모델은 우연 수준이어야 한다."""
+"""과제 하나씩만 쓴 AUC (참가자 분할) + 참가자 집계 범위 비교
+
+고정 텍스트 과제(숫자 세기, 낭독)의 텍스트 모델은 학습 안 하고 0.5
+"""
 
 import _path  # noqa: F401
 import numpy as np
@@ -25,7 +26,7 @@ for task in TASKS:
 res = pd.DataFrame(rows).round(4)
 res.to_csv(RESULTS / "task_ablation.csv", index=False)
 
-# 참가자 단위 집계 범위 비교 (융합 모델, 참가자 분할)
+# 집계 범위 비교 (융합, 참가자 분할)
 oof_all = cross_val_predict(df, fp_fusion, split="participant", seed=SEED)
 agg_rows = []
 for name, tasks in [

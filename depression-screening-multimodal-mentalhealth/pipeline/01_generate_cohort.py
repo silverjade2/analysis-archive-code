@@ -1,6 +1,7 @@
-"""01. 참가자 코호트 생성 (D1 스키마).
-참가자 2,000명: 그룹(환자군/대조군), 성별, 나이, 직장인 여부, PHQ-9, 라벨(PHQ-9 >= 10).
-환자군에도 PHQ-9가 낮은 사람(치료 중 관해)이 있고, 대조군에도 높은 사람이 있다 — 그룹 ≠ 라벨."""
+"""참가자 코호트 2000명 (D1 스키마). 그룹, 성별, 나이, 직장인 여부, PHQ-9, 라벨(PHQ-9 >= 10)
+
+환자군에도 PHQ 낮은 사람(치료 중 관해), 대조군에도 높은 사람 -> 그룹 != 라벨
+"""
 
 import _path  # noqa: F401
 import numpy as np
@@ -22,7 +23,7 @@ rng = np.random.default_rng(SEED)
 n = N_PARTICIPANTS
 group = np.where(rng.random(n) < P_PATIENT, "patient", "control")
 sex = np.where(rng.random(n) < P_FEMALE, "F", "M")
-# 나이: 20~30대가 많고 60대 이상은 적은 외래 코호트 모양 (17~80)
+# 20~30대 많고 60대 이상 적은 외래 코호트 모양 (17~80)
 age = np.clip(rng.gamma(shape=3.5, scale=8.0, size=n) + 17, 17, 80).round().astype(int)
 employed = ((age >= 20) & (age <= 59) & (rng.random(n) < P_EMPLOYED_WORKING_AGE)).astype(int)
 phq = np.where(group == "patient", rng.normal(*PHQ_PATIENT, size=n), rng.normal(*PHQ_CONTROL, size=n))
@@ -40,9 +41,7 @@ cohort = pd.DataFrame(
         label_depressed=label,
     )
 )
-cohort["phq9_z"] = ((cohort.phq9 - cohort.phq9.mean()) / cohort.phq9.std()).round(
-    4
-)  # 생성기 내부용. 피처로 쓰지 않는다.
+cohort["phq9_z"] = ((cohort.phq9 - cohort.phq9.mean()) / cohort.phq9.std()).round(4)  # 생성기 내부용, 피처 아님
 cohort.to_csv(DATA / "participants.csv", index=False)
 
 summary = pd.DataFrame(

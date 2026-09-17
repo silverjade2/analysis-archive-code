@@ -1,4 +1,4 @@
-"""04. 형태소 토큰화 캐시. 녹음 STT와 감정 코퍼스 둘 다."""
+"""Kiwi 토큰화 캐시 (녹음 STT + 감정 코퍼스)"""
 
 import _path  # noqa: F401
 import pandas as pd
