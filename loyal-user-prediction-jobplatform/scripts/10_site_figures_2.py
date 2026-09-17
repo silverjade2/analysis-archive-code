@@ -149,9 +149,9 @@ ax.set_ylim(0, 1)
 ax.set_xlabel(f"v1 스냅샷 점수 (OOF). 점선 오른쪽이 상위 {k}명")
 ax.set_ylabel(f"v2 cutoff 점수 (OOF). 점선 위쪽이 상위 {k}명")
 ax.grid()
-ax.set_title(
-    "비동의 유저 7,457명의 두 점수 (겹침 28%, 색은 ground truth 확률)"
-)  # 7,457과 28%는 손으로 적음. 데이터 바뀌면 틀림
+n_neg8 = int(summary["deciles: non-consented users"])
+overlap8 = summary["quadrants: both lists n"] / summary["quadrants: list size k"]
+ax.set_title(f"비동의 유저 {n_neg8:,}명의 두 점수 (겹침 {overlap8:.0%}, 색은 ground truth 확률)")
 save(fig, "fig8_score_plane")
 
 tl = pd.read_csv(RES / "timeline_sample.csv")

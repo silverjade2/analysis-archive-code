@@ -61,7 +61,7 @@ def describe(idx, label):
     return {
         "list": label,
         "n": len(idx),
-        "logged in ≤ 30d (snapshot)": (f["days_since_last_login"] <= 30).mean(),
+        "logged in <= 30d (snapshot)": (f["days_since_last_login"] <= 30).mean(),
         "season joiner": u["truth_season_joiner"].mean(),
         "preference complete": u["truth_pref_complete"].mean(),
         "salary left at default": (u["pref_salary_default_yn"] == "Y").mean(),
@@ -89,7 +89,7 @@ pd.DataFrame(
 ).round(4).to_csv(RES / "nudge_list_overlap.csv", index=False)
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 3.8))
-metrics = ["logged in ≤ 30d (snapshot)", "preference complete", "salary left at default", "season joiner"]
+metrics = ["logged in <= 30d (snapshot)", "preference complete", "salary left at default", "season joiner"]
 x = np.arange(len(metrics))
 w = 0.26
 for i, (lab, col) in enumerate([("v1 list", "#a0aec0"), ("v2 list", "#2b6cb0"), ("all non-consented", "#e2e8f0")]):

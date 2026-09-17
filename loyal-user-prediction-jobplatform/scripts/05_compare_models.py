@@ -29,7 +29,7 @@ VARIANTS = {
     "v1_pref": ("features_v1_snapshot.csv", NOTEBOOK_FEATURES + PREF_FEATURES),
     "v2_pref": ("features_v2_timecut.csv", NOTEBOOK_FEATURES + PREF_FEATURES),
 }
-MODELS = {
+MODELS = {  # 파라미터는 원본 노트북 값
     "Logistic Regression": lambda: make_pipeline(StandardScaler(), LogisticRegression(max_iter=2000)),
     "Random Forest": lambda: RandomForestClassifier(n_estimators=100, n_jobs=-1, random_state=123),
     "XGBoost": lambda: XGBClassifier(
