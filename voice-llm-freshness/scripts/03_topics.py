@@ -1,11 +1,4 @@
-"""주제 매칭
-
-부분 문자열 매칭이다. 제외 규칙은 발화 전체를 버리지 않고 걸린 키워드 히트 하나만 취소한다.
-"경기도 가는 길에 날씨 어때"면 경기는 취소되고 날씨는 남는다.
-
-불만 발화("최신으로 알려줘")에는 주제 키워드가 없다. 같은 세션 직전 유저 발화의 주제를 가져온다.
-직전 발화가 없거나 그 발화도 미매칭이면 미매칭으로 둔다.
-"""
+"""주제 키워드 매칭 (부분 문자열) + 제외 규칙 + 불만 발화의 직전 주제 귀속"""
 
 import pandas as pd
 from common import COMPLAINT, DATA, EXCLUDE_RULES, GZ, RES, TOPIC_KEYWORDS, TOPICS, UNMATCHED
@@ -19,7 +12,7 @@ for topic, kws in TOPIC_KEYWORDS.items():
         m = text.str.contains(kw, regex=False)
         for ex_kw, ex_pat in EXCLUDE_RULES:
             if ex_kw == kw:
-                cancel = m & text.str.contains(ex_pat, regex=False)
+                cancel = m & text.str.contains(ex_pat, regex=False)  # 발화 전체가 아니라 이 키워드 히트만 취소
                 hits.append({"keyword": kw, "exclude": ex_pat, "cancelled": int(cancel.sum())})
                 m &= ~cancel
         pairs[f"hit:{topic}:{kw}"] = m
@@ -43,7 +36,7 @@ pairs["short_only"] = (H & (kw_len <= 2)).sum(axis=1).eq(pairs["n_hits"]) & pair
 pairs["complaint"] = text.str.contains(COMPLAINT)
 pairs = pairs.sort_values(["session_id", "ts", "turn_id"])
 prev_topic = pairs.groupby("session_id")["topic"].shift(1)
-inherit = pairs["complaint"] & pairs["topic"].eq(UNMATCHED) & prev_topic.notna()
+inherit = pairs["complaint"] & pairs["topic"].eq(UNMATCHED) & prev_topic.notna()  # "최신으로 알려줘"엔 키워드가 없음
 pairs.loc[inherit, "topic"] = prev_topic[inherit]
 
 out = pairs[["turn_id", "topic", "n_hits", "short_only", "complaint"]]

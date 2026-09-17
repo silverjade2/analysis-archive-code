@@ -1,9 +1,4 @@
-"""유저 발화 1건에 기기 응답 1건을 붙인다
-
-log_type 3, 4는 음성 원본 참조 행이라 버린다. 제어 코드(2)는 발화도 응답도 아니라서 먼저 빼고 나면
-"다음 행"이 곧 사이에 낀 제어 코드를 건너뛴 다음 행이 된다. 응답이 오기 전에 유저가 또 말했으면 앞 발화는
-무응답이다.
-"""
+"""유저 발화 1건 + 기기 응답 1건 짝짓기 -> turn_pairs"""
 
 import pandas as pd
 from common import DATA, DEVICE, GZ, PAIR_MAX_SEC, USER
@@ -14,6 +9,7 @@ logs = pd.read_csv(
 logs["ts"] = pd.to_datetime(logs["ts"])
 print("log_type share", logs.log_type.value_counts(normalize=True).sort_index().round(4).to_dict())
 
+# 3, 4(음성 참조)와 2(제어 코드)를 빼면 shift(-1)이 곧 다음 응답. 응답 전에 유저가 또 말했으면 앞 발화는 무응답
 x = logs[logs.log_type.isin([USER, DEVICE])].sort_values(["session_id", "ts", "row_id"])
 nxt = x.groupby("session_id")[["row_id", "log_type", "ts", "text"]].shift(-1)
 gap = (nxt["ts"] - x["ts"]).dt.total_seconds()

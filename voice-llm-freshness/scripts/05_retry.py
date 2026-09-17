@@ -1,10 +1,6 @@
-"""세션 구조와 재시도
+"""재시도(같은 세션, RETRY_WINDOW_SEC 안, bigram Jaccard >= RETRY_SIM)와 세션 구조. 정의 sweep 포함
 
-재시도는 같은 세션에서 RETRY_WINDOW_SEC 안에 나온 다음 유저 발화가 직전 발화와 글자 bigram Jaccard
-RETRY_SIM 이상인 경우다. 빈 발화 뒤에 무엇을 말하든 재시도로 보지 않는다(비교할 원문이 없다).
-
-정의를 바꾸면 방향이 바뀌는지 sweep으로 본다. 세션을 넘어가는 재시도는 로그에 기기 식별자가 없어서 이
-정의로는 잡을 수 없다.
+세션을 넘어간 재시도는 기기 식별자가 없어 못 셈
 """
 
 import pandas as pd
@@ -17,7 +13,7 @@ d = pairs.merge(flags, on="turn_id").sort_values(["session_id", "ts", "turn_id"]
 g = d.groupby("session_id")
 d["next_text"] = g["text"].shift(-1)
 d["next_gap"] = (g["ts"].shift(-1) - d["ts"]).dt.total_seconds()
-has_next = d["next_text"].notna() & (d["text"] != "") & (d["next_text"] != "")
+has_next = d["next_text"].notna() & (d["text"] != "") & (d["next_text"] != "")  # 빈 발화는 비교할 원문이 없음
 d["sim"] = 0.0
 d.loc[has_next, "sim"] = [bigram_sim(a, b) for a, b in zip(d.loc[has_next, "text"], d.loc[has_next, "next_text"])]
 

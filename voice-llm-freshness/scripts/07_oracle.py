@@ -1,8 +1,4 @@
-"""truth_stale 대비 proxy 지표
-
-운영 로그에는 없는 정답을 여기서만 연다. proxy가 낡은 답을 몇 개나 가리키는지(recall)와 proxy가 가리킨 것 중
-실제로 낡은 답이 몇 개인지를 같이 본다. 불만 표현은 낡은 답 바로 다음 발화에 나오므로 다음 턴 기준으로 센다.
-"""
+"""truth_stale 대비 proxy 3종(최신성 신호, 불만, 재시도)의 recall / precision. 정답 컬럼은 07, 08만 읽음"""
 
 import pandas as pd
 from common import DATA, RES, TOPICS, UNMATCHED
@@ -19,6 +15,7 @@ d = (
     .sort_values(["session_id", "ts", "turn_id"])
 )
 d["truth_topic"] = d["truth_topic"].fillna("")
+# 불만은 낡은 답 다음 턴에 나옴
 d["next_complaint"] = d.groupby("session_id")["complaint"].shift(-1, fill_value=False).astype(bool)
 d = d[~d["empty"]]
 

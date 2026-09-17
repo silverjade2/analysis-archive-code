@@ -1,10 +1,4 @@
-"""응답 상태, 최신성 요구, 의도
-
-fallback은 응답 원문이 문구 사전에 있는지로만 가른다. 사전 밖 응답은 정상이다. 낡은 답이 정상으로 잡히는
-이유가 이 한 줄이다.
-
-최신성 신호는 카테고리 순서대로 첫 번째로 걸린 것을 대표로 둔다. "어제 누가 이겼어"는 시점이 아니라 결과다.
-"""
+"""turn_flags: 응답 상태(normal/fallback/none), 최신성 신호, 의도"""
 
 import pandas as pd
 from common import DATA, FRESH_SIGNALS, GZ, INTENT_RULES, RES, fallback_lookup
@@ -14,11 +8,12 @@ lut = fallback_lookup()
 
 pairs["state"] = "normal"
 pairs.loc[pairs["resp_row_id"] == "", "state"] = "none"
+# 사전 밖 응답은 전부 normal. 낡은 답이 여기서 정상으로 잡힘
 pairs.loc[pairs["resp_text"].isin(lut), "state"] = "fallback"
 pairs["fallback_cat"] = pairs["resp_text"].map(lut).fillna("")
 
 pairs["fresh_cat"] = ""
-for cat in reversed(list(FRESH_SIGNALS)):
+for cat in reversed(list(FRESH_SIGNALS)):  # 앞 카테고리 우선. "어제 누가 이겼어"는 시점 아니고 결과
     m = pairs["text"].str.contains("|".join(FRESH_SIGNALS[cat]))
     pairs.loc[m, "fresh_cat"] = cat
 pairs["fresh"] = pairs["fresh_cat"] != ""
