@@ -45,10 +45,7 @@ var_total_usage = df["total_usage"].var()
 print(f"\n시간대 피처 168개 분산의 합: {var_hourly_sum:,.1f}")
 print(f"total_usage 하나의 분산:      {var_total_usage:,.1f}")
 print(f"total_usage가 전체 분산에서 차지하는 비율: {var_total_usage / (var_hourly_sum + var_total_usage):.1%}")
-print(
-    "K-means는 유클리드 거리라 분산 큰 축이 경계를 정함. "
-    "total_usage 혼자 이 비율이면 군집은 사용 모양이 아니라 총량으로 갈린 것"
-)
+print("total_usage 한 열이 이 비율이면 K-means 경계는 사용 모양이 아니라 총량으로 갈림")
 
 hourly = pd.DataFrame(
     df[hour_cols].to_numpy().reshape(len(df), 7, 24).mean(axis=1),
@@ -87,8 +84,7 @@ for ax in [profile_axes[0], profile_axes[2]]:
 fig.suptitle(f"스케일링 없는 K-means (k={K}), total_usage 오름차순 (ARI={ari:.3f})")
 fig.tight_layout()
 fig.savefig(base / "outputs" / "figures" / "fig2_naive_kmeans.png", dpi=150)
-# 아래 경로 표기 틀림 (실제 outputs/figures). 저장은 맞음
-print(f"\n플롯 저장: {base / 'figures' / 'fig2_naive_kmeans.png'}")
+print(f"\n플롯 저장: {base / 'outputs' / 'figures' / 'fig2_naive_kmeans.png'}")
 
 res_dir = base / "outputs" / "results"
 res_dir.mkdir(parents=True, exist_ok=True)

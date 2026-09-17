@@ -25,7 +25,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 04 | k=2~10 sweep (inertia, silhouette, ARI), k=4 vs 5 대조 | `k_sweep.csv`, `k_composition.csv`, `fig5~6` |
 | 05 | 최종 군집 (k=5) z-score 프로파일과 비즈니스 라벨 | `cluster_zscore.csv`, `cluster_labels.csv`, `fig7` |
 
-## 확인할 숫자
+## 시도 순서와 숫자
 
 - 02: ARI 0.238, 사실상 랜덤. 분산 비율 99.8%는 거리 계산을 total_usage 한 열이 다 정했다는 뜻
 - 03: ARI 0.723 (표준화만), 0.897 (log1p + 표준화). 로그 변환이 낫지만 노이즈 15대가 allday_low에 흡수됨 (순도 6%)
@@ -43,6 +43,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 - 함정 1. `total_usage`만 스케일이 커서 scaling 없이는 이 축이 거리를 지배. `naive_kmeans_summary.csv`의 분산 비율 0.998
 - 함정 2. night, intermittent 기기의 35%는 상대 프로파일과 혼합. intermittent 버스트 시간대도 저녁에 치우침
 - 함정 3. 24시간 상시 고강도 노이즈 15대. 로그 변환에서 allday_low에 흡수됐다가 k=5에서 복원 (`crosstab_k5.csv`)
+- 군집 크기와 잡음 상수(BLUR_FRAC, CELL_NOISE_SD, AMP_SIGMA)는 04의 k sweep 결과를 보면서 조정한 값. 정답 k가 지표에서 나오도록 맞춘 것이라 k 선택 자체는 증거가 아님
 
 ## 알려진 문제
 
