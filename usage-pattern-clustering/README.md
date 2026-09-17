@@ -35,7 +35,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 
 `usage_profiles.csv` 800행 x 171열. `device_id`(D0000~D0799), `u_{dow}_h{HH}` 168열 (요일 x 시각 평균 사용 강도, 0~10), `total_usage`(0~5000, 셀 합 x 3.5 + noise), `true_cluster`(morning / allday_low / night / intermittent / noise). 정답 열은 채점 전용이고 클러스터링 입력에 안 들어간다.
 
-세그멘테이션 시리즈 2편은 이 폴더의 생성기를 그대로 복사해 쓴다. 01을 고치면 여기 pipeline 전체를 다시 돌리고 2편 폴더의 생성기도 같이 바꿔야 함.
+세그멘테이션 시리즈 2편은 이 폴더의 생성기를 그대로 복사해 쓴다. 01을 고치면 여기 pipeline 전체를 다시 돌려야 함.
 
 ## 심어둔 구조
 
