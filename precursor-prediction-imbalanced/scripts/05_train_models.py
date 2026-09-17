@@ -64,7 +64,7 @@ for name, model in variants.items():
     joblib.dump(model, base / "data" / f"model_{name}.joblib")
 
 res = pd.DataFrame(results).set_index("variant")
-print("\n=== 불균형 처리 비교 (테스트: 마지막 30일) ===")
+print("\n불균형 처리 비교 (테스트: 마지막 30일)")
 print(res.round(4).to_string())
 best = res["pr_auc"].idxmax()
 print(f"\nPR-AUC 최고: {best}")

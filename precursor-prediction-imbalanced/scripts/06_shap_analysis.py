@@ -38,7 +38,7 @@ if isinstance(shap_values, list):  # 구버전 shap은 [neg, pos] 리스트
 
 mean_abs = pd.Series(np.abs(shap_values).mean(axis=0), index=feature_cols)
 ranking = mean_abs.sort_values(ascending=False)
-print("=== mean|SHAP| 상위 15 ===")
+print("mean|SHAP| 상위 15")
 for i, (name, v) in enumerate(ranking.head(15).items(), 1):
     print(f"{i:2d}. {name:<16s} {v:.4f}")
 
@@ -83,7 +83,7 @@ ablated = LGBMClassifier(
 ablated.fit(train[no_w7], train["target"])
 pr_full = average_precision_score(y_te, model.predict_proba(X_te)[:, 1])
 pr_ablated = average_precision_score(y_te, ablated.predict_proba(test[no_w7])[:, 1])
-print("\n=== W7 제거 ablation ===")
+print("\nW7 제거 ablation")
 print(f"전체 피처 PR-AUC: {pr_full:.4f}")
 print(f"W7 제거 PR-AUC:   {pr_ablated:.4f} (차이 {pr_ablated - pr_full:+.4f})")
 print("saved: figures/fig5_shap_summary.png, fig6_shap_w7.png")

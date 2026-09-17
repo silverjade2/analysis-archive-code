@@ -26,6 +26,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 05 | 시간 분할 (day 150부터 test, purge 7일) + LightGBM 불균형 처리 3종 | `model_compare.csv`, `split_stats.csv`, `fig4`, `data/model_*.joblib` (미커밋) |
 | 06 | SHAP 순위, W7 기여 방향, W7 제거 ablation | `shap_ranking.csv`, `ablation_w7.csv`, `fig5~6` |
 | 07 | test 구간 threshold sweep. 위젯 ThresholdExplorer 데이터 | `threshold_sweep.json` (사이트 `src/data/threshold-sweep.json`) |
+| 08 | 06에서 W3 순위가 낮은 이유. 이벤트까지 남은 일수별 feature 평균, 단일 feature AUC | `w3_by_horizon.csv`, `single_feature_auc.csv` |
 
 ## 확인할 숫자
 
@@ -49,4 +50,4 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ## 알려진 문제
 
 - test 구간을 "마지막 30일"이라 부르지만 실제 행은 day 150~172의 23일치. 03이 마지막 7일을 버려서. 07의 일평균 경보는 23일로 나눈 값
-- 심은 신호 중 사용량 표준편차는 SHAP 1위인데 W3 계열은 7, 22, 25위. 함정 `w7_cnt_7d`가 5위로 더 위. 7일 램프가 7d/14d 합계 feature에서 뭉개지는 것 같은데 확인 안 함
+- 심은 신호 중 사용량 표준편차는 SHAP 1위인데 W3 계열은 7, 22, 25위. 함정 `w7_cnt_7d`가 5위로 더 위. 08로 확인한 원인은 라벨 창. 양성 행은 이벤트 1~7일 전인데 W3 램프는 7일 전에 시작하므로 이벤트 5~7일 전 행의 `w3_cnt_7d`는 2.0~4.2로 음성 평균 2.2와 거의 같고, 1일 전 행에서만 15.4. 사용량 표준편차는 14일 전부터 올라가서 양성 행 전체에서 8.7~13.0 vs 5.7. 단일 feature AUC(test)는 `w3_cnt_7d` 0.868, `u1_std_7d` 0.877로 비슷한데 W3는 cnt_7d/cnt_14d/slope 셋이 상관돼 SHAP 기여가 갈림
