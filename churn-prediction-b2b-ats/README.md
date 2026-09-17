@@ -50,7 +50,7 @@ python verify.py   # 선택. 루트에서
 
 ## 원본과 다른 점
 
-PyCaret setup/compare/tune 대신 sklearn KFold, StratifiedKFold, cross_val_predict. 95/5 split, 10-fold, random_state 786은 원본과 같음.
+PyCaret setup/compare/tune 대신 sklearn KFold, StratifiedKFold, cross_val_predict. 95/5 split, 10-fold, random_state 786은 원본과 같음. v2의 절단 시점 T(실행일 12개월 전)는 원본에 없던 것이고, 12개월은 기본 계약 주기.
 
 ## 알려진 문제
 
