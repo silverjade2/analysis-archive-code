@@ -31,10 +31,7 @@ X_raw = df[feature_cols].to_numpy()
 skew_hourly = skew(df[hour_cols].to_numpy(), axis=0)
 skew_total = skew(df["total_usage"].to_numpy())
 print("피처 skewness (0이면 대칭)")
-print(
-    f"  시간대 피처 168개: 평균 {skew_hourly.mean():.2f}, 최대 {skew_hourly.max():.2f} "
-    f"(intermittent류의 '대부분 0 + 가끔 버스트' 셀)"
-)
+print(f"  시간대 피처 168개: 평균 {skew_hourly.mean():.2f}, 최대 {skew_hourly.max():.2f} (버스트 셀 영향)")
 print(f"  total_usage:        {skew_total:.2f}")
 print()
 
@@ -45,7 +42,7 @@ def run_kmeans(X: np.ndarray, method: str) -> dict:
     ari = adjusted_rand_score(df["true_cluster"], pred)
 
     crosstab = pd.crosstab(df["true_cluster"], pred, margins=True)
-    print(f"── {method}: ARI={ari:.3f} ──")
+    print(f"[{method}] ARI={ari:.3f}, k=4")
     print(crosstab.to_string())
 
     noise_pred = pd.Series(pred)[df["true_cluster"] == "noise"]
@@ -134,7 +131,7 @@ summary = pd.DataFrame(
     ]
 )
 summary["ARI 변화(1차 대비)"] = summary["ARI"] - summary.loc[0, "ARI"]
-print("── 요약: 스케일링 방법별 ARI 비교 ──")
+print("스케일링 방법별 ARI")
 print(summary.to_string(index=False))
 
 res_dir = base / "outputs" / "results"

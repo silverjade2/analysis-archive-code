@@ -46,11 +46,11 @@ for k in K_RANGE:
     )
 
 sweep = pd.DataFrame(records)
-print("── k 스윕 (로그+표준화, KMeans n_init=10) ──")
+print("k sweep (log1p + 표준화, KMeans n_init=10)")
 print(sweep.round(3).to_string(index=False))
 print()
 
-print("── 각 k의 군집 구성 (크기 / 최다 정답 레이블 / 순도) ──")
+print("k별 군집 구성: 크기 (최다 정답 레이블, 순도)")
 for k in K_RANGE:
     pred = preds[k]
     parts = []
@@ -61,7 +61,7 @@ for k in K_RANGE:
     print(f"k={k}: " + "  ".join(parts))
 print()
 
-print("── k=4 vs k=5: 노이즈 소군집 15대 추적 ──")
+print("k=4 vs k=5, 노이즈 15대 행방")
 for k in (4, 5):
     pred = preds[k]
     crosstab = pd.crosstab(true, pred, margins=True)

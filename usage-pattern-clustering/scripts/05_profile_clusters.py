@@ -61,11 +61,11 @@ LABELS = {
     4: "아침 집중형: 평일 6~10시 피크",
 }
 
-print("── 군집별 평균 z-score (해석용 파생 피처) ──")
+print("군집별 평균 z-score (파생 피처)")
 print(z_by_cluster.round(2).to_string())
 print()
 
-print("── 군집 요약과 비즈니스 라벨 ──")
+print("\n군집 요약, 라벨")
 for c in range(K):
     n = (pred == c).sum()
     top = z_by_cluster.loc[c].abs().sort_values(ascending=False).head(3)
@@ -74,7 +74,7 @@ for c in range(K):
     print(f"  근거 z-score: {signs}")
 print()
 
-print("── 사후 검증: 예측 군집 × 정답 레이블 ──")
+print("사후 검증, 예측 군집 x 정답 레이블")
 print(pd.crosstab(df["pred_cluster"], df["true_cluster"]).to_string())
 
 fig, (ax_hm, ax_prof) = plt.subplots(1, 2, figsize=(14, 5.5), gridspec_kw={"width_ratios": [1.2, 1]})
