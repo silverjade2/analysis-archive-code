@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from common import DATA, RES, START, robust_z
 
+# 세 값 모두 운영 분석에서 쓴 기준
 Z_CUT = 3.0
 NEW_DAYS = 3  # 설치 후 3일 이내 = 신규
 DORMANT_DAYS = 7  # 직전 로그와 7일 이상 간격 = 재활성

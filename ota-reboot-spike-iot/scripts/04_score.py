@@ -60,7 +60,7 @@ pd.DataFrame(
     columns=["attribution", "ota_dt", "off_n", "off_n_multiple", "off_ratio_drop", "mode_share", "detected_as_spike"],
 ).to_csv(RES / "carryover_comparison.csv", index=False)
 
-# OTA 후 15분 내 시작한 고정 세션
+# OTA 후 15분 내 시작한 고정 세션. 15분은 운영 분석에서 쓴 창
 rows = []
 for r in ota.itertuples():
     T = r.ota_dt + pd.Timedelta(hours=int(r.ota_hour))
