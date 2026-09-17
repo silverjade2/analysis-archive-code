@@ -1,9 +1,6 @@
-"""오호출 상한과 하한, 분모를 바꾼 뒤의 비율
+"""오호출 규칙 하한(기기 자체 판정) / 상한(+ 빈 발화 + 짧고 의도 미분류인 fallback), 분모별 비율
 
-하한은 기기가 스스로 소음이나 오호출로 판정한 발화뿐이다. 상한은 거기에 빈 발화와 "짧고 의도 미분류이고
-fallback"을 더한다. 짧은 기준 3글자는 파편 표현(아니, 엄마, 이거)을 덮는 가장 작은 값이다.
-
-규칙은 truth_misfire를 보지 않고 만든다. 규칙이 정해진 다음에만 정답과 대조한다.
+규칙을 다 만든 뒤에 truth_misfire를 읽음. verify.py가 순서를 확인
 """
 
 import pandas as pd
@@ -12,7 +9,7 @@ from common import DATA, RES
 pairs = pd.read_csv(DATA / "turn_pairs.csv.gz", keep_default_na=False, usecols=["turn_id", "text"])
 d = pairs.merge(pd.read_csv(DATA / "turn_flags.csv.gz", keep_default_na=False), on="turn_id")
 
-short = d["text"].str.replace(" ", "").str.len().between(1, 3)
+short = d["text"].str.replace(" ", "").str.len().between(1, 3)  # 3글자: 아니, 엄마, 이거를 덮는 최소
 rules = pd.DataFrame(
     {
         "self_judged": d["fallback_cat"].isin(["소음 판정", "오호출 판정"]),
