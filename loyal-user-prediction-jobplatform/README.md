@@ -30,7 +30,7 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 | 09 | 그림 7~11 데이터. 동의 전후 로그인, 타임라인 12명, OOF 점수와 ROC, 분위와 사분면. 06과 assert 대조 | `login_around_consent.csv`, `oof_scores.csv`, `leakage_anatomy_summary.csv` 등 |
 | 10 | 09의 CSV만 읽어 그림 7~11 | `outputs/figures/site/fig7~11.webp` |
 
-`common.py`에 스냅샷일 2023-06-23, 공채 시즌 4개, 원본 노트북 feature 32개. `features.py`의 `build_features(cutoff)`는 유저별 절단일 이하 이벤트만 집계하고 v1, v2가 같이 쓴다. `sitestyle.py`는 depression 폴더에 같은 파일이 있어서 한쪽 고치면 다른 쪽도.
+`common.py`에 스냅샷일 2023-06-23, 공채 시즌 4개, 원본 노트북 feature 32개. `features.py`의 `build_features(cutoff)`는 유저별 절단일 이하 이벤트만 집계하고 v1, v2가 같이 쓴다. `sitestyle.py`는 voice, wellness 폴더에 같은 파일이 있고 depression 폴더 것은 SEQUENTIAL이 하나 더 있음. 한쪽 고치면 나머지도.
 
 원본의 PyCaret 호출은 scikit-learn StratifiedKFold, cross_validate로 옮김. 95/5 split, random_state 786, 10-fold, 모델 4종과 각 모델의 파라미터(RF 100, XGBoost 200/깊이 6/lr 0.1, LightGBM 200/잎 31)는 원본 노트북 값 그대로. 여기에 저니맵에서 봤지만 당시 모델에 안 넣었던 선호 정보 2개(`pref_salary_default_yn`, `pref_welfare_cnt`)를 더했다.
 
@@ -42,7 +42,7 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 
 ## 데이터
 
-`population.csv` 76,384행은 전체 가입 45만 명을 `join_date`, `season_joiner`, `status`, `last_login_date` 조합별 인원 `n`으로 집계한 것. 저니맵(02)에서만 쓴다. `users.csv` 38,355행은 모델링 대상으로 정적 속성, 선호 정보 2열, 타임라인(`join_day`, `test1_day`, `profile_day`, `consent_day`. 미동의는 -1), 타깃 `matching_use_yn`, `truth_*` 4열. `logins.npz`는 유저 x 일(38,355 x 758) 로그인 행렬. 이벤트는 `events_apply.csv` 77,179행 (퍼널 플래그, 채널, `company_id`), `events_test.csv` 68,058행, `events_notice.csv` 25,180행.
+`population.csv` 74,822행은 전체 가입 45만 명을 `join_date`, `season_joiner`, `status`, `last_login_date` 조합별 인원 `n`으로 집계한 것. 저니맵(02)에서만 쓴다. `users.csv` 38,355행은 모델링 대상으로 정적 속성, 선호 정보 2열, 타임라인(`join_day`, `test1_day`, `profile_day`, `consent_day`. 미동의는 -1), 타깃 `matching_use_yn`, `truth_*` 4열. `logins.npz`는 유저 x 일(38,355 x 758) 로그인 행렬. 이벤트는 `events_apply.csv` 77,179행 (퍼널 플래그, 채널, `company_id`), `events_test.csv` 68,058행, `events_notice.csv` 25,180행.
 
 `features_v1_snapshot.csv`, `features_v2_timecut.csv`는 38,355 x 37. 원본 feature 32 + 선호 정보 2 + 타깃 + `cutoff_day`. v1은 전원 스냅샷일, v2는 유저별 절단일.
 
@@ -50,7 +50,7 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 
 ## 생성기에 넣은 것
 
-- 동의 후 로그인 증가 (01의 `after` 마스크 2.2배 + 결과표 확인 burst. 2.2배와 동의 logit 계수는 원본 수치 기준). 동의 다음 날 로그인 확률 0.775 vs 비동의 0.103, 절단일이 동의일을 넘는 순간 AUC 0.69 -> 0.88 (`cutoff_sweep.csv`)
+- 동의 후 로그인 증가 (01의 `after` 마스크 2.2배 + 결과표 확인 burst. 2.2배는 원본 수치). 동의 다음 날 로그인 확률 0.775 vs 비동의 0.103, 절단일이 동의일을 넘는 순간 AUC 0.69 -> 0.88 (`cutoff_sweep.csv`)
 - 시즌 가입자. 공채 시즌 직전 가입자는 한 번 지원하고 떠남, 가입 월이 그 proxy (`journey_dormancy.csv`, fig3)
 - 선호 정보 완성이 진짜 원인. 연봉 기본값이 아니고 복지 5개 이상이면 동의 logit +1.30. v2에서 상위로 올라옴 (`importance_v2_pref.csv`)
 
