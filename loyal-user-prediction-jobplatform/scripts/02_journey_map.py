@@ -51,7 +51,7 @@ pref = pd.DataFrame(
             "salary left at default",
             "welfare: 1 item or fewer",
             "welfare: fewer than 5 items",
-            "preference complete (salary set & welfare ≥ 5)",
+            "preference complete (salary set & welfare >= 5)",
         ],
         "share": [
             (users["pref_salary_default_yn"] == "Y").mean(),

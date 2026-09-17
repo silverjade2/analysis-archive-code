@@ -158,7 +158,14 @@ ax.scatter(
 )
 ax.scatter(piv["v2_pref"], yy, s=75, color=BLUE, zorder=3, label="v2 cutoff + 선호 정보")
 ax.axvline(oracle, color=ORANGE, ls="--", lw=1.2, zorder=2)
-ax.text(oracle + 0.004, yy.max() + 0.62, f"ground truth 확률의 oracle AUC {oracle:.3f}", color=ORANGE, fontsize=9, va="center")
+ax.text(
+    oracle + 0.004,
+    yy.max() + 0.62,
+    f"ground truth 확률의 oracle AUC {oracle:.3f}",
+    color=ORANGE,
+    fontsize=9,
+    va="center",
+)
 ax.set_yticks(yy, models)
 ax.set_ylim(-0.7, len(models) - 0.1)
 ax.set_xlim(0.6, 1.0)
@@ -245,7 +252,7 @@ out = pd.read_csv(RES / "nudge_list_comparison.csv")
 extra = pd.read_csv(RES / "nudge_list_overlap.csv").set_index("metric")["value"]
 overlap = extra["overlap between v1 and v2 top-10% lists"]
 rand_p = extra["random 10% list: mean true consent propensity"]
-metrics = ["logged in ≤ 30d (snapshot)", "preference complete", "salary left at default", "season joiner"]
+metrics = ["logged in <= 30d (snapshot)", "preference complete", "salary left at default", "season joiner"]
 fig, axes = plt.subplots(1, 2, figsize=(11, 3.8))
 x = np.arange(len(metrics))
 w = 0.26

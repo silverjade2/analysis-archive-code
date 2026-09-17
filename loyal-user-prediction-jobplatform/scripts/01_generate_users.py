@@ -57,8 +57,8 @@ if len(idx3) > N_MODEL:
 elif len(idx3) < N_MODEL:
     cand = np.flatnonzero(status_pop == 2)
     status_pop[rng.choice(cand, N_MODEL - len(idx3), replace=False)] = 3
-# 상태 비율을 원본(가입만 80 / 검사만 9 / 프로필만 3)에 맞춘다. status 3은 이미 N_MODEL로 고정됐고
-# 주 rng의 소비 순서를 바꾸면 모델링 층이 통째로 달라지므로, 나머지 유저의 상태만 별도 스트림으로 다시 배정한다
+# 상태 비율을 원본(가입만 80 / 검사만 9 / 프로필만 3)에 맞춤. 주 rng를 건드리면 users.csv가 통째로
+# 바뀌어서 status 3은 그대로 두고 나머지만 별도 스트림으로 재배정
 rng_pop = np.random.default_rng(SEED + 1)
 rest = np.flatnonzero(status_pop != 3)
 target3 = np.array([0.80, 0.09, 0.03]) / 0.92
@@ -141,7 +141,7 @@ lam *= np.where(season_day[None, :], 3.0, 1.0)
 # 시즌 가입자는 첫 시즌 끝나면 이탈
 leave_day = season_end_after[join]
 lam *= np.where(season_joiner[:, None] & (day_grid > leave_day[:, None]), 0.12, 1.0)
-# 구조 1. 동의 후 로그인 2.2배
+# 구조 1. 동의 후 로그인 2.2배 (원본 수치)
 after = (consent_day[:, None] >= 0) & (day_grid > consent_day[:, None])
 lam *= np.where(after, 2.2, 1.0)
 lam = np.where(day_grid < join[:, None], 0.0, lam)
