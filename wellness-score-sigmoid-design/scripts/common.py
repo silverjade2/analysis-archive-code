@@ -31,8 +31,8 @@ PARAMS = {
 DECIMALS = {"temperature": 1, "pulse": 0, "spo2": 1, "stress": 0, "bp_sys": 0, "bp_dia": 0}
 
 STAGE_STABLE, STAGE_CAUTION = 70, 50  # 원본 값 그대로, 임상 근거 없음
-PENALTY = {"경고": 0.5, "주의": 0.75, "안정": 1.0}
-K_V2 = 6  # 재설계 k. 정규화 척도라 원본 항목별 k(3~6)와 무관
+PENALTY = {"경고": 0.5, "주의": 0.75, "안정": 1.0}  # 원본 노트북 값
+K_V2 = 6  # 재설계 k. 정규화 척도라 원본 항목별 k(3~6)와 무관. 4/6/8 곡선 비교로 고름 (02의 k_curve_marks)
 
 
 def rng(offset=0):
