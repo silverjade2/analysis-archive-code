@@ -1,4 +1,4 @@
-"""텍스트 피처. Kiwi 형태소 분석 → "형태소/품사" 토큰. 결과는 data/에 캐시한다."""
+"""텍스트 피처. Kiwi 형태소 -> "형태소/품사" 토큰, data/에 캐시"""
 
 from kiwipiepy import Kiwi
 
@@ -13,15 +13,14 @@ def kiwi():
 
 
 def tokenize(texts):
-    """각 문장을 '형태소/품사' 토큰의 공백 구분 문자열로."""
+    """문장 -> '형태소/품사' 토큰 공백 구분 문자열"""
     out = []
     for toks in kiwi().tokenize(list(texts)):
         out.append(" ".join(f"{t.form}/{t.tag}" for t in toks if t.tag not in ("SF", "SP", "SS", "SE", "SO", "SW")))
     return out
 
 
-# 치료 맥락 어휘 (환자군 shortcut 진단용 마스킹 목록).
-# 면담에서 치료 맥락을 말할 때 쓰는 표현들을 형태소 분석해 내용 형태소(명사·동사·형용사·부사)만 모은다.
+# 치료 맥락 마스킹 목록. 아래 표현을 형태소 분석해 내용 형태소(NNG, NNP, VV, VA, MAG)만 모음
 _TREATMENT_PHRASES = [
     "병원 다니기 시작하고 나서는",
     "약 먹고 나서부터는",

@@ -1,7 +1,4 @@
-"""10. 해석과 하위군 성능.
-(1) PHQ 라벨 텍스트 모델의 상위 피처를 유형(증상·무쾌감·머뭇거림·치료맥락·기타)으로 분류.
-(2) 융합 모델(참가자 분할)의 참가자 단위 AUC를 직장인 여부 / 성별 / 연령대 / 그룹별로. 부트스트랩 95% CI.
-(3) 예측 확률 보정(calibration) 10분위."""
+"""상위 피처 유형 분류, 하위군(직장인/성별/연령대/그룹) 참가자 AUC + 부트스트랩 95% CI, 보정 10분위"""
 
 import _path  # noqa: F401
 import numpy as np
@@ -83,7 +80,7 @@ rows.append(
 sub = pd.DataFrame(rows).round(4)
 sub.to_csv(RESULTS / "subgroup_auc.csv", index=False)
 
-# 보정: 참가자 확률 10분위 vs 실제 우울 비율
+# 보정 10분위
 par["decile"] = pd.qcut(par.p_fusion, 10, labels=False) + 1
 cal = (
     par.groupby("decile")
@@ -93,11 +90,10 @@ cal = (
 )
 cal.to_csv(RESULTS / "calibration_deciles.csv", index=False)
 
-# 상위 피처 유형 분류
 tf = pd.read_csv(RESULTS / "top_features_phq_label.csv")
 KIND = {
     "증상": ["잠", "입맛", "눈물", "집중", "무겁", "누워", "새벽", "뒤척", "힘들", "아프", "배고프"],
-    "무쾌감·무망": [
+    "무쾌감/무망": [
         "재미",
         "귀찮",
         "의욕",

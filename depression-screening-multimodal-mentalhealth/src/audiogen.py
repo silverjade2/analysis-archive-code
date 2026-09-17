@@ -1,6 +1,7 @@
-"""음향 피처 생성기. eGeMAPS 계열의 요약 통계를 흉내낸 20차원.
-녹음 하나의 피처 = 성별 기준선 + 화자 지문 + 과제 효과 + 우울 효과(AUDIO_SIGNAL·z) + 잡음.
-값은 표준화 단위로 만든 뒤 읽기 쉬운 물리 단위로 선형 변환한다."""
+"""음향 피처 20차원 생성 (eGeMAPS 요약 통계 흉내)
+
+피처 = 성별 기준선 + 화자 지문 + 과제 효과 + 우울 효과(AUDIO_SIGNAL * z) + 잡음. 표준화 단위로 만든 뒤 물리 단위로
+"""
 
 import numpy as np
 from config import AUDIO_SIGNAL, MFCC_NOISE_SD, PROSODY_NOISE_SD, SPEAKER_FP_SD
@@ -27,7 +28,7 @@ AUDIO_COLS = [
     "spectral_flux",
     "duration_sec",
 ]
-# (표준화 단위) 우울 효과 방향. 문헌의 방향을 따른다: 단조로운 억양, 낮은 에너지, 느린 말, 긴 쉼.
+# 우울 효과 방향 (표준화 단위). 문헌 방향: 단조로운 억양, 낮은 에너지, 느린 말, 긴 쉼
 DEP_EFFECT = np.array(
     [-0.2, -1.0, -1.0, -0.8, -0.6, 0.4, 0.4, -0.5, -0.9, 1.0, 0.8, -0.5, -0.2, 0.1, -0.1, 0.0, 0.1, 0.0, -0.4, 0.3]
 )
@@ -44,7 +45,7 @@ TASK_EFFECT = {
     "count_down": np.array([0, -0.4, -0.5, 0, -0.3, 0, 0, 0.2, 0.9, -0.4, -0.3, 0.3, 0, 0, 0, 0, 0, 0, 0.3, -0.9]),
     "reading": np.array([0, -0.2, -0.2, 0.1, -0.2, 0, 0, 0.3, 0.5, -0.3, -0.3, 0.4, 0, 0, 0, 0, 0, 0, 0.2, 0.2]),
 }
-# 화자 지문이 실리는 크기 (피처별). 음색(mfcc)·기본 주파수·음량 습관에 크게, 쉼·속도에는 작게.
+# 화자 지문 크기. mfcc, f0, 음량에 크게, 쉼과 속도에 작게
 FP_SCALE = np.array(
     [1.2, 0.5, 0.5, 0.9, 0.5, 0.6, 0.6, 0.8, 0.5, 0.3, 0.3, 0.5, 1.3, 1.3, 1.3, 1.2, 1.2, 1.2, 0.6, 0.2]
 )
@@ -82,7 +83,7 @@ def speaker_fingerprint(rng, sex):
 def recording_features(fp, task, z, n_words, rng):
     noise_sd = np.where(np.isin(np.arange(20), [12, 13, 14, 15, 16, 17]), MFCC_NOISE_SD, PROSODY_NOISE_SD)
     x = fp + TASK_EFFECT[task] + AUDIO_SIGNAL * z * DEP_EFFECT + rng.normal(0, 1.0, size=20) * noise_sd
-    x[19] += 0.015 * (n_words - 30)  # 길이는 말한 양에도 달려 있다
+    x[19] += 0.015 * (n_words - 30)  # 말한 양에 비례
     out = {}
     for i, c in enumerate(AUDIO_COLS):
         m, s = UNITS[c]

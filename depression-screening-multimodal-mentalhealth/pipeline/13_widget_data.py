@@ -1,4 +1,4 @@
-"""위젯용 JSON. split_comparison.csv를 모델 × 분할로 펼친다."""
+"""위젯용 JSON. split_comparison.csv를 모델 x 분할 포인트로"""
 
 import json
 

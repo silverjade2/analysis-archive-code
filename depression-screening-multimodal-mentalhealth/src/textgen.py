@@ -1,5 +1,4 @@
-"""서술 과제 텍스트 생성기. STT 결과를 흉내낸다.
-템플릿 선택: P(t | z) ∝ exp(TEXT_SIGNAL · w_t · z). z = 참가자 PHQ-9 표준화 점수."""
+"""서술 과제 STT 텍스트 생성. 템플릿 선택 P(t | z) ~ exp(TEXT_SIGNAL * w_t * z), z = PHQ-9 표준화 점수"""
 
 import re
 
@@ -56,7 +55,7 @@ def _fill(template, z, rng):
     def rep(m):
         key = m.group(1)
         if key == "fill":
-            # 머뭇거림은 라벨과 무관하게 절반씩 (반응 지연을 우울 신호로 새게 하지 않는다)
+            # 머뭇거림은 라벨과 무관하게 절반씩. 반응 지연이 우울 신호로 새지 않게
             pool = L.FILLER_HIGH if rng.random() < 0.5 else L.FILLER_LOW
             return pool[rng.integers(len(pool))]
         pool = POOLS[key]
@@ -67,7 +66,7 @@ def _fill(template, z, rng):
 
 
 def _add_treatment(text, task, group, rng):
-    """치료 맥락 언급. 환자군에서 훨씬 자주 나온다. 우울 여부와 무관하게."""
+    """치료 맥락 언급. 환자군에서 훨씬 자주, 우울 여부와는 무관"""
     p = P_TREATMENT_MENTION[group] * (1.0 if task in ("happy_memory", "hard_memory") else 0.7)
     if rng.random() >= p:
         return text, 0

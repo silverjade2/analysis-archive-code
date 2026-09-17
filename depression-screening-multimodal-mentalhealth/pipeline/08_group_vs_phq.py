@@ -1,6 +1,7 @@
-"""08. 라벨 정의 비교. 같은 참가자 분할에서 텍스트 모델을
-(a) label = 환자군 여부, (b) label = PHQ-9 >= 10 으로 각각 학습하고, 둘 다 PHQ 라벨로 채점한다.
-'환자군인데 우울하지 않은' 351명이 어떻게 예측되는지, 치료 어휘를 마스킹하면 무엇이 남는지."""
+"""라벨 정의 비교. 환자군 여부 vs PHQ-9 >= 10으로 각각 학습, 둘 다 PHQ 라벨로 채점. 치료 어휘 마스킹 포함
+
+관심은 환자군인데 비우울인 351명의 예측 확률
+"""
 
 import _path  # noqa: F401
 import numpy as np
@@ -47,7 +48,7 @@ for label_name, ycol in [("group_label", "label_group"), ("phq_label", "label_de
 res = pd.DataFrame(rows).round(4)
 res.to_csv(RESULTS / "label_definition_comparison.csv", index=False)
 
-# 그룹별 예측 확률 분포 (그림용): 두 모델, 4개 셀
+# 그림용 분위. 그룹 x 라벨 4셀
 cells = []
 for (label_name, tok_name), oof in probs.items():
     if tok_name != "full":
@@ -67,7 +68,6 @@ for (label_name, tok_name), oof in probs.items():
                     )
                 )
 pd.DataFrame(cells).round(4).to_csv(RESULTS / "label_definition_prob_quantiles.csv", index=False)
-# 상위 피처 (전체 데이터로 학습한 두 모델)
 for label_name, ycol in [("group_label", "label_group"), ("phq_label", "label_depressed")]:
     tf = TextModel(SEED).fit(list(df.tokens), df[ycol].values).top_features(25)
     tf.round(4).to_csv(RESULTS / f"top_features_{label_name}.csv", index=False)

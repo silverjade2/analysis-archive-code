@@ -1,4 +1,4 @@
-"""05. EDA. 코호트 구조(그룹 vs PHQ-9), 과제별 텍스트 길이, 치료 언급률, 음향 피처의 화자/라벨 분산 비율."""
+"""EDA. 그룹 vs PHQ-9, 과제별 텍스트 길이, 치료 언급률, 음향 피처 분산 분해"""
 
 import _path  # noqa: F401
 import pandas as pd
@@ -9,13 +9,10 @@ from evalutil import load_recordings
 df = load_recordings()
 coh = pd.read_csv(DATA / "participants.csv")
 
-# 그룹 × 라벨 교차표
 ct = pd.crosstab(coh.group, coh.label_depressed).rename(columns={0: "not_depressed", 1: "depressed"}).reset_index()
 ct.to_csv(RESULTS / "eda_group_by_label.csv", index=False)
-# PHQ-9 분포
 hist = coh.groupby(["group", "phq9"]).size().rename("n").reset_index()
 hist.to_csv(RESULTS / "eda_phq9_hist.csv", index=False)
-# 과제별 텍스트 통계와 치료 언급률
 task_stats = (
     df.groupby("task")
     .agg(
@@ -30,7 +27,6 @@ task_stats = (
 )
 task_stats["task_ko"] = task_stats.task.map(TASK_KO)
 task_stats.to_csv(RESULTS / "eda_task_stats.csv", index=False)
-# 치료 언급률: 그룹 × 라벨 (서술 과제)
 nar = df[df.task.isin(NARRATIVE_TASKS)]
 tm = (
     nar.groupby(["group", "label_depressed"])
@@ -42,7 +38,7 @@ tm = (
 tm.to_csv(RESULTS / "eda_treatment_mention.csv", index=False)
 
 
-# 음향 피처 분산 분해: 화자 간 분산 비율 vs 라벨 간 분산 비율 (일원 분산분석의 eta^2)
+# eta^2: 화자 간 / 라벨 간 / 과제 간 분산 비율
 def eta2(x, g):
     grand = x.mean()
     ss_tot = ((x - grand) ** 2).sum()
@@ -62,7 +58,6 @@ for c in AUDIO_COLS:
     )
 var = pd.DataFrame(rows).round(4)
 var.to_csv(RESULTS / "eda_audio_variance_decomposition.csv", index=False)
-# 인구통계
 demo = pd.DataFrame(
     [
         dict(stat="age_median", value=coh.age.median()),
