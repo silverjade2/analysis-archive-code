@@ -22,7 +22,7 @@ python verify.py   # 선택. 루트에서
 | --- | --- | --- |
 | 01 | 고객사 2000사, 계약 이력, 외부데이터 생성. 갱신 확률 `truth_renew_p`와 결합 탈락 편향을 심음 | `data/companies.csv`, `contracts.csv`, `external.csv` |
 | 02 | 원본 결합 절차 재현 (fillna 0, 연봉 median, right join, dropna 순). 탈락 편향 집계 | `merged_v1.csv`, `join_bias_*.csv` |
-| 03 | 실행일(2024-02-15) 기준 90일 규칙으로 라벨. 원본 feature 30열 | `features_v1.csv`, `future_revenue_leak.csv` |
+| 03 | 실행일(2024-02-15) 기준 90일 규칙으로 라벨. 원본 30열 (feature 29 + 타깃) | `features_v1.csv`, `future_revenue_leak.csv` |
 | 04 | T(실행일 12개월 전) 절단 feature + oracle | `features_v2.csv`, `truth_v2_population.csv` |
 | 05 | 원본 RF 회귀 재현, 분류기 4종 × v1/ablation/v2, oracle, SHAP, calibration | `model_compare.csv`, `shap_importance_*.csv` |
 | 06 | 실행일 sweep. today를 옮기면 라벨이 얼마나 바뀌는지 | `reference_date_sweep.csv`, `ref_sweep.json` |
@@ -42,7 +42,7 @@ python verify.py   # 선택. 루트에서
 
 ## 데이터
 
-`companies.csv` 2000행, `contracts.csv` 6682행 (다년 계약은 연 단위 세금계산서 행으로 split), `external.csv` 1201행 (규모 클수록 존재. 매출/영업이익 55% 결측, 연봉 30% 결측, 단위 오류 1건). 계약은 2029-06까지 생성돼 있고 스냅샷 절단은 쓰는 쪽에서 `contract_date <= 실행일`로 한다.
+`companies.csv` 2000행, `contracts.csv` 6682행 (다년 계약은 연 단위 세금계산서 행으로 split), `external.csv` 1201행 (규모 클수록 존재. 매출/영업이익 56.5% 결측, 연봉 31.6% 결측, 단위 오류 1건). 계약 체결일은 2026-06(`DATA_END`)까지, 다년 계약 종료일은 2029-06까지 생성돼 있고 스냅샷 절단은 쓰는 쪽에서 `contract_date <= 실행일`로 한다.
 
 `features_v1.csv`의 `rev_2015`, `rev_2024~2027`, `n_contracts`, `total_revenue`, `gubun_*`, `first_year/month`가 계약 이력 파생 열이고 글에서 문제 삼는 부분. 원본이 `rev_2018~2023`은 drop하고 2015와 2024 이후만 남겼는데 이유를 모르겠어서 그대로 재현했다.
 
