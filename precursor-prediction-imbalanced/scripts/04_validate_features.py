@@ -77,7 +77,6 @@ ev, t = merged["event_day"], merged["day"]
 post_event_rows = int((ev <= t).sum())  # NaN 비교는 False
 expected_target = ((ev > t) & (ev <= t + 7)).fillna(False).astype(int)
 target_mismatch = int((merged["target"] != expected_target).sum())
-incomplete_label = int((t > (table["day"].max() + 7) - 7).sum())  # 계산만 하고 안 씀. 03이 이미 버려서 0이어야 함
 
 print(
     f"[검증 2] 이벤트일 이후 행: {post_event_rows}건, "

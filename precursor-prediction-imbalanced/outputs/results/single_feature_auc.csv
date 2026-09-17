@@ -1,0 +1,8 @@
+feature,test_auc_single
+w3_cnt_7d,0.8684
+w3_cnt_14d,0.8167
+w3_slope_7d,0.8354
+u1_std_7d,0.877
+u1_std_14d,0.7934
+u1_mean_7d,0.6057
+w7_cnt_7d,0.6554
