@@ -174,6 +174,26 @@ fig.text(
 )
 save_site(fig, "fig5_shap_v1_vs_v2")
 
+# 덱용. fig5와 같은 그림에 안내문만 풀어 씀
+fig = plt.figure(figsize=(11, 6.6))
+gs = fig.add_gridspec(2, 2, height_ratios=[10, top2 - 10], wspace=0.42, hspace=0.35)
+beeswarm(fig.add_subplot(gs[0, 0]), "v1", "기준일 고정 안 함 (1,141사), 상위 10개", tr, 10)
+beeswarm(fig.add_subplot(gs[:, 1]), "v2", f"기준일 고정 (688사), 상위 {top2}개", v2, top2)
+guide = [
+    ("그림 읽는 법", "#333"),
+    ("- 점 하나가 회사 하나", "#555"),
+    ("- 가로 위치: 그 열이 이 회사의 예측을 이탈 쪽(오른쪽)", "#555"),
+    ("   또는 잔류 쪽(왼쪽)으로 민 정도", "#555"),
+    ("- 점 색: 이 회사의 그 열 값이 작으면 파랑, 크면 빨강", "#555"),
+    ("- 이름이 러스트색인 열: 외부 데이터(건강보험 재직 정보,", ORANGE),
+    ("   공시)에서 온 열", ORANGE),
+    ("- 계산: LightGBM 5-fold 교차 검증에서 학습에 쓰지 않은", "#555"),
+    ("   fold의 회사로 구한 SHAP 값", "#555"),
+]
+for k, (line, col) in enumerate(guide):
+    fig.text(0.06, 0.36 - k * 0.034, line, fontsize=8.5, color=col, va="top")
+save_site(fig, "fig5b_shap_deck")
+
 ab = R("external_ablation.csv")
 grp = R("shap_group_v2.csv").set_index("source")
 o688 = R("model_compare.csv").query("variant == 'oracle (688)'").auc.iloc[0]
