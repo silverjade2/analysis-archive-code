@@ -14,7 +14,7 @@ python verify.py   # 선택. 루트에서
 
 전체 3분 정도 (05가 2분). 경로는 `common.py`에서 파일 위치 기준으로 잡아서 어디서 실행해도 된다.
 
-재현에 쓴 버전: Python 3.12, pandas 2.3, scikit-learn 1.8, LightGBM 4.7, XGBoost 3.4, shap 0.52, lifelines 0.30. 이 조합에서는 `data/`를 지우고 다시 돌려도 결과 CSV가 동일. 다른 버전(특히 Apple Silicon)에서는 XGBoost/RF 행이 셋째 자리에서 흔들리는데 글에서 인용하는 숫자는 LightGBM, LR, oracle 행이라 영향 없음. macOS는 `brew install libomp` 먼저.
+재현에 쓴 버전: Python 3.12, pandas 2.3, scikit-learn 1.8, LightGBM 4.7, XGBoost 3.4, shap 0.52, lifelines 0.30 (Linux x86). 이 조합에서는 `data/`를 지우고 다시 돌려도 결과 CSV가 동일. 다른 버전이나 Apple Silicon에서는 `model_compare.csv`의 XGBoost/RF 행이 셋째 자리에서 흔들리고, `shap_importance_v1.csv`에서 값이 0인 행의 순서도 바뀜. LightGBM, LR, oracle 행은 macOS에서도 같게 나옴. 글의 AUC 표와 요약 카드 범위(v2 0.835~0.859 등)는 XGBoost/RF 값도 인용하니 커밋된 CSV 기준으로 볼 것. macOS는 `brew install libomp` 먼저.
 
 ## 스크립트
 
