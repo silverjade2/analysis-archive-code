@@ -13,7 +13,7 @@ FIGURES = ROOT / "outputs" / "figures"
 for p in (DATA, RESULTS, FIGURES):
     p.mkdir(parents=True, exist_ok=True)
 
-REF_DATE = pd.Timestamp("2024-02-15")  # 원본 노트북 실행일
+REF_DATE = pd.Timestamp("2024-02-15")  # 라벨 기준일. v1(대조군), v2(설계) 둘 다 이 날짜
 CHURN_GRACE_DAYS = 90
 CUTOFF_T = pd.Timestamp("2023-02-15")  # v2 절단 시점 (REF - 12M). 12개월 = 계약 주기
 DATA_END = pd.Timestamp("2026-06-30")  # 06 sweep 때문에 미래까지 생성

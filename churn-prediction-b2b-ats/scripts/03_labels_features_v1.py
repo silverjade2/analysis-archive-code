@@ -1,4 +1,4 @@
-"""v1: 원본 노트북 구조의 라벨 + feature 30열 (data_encoded와 동일 구성)"""
+"""v1(대조군): 기준일 고정 없이 결합 후 전체 회사, 기준일 현재 계약 이력 그대로 쓴 feature 30열"""
 
 import numpy as np
 import pandas as pd
@@ -50,7 +50,7 @@ num = df[
         "rev_2024",
         "rev_2025",
         "rev_2026",
-        "rev_2027",  # 원본이 2018~2023을 drop하고 이것들만 남겼음. 이유는 모름, 일단 그대로
+        "rev_2027",  # 대조군은 2015와 2024~2027만 둠
         "n_contracts",
         "total_revenue",
         "first_year",
