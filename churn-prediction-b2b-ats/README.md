@@ -27,7 +27,7 @@ python verify.py   # 선택. 루트에서
 | 05 | 원본 RF 회귀 재현, 분류기 4종 × v1/ablation/v2, v2 외부 제외 비교, oracle, SHAP, calibration | `model_compare.csv`, `external_ablation.csv`, `shap_importance_*.csv`, `shap_group_v2.csv` |
 | 06 | 실행일 sweep. today를 옮기면 라벨이 얼마나 바뀌는지 | `reference_date_sweep.csv`, `ref_sweep.json` |
 | 07 | KM, Cox PH | `km_*.csv`, `cox_summary.csv` |
-| 08 | 그림. results CSV만 읽음 | `outputs/figures/*.png`, `outputs/figures/site/` (fig5, fig9 webp + 덱용 png) |
+| 08 | 그림. results CSV만 읽음 | `outputs/figures/*.png`, `outputs/figures/site/` (fig4, 5, 5b, 6, 8, 9 webp + 덱용 250dpi png) |
 
 라벨 규칙 `churn_label()`과 날짜 상수는 `common.py`에 있고 02, 03, 06이 공유한다.
 
@@ -55,5 +55,5 @@ PyCaret setup/compare/tune 대신 sklearn KFold, StratifiedKFold, cross_val_pred
 
 ## 알려진 문제
 
-- `external_ablation.csv`는 macOS(Python 3.14, scikit-learn 1.9)에서 만든 파일이라 XGBoost/RF 행이 `model_compare.csv`의 v2 행과 셋째 자리에서 다름 (0.845/0.858 vs 0.844/0.859). LR, LightGBM 행은 같음
+- `external_ablation.csv`는 외부 제외 행만 담고, 포함 쪽 AUC는 `model_compare.csv`의 v2 행을 그대로 씀. 제외 행은 macOS(Python 3.14, scikit-learn 1.9)에서 만들어서 XGBoost/RF가 Linux에서는 셋째 자리가 다를 수 있음
 - oracle의 갱신 결정 횟수 k를 12개월 단위로 세서 24/36개월 계약 회사는 k가 과대. oracle AUC가 그만큼 약간 높음. 글은 이 오차보다 큰 차이만 다룸

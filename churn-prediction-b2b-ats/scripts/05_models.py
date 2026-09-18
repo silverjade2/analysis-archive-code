@@ -111,11 +111,9 @@ X2, y2 = v2.drop(columns=["company_id", "y"]), v2.y
 oof_v2 = cv_auc(X2, y2, "v2", "v2 timecut (688)", rows)
 # external.csv 열만 빼고 같은 fold로. firm_age, size_*는 회사 마스터라 남김
 ext_cols = pd.read_csv(DATA / "external.csv", nrows=0).columns.drop("company_id")
-abl = [dict(r, variant="v2 all (29)") for r in rows if r["variant"] == "v2 timecut (688)"]
+abl = []
 cv_auc(X2.drop(columns=ext_cols), y2, "v2x", "v2 minus external (16)", abl)
-abl = pd.DataFrame(abl)
-abl["auc_drop"] = abl.groupby("model").auc.transform("first") - abl.auc
-abl.round(4).to_csv(RESULTS / "external_ablation.csv", index=False)
+pd.DataFrame(abl).round(4).to_csv(RESULTS / "external_ablation.csv", index=False)  # 포함 쪽은 model_compare의 v2 행
 rows.append(
     dict(
         variant="oracle (688)",
