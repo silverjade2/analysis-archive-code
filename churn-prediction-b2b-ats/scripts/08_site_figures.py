@@ -1,11 +1,14 @@
 """사이트용 그림. 값은 전부 results/*.csv에서 읽음"""
 
+import io
+
 import matplotlib.dates as mdates
 import matplotlib.transforms as mtrans
 import numpy as np
 import pandas as pd
 from common import BLUE, DATA, FIGURES, GRAY, GREEN, ORANGE, RED, REF_DATE, RESULTS, rng, setup_mpl
 from matplotlib.ticker import PercentFormatter
+from PIL import Image
 
 plt = setup_mpl()
 
@@ -117,31 +120,96 @@ fig.savefig(FIGURES / "fig4_auc_compare.png")
 plt.close(fig)
 
 
-def beeswarm(ax, tag, title, X):
+SITE = FIGURES / "site"
+SITE.mkdir(exist_ok=True)
+EXT_COLS = set(pd.read_csv(DATA / "external.csv", nrows=0).columns) - {"company_id"}
+
+
+def save_site(fig, name):
+    # png는 덱용 250dpi, webp는 사이트용 150dpi
+    fig.savefig(SITE / f"{name}.png", dpi=250)
+    buf = io.BytesIO()
+    fig.savefig(buf, dpi=150, format="png")
+    Image.open(buf).save(SITE / f"{name}.webp", "WEBP", quality=88, method=6)
+    plt.close(fig)
+
+
+def beeswarm(ax, tag, title, X, top):
     sv = pd.read_csv(DATA / f"shap_values_{tag}.csv")
-    imp = R(f"shap_importance_{tag}.csv").head(10)
+    imp = R(f"shap_importance_{tag}.csv").head(top)
     r = rng(99)
     for i, f in enumerate(imp.feature[::-1]):
         vals = sv[f].values
         xv = X[f].values
         rk = (pd.Series(xv).rank(pct=True)).values
         ax.scatter(vals, i + r.normal(0, 0.08, len(vals)), c=rk, cmap="coolwarm", s=5, alpha=0.6, vmin=0, vmax=1)
-    ax.set_yticks(range(10))
+    ax.set_yticks(range(top))
     ax.set_yticklabels(imp.feature[::-1], fontsize=8)
+    for t in ax.get_yticklabels():
+        if t.get_text() in EXT_COLS:
+            t.set_color(ORANGE)
+    ax.set_ylim(-0.6, top - 0.4)
     ax.axvline(0, color=GRAY, lw=0.8)
     ax.set_xlabel("SHAP value (이탈 방향 +)")
-    ax.set_title(title)
+    ax.set_title(title, loc="left", fontsize=10)
 
 
 v1 = pd.read_csv(DATA / "features_v1.csv")
 v2 = pd.read_csv(DATA / "features_v2.csv")
 tr = v1.sample(frac=0.95, random_state=786).reset_index(drop=True)
-fig, ax = plt.subplots(1, 2, figsize=(11, 4.4))
-beeswarm(ax[0], "v1", "v1 스냅샷 (LightGBM OOF SHAP)", tr)
-beeswarm(ax[1], "v2", "v2 cutoff (LightGBM OOF SHAP)", v2)
-fig.text(0.5, -0.02, "점 색: feature 값 백분위 (파랑 낮음, 빨강 높음)", ha="center", fontsize=8, color=GRAY)
-fig.savefig(FIGURES / "fig5_shap_v1_vs_v2.png")
-plt.close(fig)
+imp2 = R("shap_importance_v2.csv")
+top2 = int(np.flatnonzero(imp2.feature.isin(EXT_COLS)).max()) + 1  # 외부 열이 전부 들어가는 범위
+fig = plt.figure(figsize=(11, 6.6))
+gs = fig.add_gridspec(2, 2, height_ratios=[10, top2 - 10], wspace=0.42, hspace=0.35)
+beeswarm(fig.add_subplot(gs[0, 0]), "v1", "기준일 고정 안 함 (1,141사), 상위 10개", tr, 10)
+beeswarm(fig.add_subplot(gs[:, 1]), "v2", f"기준일 고정 (688사), 상위 {top2}개", v2, top2)
+fig.text(
+    0.08,
+    0.2,
+    "LightGBM 5-fold OOF SHAP\n점 색: feature 값 백분위 (파랑 낮음, 빨강 높음)\n러스트색 라벨: external.csv에서 온 열",
+    fontsize=8.5,
+    color="#555",
+    va="top",
+    linespacing=1.6,
+)
+save_site(fig, "fig5_shap_v1_vs_v2")
+
+ab = R("external_ablation.csv")
+grp = R("shap_group_v2.csv").set_index("source")
+o688 = R("model_compare.csv").query("variant == 'oracle (688)'").auc.iloc[0]
+fig, (a0, a1) = plt.subplots(1, 2, figsize=(11, 3.9), gridspec_kw={"width_ratios": [1.5, 1], "wspace": 0.35})
+mnames = ["Logistic Regression", "Random Forest", "XGBoost", "LightGBM"]
+for i, m in enumerate(mnames):
+    lo = ab[(ab.model == m) & ab.variant.str.contains("minus")].auc.iloc[0]
+    hi = ab[(ab.model == m) & ~ab.variant.str.contains("minus")].auc.iloc[0]
+    a0.plot([lo, hi], [i, i], color="#cfd3d9", lw=2.5, zorder=1)
+    a0.scatter(lo, i, color=GRAY, s=60, zorder=3, label="외부 제외 (16열)" if i == 0 else None)
+    a0.scatter(hi, i, color=ORANGE, s=60, zorder=3, label="외부 포함 (29열)" if i == 0 else None)
+    a0.text(lo - 0.003, i, f"{lo:.3f}", ha="right", va="center", fontsize=8.5, color="#555")
+    a0.text(hi + 0.003, i, f"{hi:.3f}", ha="left", va="center", fontsize=8.5, color=ORANGE)
+a0.axvline(o688, color="#555", ls="--", lw=1)
+a0.text(o688 + 0.001, -0.75, f"oracle {o688:.3f}", ha="left", fontsize=8, color="#555")
+a0.set_yticks(range(4))
+a0.set_yticklabels(mnames)
+a0.set_ylim(3.6, -1.0)
+a0.set_xlim(0.78, 0.89)
+a0.grid(axis="y", visible=False)
+a0.set_xlabel("AUC (10-fold CV, 688사)")
+a0.legend(fontsize=8, loc="upper left", ncol=2)
+a0.set_title("기준일 고정 설계: 외부 데이터 포함 vs 제외", loc="left", fontsize=10)
+src = [("contract", "내부 계약", GRAY), ("external", "외부 데이터", ORANGE), ("company", "기업 속성", "#d9d8d3")]
+for j, (k, lab_, col) in enumerate(src):
+    a1.barh(j, grp.share[k], color=col, height=0.55)
+    a1.text(grp.share[k] + 0.01, j, f"{grp.share[k]:.1%}", va="center", fontsize=9, color="#333")
+a1.set_yticks(range(3))
+a1.set_yticklabels([f"{lab_} ({grp.n[k]}열)" for k, lab_, _ in src])
+a1.set_ylim(2.6, -0.6)
+a1.set_xlim(0, 0.7)
+a1.xaxis.set_major_formatter(PercentFormatter(1.0, decimals=0))
+a1.grid(axis="y", visible=False)
+a1.set_xlabel("SHAP 비중 합 (LightGBM OOF, 29열 = 100%)")
+a1.set_title("열 출처별 SHAP 비중 (688사)", loc="left", fontsize=10)
+save_site(fig, "fig9_external_ablation")
 
 sw = R("reference_date_sweep.csv")
 sw["ref_date"] = pd.to_datetime(sw.ref_date)

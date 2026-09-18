@@ -24,10 +24,10 @@ python verify.py   # 선택. 루트에서
 | 02 | 원본 결합 절차 재현 (fillna 0, 연봉 median, right join, dropna 순). 탈락 편향 집계 | `merged_v1.csv`, `join_bias_*.csv` |
 | 03 | 실행일(2024-02-15) 기준 90일 규칙으로 라벨. 원본 30열 (feature 29 + 타깃) | `features_v1.csv`, `future_revenue_leak.csv` |
 | 04 | T(실행일 12개월 전) 절단 feature + oracle | `features_v2.csv`, `truth_v2_population.csv` |
-| 05 | 원본 RF 회귀 재현, 분류기 4종 × v1/ablation/v2, oracle, SHAP, calibration | `model_compare.csv`, `shap_importance_*.csv` |
+| 05 | 원본 RF 회귀 재현, 분류기 4종 × v1/ablation/v2, v2 외부 제외 비교, oracle, SHAP, calibration | `model_compare.csv`, `external_ablation.csv`, `shap_importance_*.csv`, `shap_group_v2.csv` |
 | 06 | 실행일 sweep. today를 옮기면 라벨이 얼마나 바뀌는지 | `reference_date_sweep.csv`, `ref_sweep.json` |
 | 07 | KM, Cox PH | `km_*.csv`, `cox_summary.csv` |
-| 08 | 그림. results CSV만 읽음 | `outputs/figures/*.png` |
+| 08 | 그림. results CSV만 읽음 | `outputs/figures/*.png`, `outputs/figures/site/` (fig5, fig9 webp + 덱용 png) |
 
 라벨 규칙 `churn_label()`과 날짜 상수는 `common.py`에 있고 02, 03, 06이 공유한다.
 
@@ -36,6 +36,7 @@ python verify.py   # 선택. 루트에서
 - 02: 2000사 중 1201사 결합 (60%). 빠진 799사는 작은 회사에 몰림 (50명 미만은 12%만 결합)
 - 03: 이탈률 0.392
 - 05: v1 LightGBM AUC 0.978 > oracle(1141) 0.876. 정답을 아는 판정자보다 높으면 누수. v2 LightGBM 0.852 < oracle(688) 0.871, 이게 정상
+- 05: v2에서 external.csv 13열을 빼면 LightGBM 0.852 -> 0.801, LR 0.835 -> 0.799. v2 SHAP 비중은 외부 13열 합 40%
 - 07: concordance 0.664. Cox 계수 부호 6개가 심어둔 방향과 전부 일치
 
 `truth_*` 열은 생성기의 잠재 변수라 채점에만 쓰고 feature에는 안 들어간다. `verify.py`가 이걸 다시 확인한다.
@@ -54,4 +55,5 @@ PyCaret setup/compare/tune 대신 sklearn KFold, StratifiedKFold, cross_val_pred
 
 ## 알려진 문제
 
+- `external_ablation.csv`는 macOS(Python 3.14, scikit-learn 1.9)에서 만든 파일이라 XGBoost/RF 행이 `model_compare.csv`의 v2 행과 셋째 자리에서 다름 (0.845/0.858 vs 0.844/0.859). LR, LightGBM 행은 같음
 - oracle의 갱신 결정 횟수 k를 12개월 단위로 세서 24/36개월 계약 회사는 k가 과대. oracle AUC가 그만큼 약간 높음. 글은 이 오차보다 큰 차이만 다룸

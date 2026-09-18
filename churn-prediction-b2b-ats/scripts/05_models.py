@@ -1,4 +1,4 @@
-"""모델링. 원본 RF 회귀 재현 + 분류기 4종 x (v1 / v1 ablation / v2) + oracle + SHAP + calibration
+"""모델링. 원본 RF 회귀 재현 + 분류기 4종 x (v1 / v1 ablation / v2 / v2 외부 제외) + oracle + SHAP + calibration
 
 원본은 95/5 split 후 10-fold. 회귀로 이진 y를 맞췄음 (그대로 재현)
 """
@@ -109,6 +109,13 @@ X1s, y1s = v1_688.drop(columns=["company_id", "y"]), v1_688.y
 cv_auc(X1s, y1s, "v1s", "v1 snapshot (688)", rows)
 X2, y2 = v2.drop(columns=["company_id", "y"]), v2.y
 oof_v2 = cv_auc(X2, y2, "v2", "v2 timecut (688)", rows)
+# external.csv 열만 빼고 같은 fold로. firm_age, size_*는 회사 마스터라 남김
+ext_cols = pd.read_csv(DATA / "external.csv", nrows=0).columns.drop("company_id")
+abl = [dict(r, variant="v2 all (29)") for r in rows if r["variant"] == "v2 timecut (688)"]
+cv_auc(X2.drop(columns=ext_cols), y2, "v2x", "v2 minus external (16)", abl)
+abl = pd.DataFrame(abl)
+abl["auc_drop"] = abl.groupby("model").auc.transform("first") - abl.auc
+abl.round(4).to_csv(RESULTS / "external_ablation.csv", index=False)
 rows.append(
     dict(
         variant="oracle (688)",
@@ -167,6 +174,10 @@ def oof_shap(X, y, tag):
 
 imp1 = oof_shap(X, y, "v1")
 imp2 = oof_shap(X2, y2, "v2")
+company_cols = ["firm_age"] + [c for c in X2.columns if c.startswith("size_")]
+grp = np.select([imp2.feature.isin(ext_cols), imp2.feature.isin(company_cols)], ["external", "company"], "contract")
+by_src = imp2.assign(source=grp).groupby("source").agg(n=("feature", "size"), share=("share", "sum"))
+by_src.round(4).to_csv(RESULTS / "shap_group_v2.csv")
 print(imp1.head(8).round(3))
 print(imp2.head(8).round(3))
 
