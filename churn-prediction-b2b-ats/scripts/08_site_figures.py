@@ -17,6 +17,20 @@ def R(f):
     return pd.read_csv(RESULTS / f)
 
 
+SITE = FIGURES / "site"
+SITE.mkdir(exist_ok=True)
+EXT_COLS = set(pd.read_csv(DATA / "external.csv", nrows=0).columns) - {"company_id"}
+
+
+def save_site(fig, name):
+    # png는 덱용 250dpi, webp는 사이트용 150dpi
+    fig.savefig(SITE / f"{name}.png", dpi=250)
+    buf = io.BytesIO()
+    fig.savefig(buf, dpi=150, format="png")
+    Image.open(buf).save(SITE / f"{name}.webp", "WEBP", quality=88, method=6)
+    plt.close(fig)
+
+
 bb = R("join_bias_by_size.csv")
 s = R("join_bias_summary.csv").set_index("metric").value
 fig, ax = plt.subplots(1, 2, figsize=(10, 3.6))
@@ -108,30 +122,20 @@ ax.text(1.3, o1141 + 0.004, f"oracle(1,141) {o1141:.3f}", color=GREEN, fontsize=
 ax.hlines(o688, 1.7, 3.3, color=GREEN, ls="--")
 ax.text(3.3, o688 + 0.004, f"oracle(688) {o688:.3f}", color=GREEN, fontsize=8, ha="right")
 ax.scatter([0], [reg], marker="x", color=RED, s=60, zorder=4)
-ax.text(-0.08, reg, "RF 회귀(원본)", fontsize=7, ha="right", va="center")
+ax.text(-0.08, reg, "RF 회귀", fontsize=7, ha="right", va="center")
 ax.set_xticks(range(4))
 ax.set_xticklabels(
-    ["v1 스냅샷\n(1,141)", "v1 - future/cumulative\nfeature (1,141)", "v1 스냅샷\n(688)", "v2 cutoff\n(688)"]
+    [
+        "기준일 고정 안 함\n(1,141)",
+        "기준일 고정 안 함\n- future/cumulative (1,141)",
+        "기준일 고정 안 함\n(688)",
+        "기준일 고정\n(688)",
+    ]
 )
 ax.set_ylim(0.80, 1.0)
 ax.set_ylabel("AUC (10-fold CV)")
 ax.set_title("AUC 비교 (10-fold CV) vs oracle")
-fig.savefig(FIGURES / "fig4_auc_compare.png")
-plt.close(fig)
-
-
-SITE = FIGURES / "site"
-SITE.mkdir(exist_ok=True)
-EXT_COLS = set(pd.read_csv(DATA / "external.csv", nrows=0).columns) - {"company_id"}
-
-
-def save_site(fig, name):
-    # png는 덱용 250dpi, webp는 사이트용 150dpi
-    fig.savefig(SITE / f"{name}.png", dpi=250)
-    buf = io.BytesIO()
-    fig.savefig(buf, dpi=150, format="png")
-    Image.open(buf).save(SITE / f"{name}.webp", "WEBP", quality=88, method=6)
-    plt.close(fig)
+save_site(fig, "fig4_auc_compare")
 
 
 def beeswarm(ax, tag, title, X, top):
@@ -180,12 +184,12 @@ gs = fig.add_gridspec(2, 2, height_ratios=[10, top2 - 10], wspace=0.42, hspace=0
 beeswarm(fig.add_subplot(gs[0, 0]), "v1", "기준일 고정 안 함 (1,141사), 상위 10개", tr, 10)
 beeswarm(fig.add_subplot(gs[:, 1]), "v2", f"기준일 고정 (688사), 상위 {top2}개", v2, top2)
 guide = [
-    ("Description", "#333"),
+    ("읽는 법", "#333"),
     ("- 각 줄이 feature 하나, 점 하나가 회사 하나", "#555"),
     ("- 오른쪽에 찍힐수록 그 값 때문에 이탈 예측이 올라간 회사,", "#555"),
     ("   왼쪽일수록 내려간 회사", "#555"),
     ("- 점 색은 그 회사의 해당 값 크기 (빨강 큼, 파랑 작음)", "#555"),
-    ("- 예: remaining_months_T(잔여 개월) 줄에서 파란 점이 오른쪽", "#555"),
+    ("- 예: 잔여 개월 줄에서 파란 점이 오른쪽", "#555"),
     ("   = 잔여 개월이 짧은 회사가 이탈로 분류됨", "#555"),
     ("- 러스트색 이름: 외부 데이터(건강보험 재직 정보, 공시)에서 온 열", ORANGE),
     ("- LightGBM 5-fold 교차 검증, 학습에 쓰지 않은 fold에서 계산", "#555"),
@@ -200,8 +204,8 @@ o688 = R("model_compare.csv").query("variant == 'oracle (688)'").auc.iloc[0]
 fig, (a0, a1) = plt.subplots(1, 2, figsize=(11, 3.9), gridspec_kw={"width_ratios": [1.5, 1], "wspace": 0.35})
 mnames = ["Logistic Regression", "Random Forest", "XGBoost", "LightGBM"]
 for i, m in enumerate(mnames):
-    lo = ab[(ab.model == m) & ab.variant.str.contains("minus")].auc.iloc[0]
-    hi = ab[(ab.model == m) & ~ab.variant.str.contains("minus")].auc.iloc[0]
+    lo = ab[ab.model == m].auc.iloc[0]
+    hi = cls[(cls.variant == "v2 timecut (688)") & (cls.model == m)].auc.iloc[0]
     a0.plot([lo, hi], [i, i], color="#cfd3d9", lw=2.5, zorder=1)
     a0.scatter(lo, i, color=GRAY, s=60, zorder=3, label="외부 제외 (16열)" if i == 0 else None)
     a0.scatter(hi, i, color=ORANGE, s=60, zorder=3, label="외부 포함 (29열)" if i == 0 else None)
@@ -252,7 +256,7 @@ a0.plot(live.index, frz.churn_rate, color=RED, lw=2.2)
 a0.plot(live.index, live.churn_rate, color=BLUE, lw=2.2)
 a0.scatter([REF_DATE], [live.churn_rate[REF_DATE]], color="#222", s=28, zorder=5)
 a0.annotate(
-    f"원본 실행일\n{live.churn_rate[REF_DATE]:.1%}",
+    f"고정 기준일\n{live.churn_rate[REF_DATE]:.1%}",
     (REF_DATE, live.churn_rate[REF_DATE]),
     xytext=(-12, 18),
     textcoords="offset points",
@@ -290,14 +294,14 @@ a0.text(
     color=BLUE,
     va="center",
 )
-a0.text(live.index.min() + pd.Timedelta(days=10), 0.97, "원본 실행일 이전", fontsize=8, color="#777", va="top")
+a0.text(live.index.min() + pd.Timedelta(days=10), 0.97, "고정 기준일 이전", fontsize=8, color="#777", va="top")
 a0.set_ylim(0.3, 1.0)
 a0.set_ylabel("이탈률 (1,201사)", fontsize=9)
 a1.plot(live.index, frz.flip_rate, color=RED, lw=1.8)
 a1.plot(live.index, live.flip_rate, color=BLUE, lw=1.8)
 a1.fill_between(live.index[post], live.flip_rate[post], frz.flip_rate[post], color=RED, alpha=0.08, lw=0)
 a1.set_ylim(0, 0.62)
-a1.set_ylabel("원본 라벨과\n다른 회사", fontsize=9)
+a1.set_ylabel("고정 기준일 라벨과\n다른 회사", fontsize=9)
 a1.text(
     live.index.max() + pd.Timedelta(days=12),
     frz.flip_rate.iloc[-1],
@@ -326,8 +330,7 @@ fig.text(
     color="#777",
 )
 fig.subplots_adjust(right=0.82, top=0.86)
-fig.savefig(FIGURES / "fig6_reference_date_sweep.png")
-plt.close(fig)
+save_site(fig, "fig6_reference_date_sweep")
 
 km = R("km_by_product.csv")
 cx = R("cox_summary.csv")
@@ -429,7 +432,7 @@ pts = cal.dropna(subset=["mean_pred"])
 br = cal.dropna(subset=["brier"])
 fig, ax = plt.subplots(figsize=(4.6, 4.2))
 ax.plot([0, 1], [0, 1], color=GRAY, ls="--", lw=1)
-for tag, col, lab_ in [("v1", RED, "v1 snapshot"), ("v2", BLUE, "v2 time-cut")]:
+for tag, col, lab_ in [("v1", RED, "기준일 고정 안 함"), ("v2", BLUE, "기준일 고정")]:
     d = pts[pts.variant == tag]
     b = br[br.variant == tag].brier.iloc[0]
     ax.plot(d.mean_pred, d.frac_pos, marker="o", color=col, label=f"{lab_} (Brier {b:.3f})")
@@ -437,6 +440,5 @@ ax.set_xlabel("Predicted churn probability (LightGBM OOF, 8 bins)")
 ax.set_ylabel("Observed churn rate")
 ax.legend(fontsize=8)
 ax.set_title("Calibration")
-fig.savefig(FIGURES / "fig8_calibration.png")
-plt.close(fig)
+save_site(fig, "fig8_calibration")
 print("figures:", sorted(p.name for p in FIGURES.glob("*.png")))

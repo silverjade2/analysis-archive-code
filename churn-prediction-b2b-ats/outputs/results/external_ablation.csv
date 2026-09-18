@@ -1,9 +1,5 @@
-variant,model,task,n,auc,auc_drop
-v2 all (29),Logistic Regression,classification,688,0.8352,0.0
-v2 all (29),Random Forest,classification,688,0.845,0.0
-v2 all (29),XGBoost,classification,688,0.8584,0.0
-v2 all (29),LightGBM,classification,688,0.8515,0.0
-v2 minus external (16),Logistic Regression,classification,688,0.7994,0.0359
-v2 minus external (16),Random Forest,classification,688,0.8093,0.0358
-v2 minus external (16),XGBoost,classification,688,0.8195,0.0389
-v2 minus external (16),LightGBM,classification,688,0.8011,0.0503
+variant,model,task,n,auc
+v2 minus external (16),Logistic Regression,classification,688,0.7994
+v2 minus external (16),Random Forest,classification,688,0.8093
+v2 minus external (16),XGBoost,classification,688,0.8195
+v2 minus external (16),LightGBM,classification,688,0.8011
