@@ -1,0 +1,5 @@
+list,n,logged in <= 30d (snapshot),season joiner,preference complete,salary left at default,mean true consent propensity
+v1 top 745 (preference empty),745,0.9463,0.0792,0.0,0.4966,0.8213
+v2 top 745 (preference empty),745,0.8859,0.1087,0.0,0.5275,0.8586
+random 745 (preference empty),745,0.7946,0.1369,0.0,0.6456,0.7251
+all preference-empty non-consented users,7165,0.8236,0.1076,0.0,0.6603,0.7273

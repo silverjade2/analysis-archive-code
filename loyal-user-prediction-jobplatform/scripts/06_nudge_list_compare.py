@@ -88,6 +88,19 @@ pd.DataFrame(
     }
 ).round(4).to_csv(RES / "nudge_list_overlap.csv", index=False)
 
+# 실제 넛지 대상은 선호 정보 빈 유저(연봉 기본값 또는 복지 < 5)만 점수 순, k는 위와 같게
+pref_empty = ((users["pref_salary_default_yn"] == "Y") | (users["pref_welfare_cnt"] < 5)).values
+neg_pe = neg[pref_empty[neg]]
+lists_pe = {name: neg_pe[np.argsort(-s[neg_pe])[:k]] for name, s in scores.items()}
+rows_pe = [
+    describe(lists_pe["v1"], f"v1 top {k} (preference empty)"),
+    describe(lists_pe["v2"], f"v2 top {k} (preference empty)"),
+    describe(rng.choice(neg_pe, k, replace=False), f"random {k} (preference empty)"),
+    describe(neg_pe, "all preference-empty non-consented users"),
+]
+pd.DataFrame(rows_pe).round(4).to_csv(RES / "nudge_list_pref_empty.csv", index=False)
+print(f"preference-empty non-consented: {len(neg_pe)}, list overlap {len(np.intersect1d(*lists_pe.values())) / k:.1%}")
+
 fig, axes = plt.subplots(1, 2, figsize=(11, 3.8))
 metrics = ["logged in <= 30d (snapshot)", "preference complete", "salary left at default", "season joiner"]
 x = np.arange(len(metrics))
