@@ -230,7 +230,7 @@ a1.xaxis.set_major_formatter(PercentFormatter(1.0, decimals=0))
 a1.grid(axis="y", visible=False)
 a1.set_xlabel("SHAP 비중 합 (LightGBM OOF, 29열 = 100%)")
 a1.set_title("열 출처별 SHAP 비중 (688사)", loc="left", fontsize=10)
-save_site(fig, "fig9_external_ablation_20260919")
+save_site(fig, "fig9_external_ablation")
 
 sw = R("reference_date_sweep.csv")
 sw["ref_date"] = pd.to_datetime(sw.ref_date)
