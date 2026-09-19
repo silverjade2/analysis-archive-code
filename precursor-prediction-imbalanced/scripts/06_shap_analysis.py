@@ -67,7 +67,7 @@ ax.set_xlabel(f"{w7_feat} (14일 W7 발생 건수)" if "14d" in w7_feat else w7_
 ax.set_ylabel("SHAP 값 (양수 = 위험 쪽 기여)")
 ax.set_title(f"spurious feature {w7_feat}의 SHAP 기여")
 fig.tight_layout()
-fig.savefig(base / "outputs" / "figures" / "fig6_shap_w7_20260919.png", dpi=150)
+fig.savefig(base / "outputs" / "figures" / "fig6_shap_w7.png", dpi=150)
 
 # 05 파라미터 복사. 05 바꾸면 여기도 손으로
 no_w7 = [c for c in feature_cols if not c.startswith("w7")]
@@ -86,7 +86,7 @@ pr_ablated = average_precision_score(y_te, ablated.predict_proba(test[no_w7])[:,
 print("\nW7 제거 ablation")
 print(f"전체 피처 PR-AUC: {pr_full:.4f}")
 print(f"W7 제거 PR-AUC:   {pr_ablated:.4f} (차이 {pr_ablated - pr_full:+.4f})")
-print("saved: figures/fig5_shap_summary.png, fig6_shap_w7_20260919.png")
+print("saved: figures/fig5_shap_summary.png, fig6_shap_w7.png")
 
 res_dir = base / "outputs" / "results"
 res_dir.mkdir(parents=True, exist_ok=True)
