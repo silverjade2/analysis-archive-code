@@ -70,7 +70,7 @@ best = res["pr_auc"].idxmax()
 print(f"\nPR-AUC 최고: {best}")
 
 labels = {
-    "no_handling": "아무것도 안 함",
+    "no_handling": "처리 없음",
     "class_weight": "class_weight='balanced'",
     "scale_pos_weight": f"scale_pos_weight={n_neg / n_pos:.0f}",
 }
@@ -87,8 +87,8 @@ ax.set_ylim(0, 1.02)
 ax.set_title("PR curve, 불균형 처리 3종 (test 구간)")
 ax.legend(loc="lower left", fontsize=9)
 fig.tight_layout()
-fig.savefig(base / "outputs" / "figures" / "fig4_pr_curves.png", dpi=150)
-print("saved: figures/fig4_pr_curves.png, data/model_*.joblib")
+fig.savefig(base / "outputs" / "figures" / "fig4_pr_curves_20260919.png", dpi=150)
+print("saved: figures/fig4_pr_curves_20260919.png, data/model_*.joblib")
 
 res_dir = base / "outputs" / "results"
 res_dir.mkdir(parents=True, exist_ok=True)
