@@ -200,7 +200,6 @@ save_site(fig, "fig5b_shap_deck")
 
 ab = R("external_ablation.csv")
 grp = R("shap_group_v2.csv").set_index("source")
-o688 = R("model_compare.csv").query("variant == 'oracle (688)'").auc.iloc[0]
 fig, (a0, a1) = plt.subplots(1, 2, figsize=(11, 3.9), gridspec_kw={"width_ratios": [1.5, 1], "wspace": 0.35})
 mnames = ["Logistic Regression", "Random Forest", "XGBoost", "LightGBM"]
 for i, m in enumerate(mnames):
@@ -211,8 +210,6 @@ for i, m in enumerate(mnames):
     a0.scatter(hi, i, color=ORANGE, s=60, zorder=3, label="외부 포함 (29열)" if i == 0 else None)
     a0.text(lo - 0.003, i, f"{lo:.3f}", ha="right", va="center", fontsize=8.5, color="#555")
     a0.text(hi + 0.003, i, f"{hi:.3f}", ha="left", va="center", fontsize=8.5, color=ORANGE)
-a0.axvline(o688, color="#555", ls="--", lw=1)
-a0.text(o688 + 0.001, -0.75, f"oracle {o688:.3f}", ha="left", fontsize=8, color="#555")
 a0.set_yticks(range(4))
 a0.set_yticklabels(mnames)
 a0.set_ylim(3.6, -1.0)
@@ -233,7 +230,7 @@ a1.xaxis.set_major_formatter(PercentFormatter(1.0, decimals=0))
 a1.grid(axis="y", visible=False)
 a1.set_xlabel("SHAP 비중 합 (LightGBM OOF, 29열 = 100%)")
 a1.set_title("열 출처별 SHAP 비중 (688사)", loc="left", fontsize=10)
-save_site(fig, "fig9_external_ablation")
+save_site(fig, "fig9_external_ablation_20260919")
 
 sw = R("reference_date_sweep.csv")
 sw["ref_date"] = pd.to_datetime(sw.ref_date)
