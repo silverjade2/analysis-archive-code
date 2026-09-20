@@ -23,7 +23,7 @@ EXT_COLS = set(pd.read_csv(DATA / "external.csv", nrows=0).columns) - {"company_
 
 
 def save_site(fig, name):
-    # png는 덱용 250dpi, webp는 사이트용 150dpi
+    # png는 인쇄용 250dpi, webp는 사이트용 150dpi
     fig.savefig(SITE / f"{name}.png", dpi=250)
     buf = io.BytesIO()
     fig.savefig(buf, dpi=150, format="png")
@@ -178,7 +178,7 @@ fig.text(
 )
 save_site(fig, "fig5_shap_v1_vs_v2")
 
-# 덱용. fig5와 같은 그림에 안내문만 풀어 씀
+# 인쇄용. fig5와 같은 그림에 안내문만 풀어 씀
 fig = plt.figure(figsize=(11, 6.6))
 gs = fig.add_gridspec(2, 2, height_ratios=[10, top2 - 10], wspace=0.42, hspace=0.35)
 beeswarm(fig.add_subplot(gs[0, 0]), "v1", "기준일 고정 안 함 (1,141사), 상위 10개", tr, 10)

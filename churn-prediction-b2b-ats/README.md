@@ -2,7 +2,7 @@
 
 [B2B 고객사 이탈 분류: 타깃을 정의한 열이 feature로 남았을 때](https://analysis-archive.vercel.app/analyses/churn-prediction-b2b-ats) 재현 코드.
 
-원본은 실제 B2B ATS 고객사 데이터로 했던 이탈 예측. 처음 뽑은 이탈 위험 리스트에 갱신 시점이 한참 남은 회사가 섞여 나와서, 라벨 기준일을 고정하고 feature를 그 시점에서 다시 잘랐다. 여기서는 같은 스키마의 가상 데이터로 그 설계(v2)와, 기준일을 고정하지 않으면 어떻게 되는지 보려고 만든 대조군(v1)을 나란히 돌린다. 대조군은 비교용이고 원본의 첫 리스트를 그대로 옮긴 것은 아님 (실제 데이터 없음).
+원본은 실제 B2B ATS 고객사 데이터로 했던 이탈 예측. 여기서는 같은 스키마의 가상 데이터로 라벨 기준일을 고정한 설계(v2)와, 기준일을 고정하지 않으면 어떻게 되는지 보려고 만든 대조군(v1)을 나란히 돌린다. 대조군은 비교용 (실제 데이터 없음).
 
 ## 실행
 
@@ -27,7 +27,7 @@ python verify.py   # 선택. 루트에서
 | 05 | RF 회귀(원본처럼 이진 y를 회귀로), 분류기 4종 × v1/ablation/v2, v2 외부 제외 비교, oracle, SHAP, calibration | `model_compare.csv`, `external_ablation.csv`, `shap_importance_*.csv`, `shap_group_v2.csv` |
 | 06 | 기준일 sweep. 기준일을 옮기면 라벨이 얼마나 바뀌는지 | `reference_date_sweep.csv`, `ref_sweep.json` |
 | 07 | KM, Cox PH | `km_*.csv`, `cox_summary.csv` |
-| 08 | 그림. results CSV만 읽음 | `outputs/figures/*.png`, `outputs/figures/site/` (fig4, 5, 5b, 6, 8, 9 webp + 덱용 250dpi png) |
+| 08 | 그림. results CSV만 읽음 | `outputs/figures/*.png`, `outputs/figures/site/` (fig4, 5, 5b, 6, 8, 9 webp + 인쇄용 250dpi png) |
 
 라벨 규칙 `churn_label()`과 날짜 상수는 `common.py`에 있고 02, 03, 06이 공유한다.
 
@@ -51,7 +51,7 @@ python verify.py   # 선택. 루트에서
 
 ## 원본과 다른 점
 
-PyCaret setup/compare/tune 대신 sklearn KFold, StratifiedKFold, cross_val_predict. 95/5 split, 10-fold, random_state 786은 원본과 같음. 원본 회귀는 결합 후 전체 회사에서 돌렸고 설계(v2)의 모집단과 다름, 재현의 RF 회귀는 v1 feature로 돌림. 상품 구성(`product_*`)은 원본 최종 feature에 없었는데 v2에는 넣었다. T의 12개월은 기본 계약 주기.
+PyCaret setup/compare/tune 대신 sklearn KFold, StratifiedKFold, cross_val_predict. 95/5 split, 10-fold, random_state 786은 원본과 같음. 회귀는 결합 후 전체 회사에서 돌리므로 설계(v2)의 모집단과 다름, 재현의 RF 회귀는 v1 feature로 돌림. 상품 구성(`product_*`)은 원본 최종 feature에 없었는데 v2에는 넣었다. T의 12개월은 기본 계약 주기.
 
 ## 알려진 문제
 
