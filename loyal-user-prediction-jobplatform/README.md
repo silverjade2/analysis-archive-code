@@ -32,14 +32,14 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 
 `common.py`에 스냅샷일 2023-06-23, 공채 시즌 4개, 원본 노트북 feature 32개. `features.py`의 `build_features(cutoff)`는 유저별 절단일 이하 이벤트만 집계하고 v1, v2가 같이 쓴다. `sitestyle.py`는 voice, wellness 폴더에 같은 파일이 있고 depression 폴더 것은 SEQUENTIAL이 하나 더 있음. 한쪽 고치면 나머지도.
 
-원본의 PyCaret 호출은 scikit-learn StratifiedKFold, cross_validate로 옮김. 95/5 split, random_state 786, 10-fold, 모델 4종과 각 모델의 파라미터(RF 100, XGBoost 200/깊이 6/lr 0.1, LightGBM 200/잎 31)는 원본 노트북 값 그대로. 여기에 저니맵에서 봤지만 당시 모델에 안 넣었던 선호 정보 2개(`pref_salary_default_yn`, `pref_welfare_cnt`)를 더했다.
+원본의 PyCaret 호출은 scikit-learn StratifiedKFold, cross_validate로 옮김. 95/5 split, random_state 786, 10-fold, 모델 4종과 각 모델의 파라미터(RF 100, XGBoost 200/깊이 6/lr 0.1, LightGBM 200/잎 31)는 원본 노트북 값 그대로. 여기에 선호 정보 2개(`pref_salary_default_yn`, `pref_welfare_cnt`)를 더했다.
 
 ## 확인할 숫자
 
-- 01: 동의율 0.806 (30,898 / 38,355). 원본 기록 81%에 맞춰 절편을 푼 값이라 여기서 벗어나면 생성기가 달라진 것
+- 01: 동의율 0.806 (30,898 / 38,355). 생성기 절편을 이 값에 맞춰 풀었으므로 여기서 벗어나면 생성기가 달라진 것
 - 05: v1_asis LightGBM 10-fold AUC 0.944, v2_pref 0.687. 앞의 것이 정답 확률의 AUC 0.716보다 높은 게 leakage 증거, 뒤의 것이 그 아래 붙는 게 정상
 - 06: oracle 0.716, v1 OOF 0.944, v2 OOF 0.687. 두 리스트 겹침 28.1%, 상위 10%를 뽑아도 열에 일곱은 다른 사람
-- 06: 선호 정보 빈 유저(연봉 기본값 또는 복지 5개 미만) 7,165명 안에서 같은 745명을 뽑으면 v2 0.859, v1 0.821, 무작위 0.725 (`nudge_list_pref_empty.csv`). 실제 넛지 대상 정의는 이쪽
+- 06: 선호 정보 빈 유저(연봉 기본값 또는 복지 5개 미만) 7,165명 안에서 같은 745명을 뽑으면 v2 0.859, v1 0.821, 무작위 0.725 (`nudge_list_pref_empty.csv`). 비동의 전체에서 뽑는 위의 비교와 모집단만 다름
 
 ## 데이터
 
@@ -51,7 +51,7 @@ for s in scripts/0*.py scripts/10_site_figures_2.py; do .venv/bin/python "$s"; d
 
 ## 생성기에 넣은 것
 
-- 동의 후 로그인 증가 (01의 `after` 마스크 2.2배 + 결과표 확인 burst. 2.2배는 원본 수치). 동의 다음 날 로그인 확률 0.775 vs 비동의 0.103, 절단일이 동의일을 넘는 순간 AUC 0.69 -> 0.88 (`cutoff_sweep.csv`)
+- 동의 후 로그인 증가 (01의 `after` 마스크 2.2배 + 결과표 확인 burst). 동의 다음 날 로그인 확률 0.775 vs 비동의 0.103, 절단일이 동의일을 넘는 순간 AUC 0.69 -> 0.88 (`cutoff_sweep.csv`)
 - 시즌 가입자. 공채 시즌 직전 가입자는 한 번 지원하고 떠남, 가입 월이 그 proxy (`journey_dormancy.csv`, fig3)
 - 선호 정보 완성이 진짜 원인. 연봉 기본값이 아니고 복지 5개 이상이면 동의 logit +1.30. v2에서 상위로 올라옴 (`importance_v2_pref.csv`)
 
@@ -60,4 +60,4 @@ oracle은 `truth_p_consent`로 순위를 매긴 AUC. v1의 0.944가 oracle 0.716
 ## 알려진 문제
 
 - 07의 음의 offset은 거의 의미 없음. cutoff 하한이 프로필 완성 전날이고 동의 지연 중앙값이 3일이라 -30일이든 -1일이든 대부분 같은 날로 잘림. AUC가 0.68 근처에서 안 움직이는 이유. 위젯에는 그대로
-- 01의 상태 비율(가입만 80 / 검사만 9 / 프로필만 3)은 원본에 나중에 맞춘 것. 모델링 대상 38,355명을 뽑는 주 rng를 건드리면 users.csv가 통째로 바뀌어서 status 3은 고정하고 나머지 41만 명만 별도 스트림(`SEED + 1`)으로 재배정. population.csv만 바뀌고 users.csv와 결과 CSV는 그 전과 byte 동일
+- 01의 상태 비율(가입만 80 / 검사만 9 / 프로필만 3)은 나중에 맞춘 것. 모델링 대상 38,355명을 뽑는 주 rng를 건드리면 users.csv가 통째로 바뀌어서 status 3은 고정하고 나머지 41만 명만 별도 스트림(`SEED + 1`)으로 재배정. population.csv만 바뀌고 users.csv와 결과 CSV는 그 전과 byte 동일
