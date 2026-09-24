@@ -1,6 +1,6 @@
-"""참가자 코호트 2000명 (D1 스키마). 그룹, 성별, 나이, 직장인 여부, PHQ-9, 라벨(PHQ-9 >= 10)
+"""참가자 코호트 2000명 (D1 schema). 그룹, 성별, 나이, 직장인 여부, PHQ-9, 라벨(PHQ-9 >= 10)
 
-환자군에도 PHQ 낮은 사람(치료 중 관해), 대조군에도 높은 사람 -> 그룹 != 라벨
+환자군에도 PHQ 낮은 사람(치료 중 remission), 대조군에도 높은 사람 -> 그룹 != 라벨
 """
 
 import _path  # noqa: F401
@@ -41,7 +41,7 @@ cohort = pd.DataFrame(
         label_depressed=label,
     )
 )
-cohort["phq9_z"] = ((cohort.phq9 - cohort.phq9.mean()) / cohort.phq9.std()).round(4)  # 생성기 내부용, 피처 아님
+cohort["phq9_z"] = ((cohort.phq9 - cohort.phq9.mean()) / cohort.phq9.std()).round(4)  # 생성기 내부용, feature 아님
 cohort.to_csv(DATA / "participants.csv", index=False)
 
 summary = pd.DataFrame(

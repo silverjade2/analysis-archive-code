@@ -1,4 +1,4 @@
-"""EDA. 그룹 vs PHQ-9, 과제별 텍스트 길이, 치료 언급률, 음향 피처 분산 분해"""
+"""EDA. 그룹 vs PHQ-9, 과제별 텍스트 길이, 치료 언급률, 음향 feature 분산 분해"""
 
 import _path  # noqa: F401
 import pandas as pd

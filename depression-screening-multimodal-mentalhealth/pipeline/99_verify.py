@@ -1,7 +1,7 @@
 """검증 + 글에 쓰는 숫자 manifest
 
-- 피처 행렬에 truth_*, 라벨, participant_id 없음
-- speaker_prior가 녹음 랜덤에서 1.0 (누수 상한), 참가자 분할 융합이 0.99 넘으면 의심
+- feature 행렬에 truth_*, 라벨, participant_id 없음
+- speaker_prior가 녹음 랜덤에서 1.0 (leakage 상한), 참가자 분할 융합이 0.99 넘으면 의심
 """
 
 import _path  # noqa: F401
@@ -12,7 +12,7 @@ from evalutil import load_recordings
 
 problems = []
 df = load_recordings()
-# 음성 피처에 잠재변수/식별자 없나
+# 음성 feature에 잠재변수/식별자 없나
 leaked = set(AUDIO_COLS) & {
     c
     for c in df.columns
@@ -23,7 +23,7 @@ if leaked:
 # 토큰에 라벨 흔적이 없는지
 if df.tokens.str.contains("label|phq", case=False).any():
     problems.append("token contains label string")
-# truth_ 컬럼은 recordings.csv에 있어야 하고 피처로는 안 씀
+# truth_ 컬럼은 recordings.csv에 있어야 하고 feature로는 안 씀
 truth_cols = [c for c in df.columns if c.startswith("truth_")]
 
 # speaker_prior 상한

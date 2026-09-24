@@ -24,7 +24,7 @@ plt.rcParams["figure.dpi"] = 130
 C_TEXT, C_AUDIO, C_FUSION, C_NEG, C_GRAY, C_DARK = "#9a8cd1", "#5aa9a3", "#3b3b8f", "#d1795f", "#c9c9c9", "#333333"
 R = RESULTS
 
-# ---------------------------------------------------------------- fig1: 코호트. 그룹 x 라벨 산점(PHQ) + 컷오프
+# ---------------------------------------------------------------- fig1: 코호트. 그룹 x 라벨 산점(PHQ) + cutoff
 coh = pd.read_csv(DATA / "participants.csv")
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.2), gridspec_kw={"width_ratios": [1.3, 1]})
 rng = np.random.default_rng(0)
@@ -34,7 +34,7 @@ for gi, (grp, lab) in enumerate([("control", "대조군"), ("patient", "환자�
     col = np.where(sub.phq9 >= PHQ_CUTOFF, C_NEG, C_GRAY)
     ax1.scatter(x, sub.phq9, c=col, s=8, alpha=0.5)
 ax1.axhline(PHQ_CUTOFF, color=C_DARK, ls="--", lw=1)
-ax1.text(1.62, PHQ_CUTOFF, f"PHQ-9 = {PHQ_CUTOFF}\n라벨 컷오프", ha="left", va="center", fontsize=8.5, color=C_DARK)
+ax1.text(1.62, PHQ_CUTOFF, f"PHQ-9 = {PHQ_CUTOFF}\n라벨 cutoff", ha="left", va="center", fontsize=8.5, color=C_DARK)
 ax1.set_xlim(-0.55, 2.15)
 ax1.set_xticks([0, 1])
 ax1.set_xticklabels(["대조군", "환자군"])
@@ -86,7 +86,7 @@ for i, (m, name, c) in enumerate(models[::-1]):
         ax.text(
             a + 0.004,
             i,
-            f"녹음 랜덤 {a:.3f} -> 참가자 분리 {b:.3f} (Δ{b - a:+.3f})",
+            f"녹음 랜덤 {a:.3f} -> speaker-independent {b:.3f} (Δ{b - a:+.3f})",
             ha="left",
             va="center",
             fontsize=8,
@@ -94,11 +94,11 @@ for i, (m, name, c) in enumerate(models[::-1]):
         )
     else:
         ax.text(a + 0.002, i + 0.26, f"녹음 랜덤 {a:.3f}", ha="left", fontsize=8, color=C_DARK)
-        ax.text(b - 0.002, i + 0.26, f"참가자 분리 {b:.3f}  (Δ{b - a:+.3f})", ha="right", fontsize=8, color=c)
+        ax.text(b - 0.002, i + 0.26, f"speaker-independent {b:.3f}  (Δ{b - a:+.3f})", ha="right", fontsize=8, color=c)
     ax.text(0.813, i, name, va="center", ha="left", fontsize=10)
 sp = gv("recording_random", "speaker_prior")
 ax.axvline(sp, color=C_DARK, ls=":", lw=1)
-ax.text(sp, 3.6, f"화자 사전확률 상한 {sp:.2f}", ha="right", fontsize=8, color=C_DARK)
+ax.text(sp, 3.6, f"speaker-lookup 상한 {sp:.2f}", ha="right", fontsize=8, color=C_DARK)
 ax.set_ylim(-0.5, 3.9)
 ax.set_xlim(0.81, 1.02)
 ax.set_yticks([])
@@ -132,7 +132,7 @@ for i in range(len(piv)):
             fontsize=8.5,
             color="white" if v > 0.78 else C_DARK,
         )
-ax1.set_title("과제 × 모달 AUC (참가자 분리, 단일 과제)")
+ax1.set_title("과제 × 모달 AUC (speaker-independent, 단일 과제)")
 plt.colorbar(im, ax=ax1, fraction=0.046, pad=0.03)
 agg = pd.read_csv(R / "task_aggregation.csv")
 names = {
@@ -153,11 +153,11 @@ plt.tight_layout()
 plt.savefig(FIGURES / "fig3_task_modality.png")
 plt.close()
 
-# ---------------------------------------------------------------- fig4: 라벨 정의별 관해 환자 확률 분포 (violin/strip)
+# -------------------------------------------------------- fig4: 라벨 정의별 remission 환자 확률 분포 (violin/strip)
 ld = pd.read_csv(R / "label_definition_comparison.csv")
 q = pd.read_csv(R / "label_definition_prob_quantiles.csv")
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.3), sharey=True)
-groups = [("control", 0, "대조군 비우울"), ("patient", 0, "환자군 비우울\n(관해)"), ("patient", 1, "환자군 우울")]
+groups = [("control", 0, "대조군 비우울"), ("patient", 0, "환자군 비우울\n(remission)"), ("patient", 1, "환자군 우울")]
 for ax, trained, title in [(axes[0], "group_label", "환자군 여부로 학습"), (axes[1], "phq_label", "PHQ-9 라벨로 학습")]:
     for i, (g, lab, name) in enumerate(groups):
         sub = q[(q.trained_on == trained) & (q.group == g) & (q.label_depressed == lab)].sort_values("quantile")
@@ -176,14 +176,14 @@ for ax, trained, title in [(axes[0], "group_label", "환자군 여부로 학습"
 axes[0].set_ylabel("우울 예측 확률 (분위 10, 25, 50, 75, 90)")
 pnd_g = ld[(ld.trained_on == "group_label") & (ld.tokens == "full")].mean_prob_patient_not_depressed.iloc[0]
 pnd_p = ld[(ld.trained_on == "phq_label") & (ld.tokens == "full")].mean_prob_patient_not_depressed.iloc[0]
-axes[0].text(1, 0.92, f"관해 환자 평균 {pnd_g:.2f}", ha="center", fontsize=8, color=C_DARK)
-axes[1].text(1, 0.92, f"관해 환자 평균 {pnd_p:.2f}", ha="center", fontsize=8, color=C_DARK)
+axes[0].text(1, 0.92, f"remission 환자 평균 {pnd_g:.2f}", ha="center", fontsize=8, color=C_DARK)
+axes[1].text(1, 0.92, f"remission 환자 평균 {pnd_p:.2f}", ha="center", fontsize=8, color=C_DARK)
 fig.suptitle("라벨 정의별 예측 확률 분포, 그룹 x 라벨 4셀")
 plt.tight_layout(rect=[0, 0, 1, 0.94])
 plt.savefig(FIGURES / "fig4_label_definition.png")
 plt.close()
 
-# ---------------------------------------------------------------- fig5: 음향 피처 PCA, 화자 색 / 라벨 색
+# ---------------------------------------------------------------- fig5: 음향 feature PCA, 화자 색 / 라벨 색
 df = load_recordings()
 top_spk = df.participant_id.unique()[:25]
 sub = df[df.participant_id.isin(top_spk)]
@@ -196,7 +196,7 @@ ev = Zt.explained_variance_ratio_
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.4), sharex=True, sharey=True)
 palette = dict(zip(top_spk, list(plt.cm.tab20.colors) + list(plt.cm.tab20b.colors)))
 axes[0].scatter(P[:, 0], P[:, 1], c=[palette[s] for s in sub.participant_id], s=12, alpha=0.7)
-axes[0].set_title("음색 계열 피처 PCA, 참가자별 색 (25명 x 8건)")
+axes[0].set_title("음색 계열 feature PCA, 참가자별 색 (25명 x 8건)")
 axes[1].scatter(P[:, 0], P[:, 1], c=[C_NEG if v else C_GRAY for v in sub.label_depressed], s=12, alpha=0.6)
 axes[1].set_title("같은 점, 우울 라벨별 색")
 va = pd.read_csv(R / "eda_audio_variance_decomposition.csv")
@@ -217,7 +217,7 @@ plt.tight_layout()
 plt.savefig(FIGURES / "fig5_audio_pca.png")
 plt.close()
 
-# ---------------------------------------------------------------- fig6: 감정 혼동행렬 + 전이 산점도
+# ---------------------------------------------------------------- fig6: 감정 confusion matrix + 전이 산점도
 cm = pd.read_csv(R / "emotion_confusion.csv", index_col=0)
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.6), gridspec_kw={"width_ratios": [1.1, 1]})
 cmn = cm.div(cm.sum(1), axis=0)
@@ -233,7 +233,7 @@ for i in range(len(EMOTIONS)):
             ax1.text(j, i, f"{v:.2f}", ha="center", va="center", fontsize=7.5, color="white" if v > 0.5 else C_DARK)
 ax1.set_xlabel("예측")
 ax1.set_ylabel("실제")
-ax1.set_title("감정 분류 혼동행렬 (행 정규화)")
+ax1.set_title("감정 분류 confusion matrix (행 정규화)")
 ps = pd.read_csv(R / "emotion_transfer_participant_scores.csv")
 sc_ = ax2.scatter(ps.phq, ps.neg, c=[C_NEG if v else C_GRAY for v in ps.y], s=10, alpha=0.5)
 z = np.polyfit(ps.phq, ps.neg, 1)
@@ -250,7 +250,7 @@ plt.tight_layout()
 plt.savefig(FIGURES / "fig6_emotion.png")
 plt.close()
 
-# ---------------------------------------------------------------- fig7: PHQ 라벨 텍스트 모델 상위 피처 + 마스킹 효과
+# ---------------------------------------------------------------- fig7: PHQ 라벨 텍스트 모델 상위 feature + 마스킹 효과
 tf = pd.read_csv(R / "top_features_phq_label_kinds.csv")
 tf = tf[tf.coef > 0].copy()
 
@@ -275,7 +275,7 @@ ax1.barh(range(len(tf))[::-1], tf.coef, color=[KC.get(k, "#888") for k in tf.kin
 ax1.set_yticks(range(len(tf))[::-1])
 ax1.set_yticklabels(tf.label, fontsize=9)
 ax1.set_xlabel("로지스틱 회귀 계수 (우울 방향)")
-ax1.set_title("PHQ 라벨 텍스트 모델의 상위 피처")
+ax1.set_title("PHQ 라벨 텍스트 모델의 상위 feature")
 seen = list(dict.fromkeys(tf.kind))
 ax1.legend(handles=[Patch(color=KC.get(k, "#888"), label=k) for k in seen], fontsize=8, loc="lower right")
 ax1.spines[["top", "right"]].set_visible(False)

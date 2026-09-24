@@ -1,4 +1,4 @@
-"""텍스트 피처. Kiwi 형태소 -> "형태소/품사" 토큰, data/에 캐시"""
+"""텍스트 feature. Kiwi 형태소 -> "형태소/품사" 토큰, data/에 캐시"""
 
 from kiwipiepy import Kiwi
 

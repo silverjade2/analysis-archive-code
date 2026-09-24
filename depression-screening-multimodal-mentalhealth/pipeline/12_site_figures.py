@@ -1,4 +1,4 @@
-"""사이트용 그림 8장. 값은 11과 같은 CSV. 예외는 fig5 PCA 좌표 (같은 피처, seed로 재계산)"""
+"""사이트용 그림 8장. 값은 11과 같은 CSV. 예외는 fig5 PCA 좌표 (같은 feature, seed로 재계산)"""
 
 import _path  # noqa: F401
 import matplotlib.pyplot as plt
@@ -82,7 +82,7 @@ ax.set_xlim(0.81, 1.02)
 ax.set_yticks([])
 ax.spines["left"].set_visible(False)
 ax.set_xlabel("참가자 단위 AUC")
-ax.set_title("분할 방식에 따른 참가자 단위 AUC (시드 3개 평균)")
+ax.set_title("분할 방식에 따른 참가자 단위 AUC (seed 3개 평균)")
 fig.tight_layout()
 save(fig, "fig2_split_leakage")
 

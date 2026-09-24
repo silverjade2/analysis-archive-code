@@ -1,4 +1,4 @@
-"""서술 과제 STT 텍스트 생성. 템플릿 선택 P(t | z) ~ exp(TEXT_SIGNAL * w_t * z), z = PHQ-9 표준화 점수"""
+"""free-speech task STT 텍스트 생성. 템플릿 선택 P(t | z) ~ exp(TEXT_SIGNAL * w_t * z), z = PHQ-9 표준화 점수"""
 
 import re
 

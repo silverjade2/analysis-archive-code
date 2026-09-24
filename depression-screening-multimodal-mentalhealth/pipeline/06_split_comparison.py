@@ -1,7 +1,7 @@
-"""분할 단위 비교. 녹음 랜덤 5-fold vs 참가자 5-fold x 텍스트 / 음성 GBM / 음성 k-NN / 융합, 시드 3개
+"""분할 단위 비교. 녹음 랜덤 5-fold vs 참가자 5-fold x 텍스트 / 음성 GBM / 음성 k-NN / 융합, seed 3개
 
-- speaker_prior = 학습셋 같은 참가자의 라벨. 누수 상한
-- 지표는 녹음 단위, 참가자 단위(8건 평균) 둘 다
+- speaker_prior = 학습셋 같은 참가자의 라벨. leakage 상한
+- 지표는 recording 단위, 참가자 단위(8건 평균) 둘 다
 """
 
 import _path  # noqa: F401

@@ -1,7 +1,7 @@
-"""녹음 16000건 = 참가자 x 과제 8. STT 텍스트 + 음향 피처 20차원
+"""녹음 16000건 = 참가자 x 과제 8. STT 텍스트 + 음향 feature 20차원
 
-- 서술 과제 5개는 템플릿(가중치, PHQ z), 숫자 세기/낭독은 고정 텍스트
-- truth_* (template_weight 등)는 채점 전용
+- free-speech task 5개는 템플릿(가중치, PHQ z), 숫자 세기/낭독은 고정 텍스트
+- truth_* (template_weight 등)는 평가 전용
 """
 
 import _path  # noqa: F401

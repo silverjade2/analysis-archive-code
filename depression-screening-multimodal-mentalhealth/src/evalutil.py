@@ -1,4 +1,4 @@
-"""녹음 단위 / 참가자 단위 교차검증과 지표"""
+"""recording 단위 / 참가자 단위 교차검증과 지표"""
 
 import numpy as np
 import pandas as pd
@@ -29,7 +29,7 @@ def metrics(y, p, thr=0.5):
 
 
 def participant_level(df, p, label_col="label_depressed"):
-    """녹음 확률을 참가자별 평균으로 모아 채점"""
+    """녹음 확률을 참가자별 평균으로 모아 평가"""
     g = (
         pd.DataFrame(dict(pid=df.participant_id.values, y=df[label_col].values, p=p))
         .groupby("pid")
@@ -76,13 +76,13 @@ def fp_fusion(tr, te, seed, y_col="label_depressed", token_col="tokens", grouped
 
 
 def fp_speaker_prior(tr, te, seed, y_col="label_depressed"):
-    """학습셋에 같은 참가자가 있으면 그 라벨을 그대로. 누수 상한"""
+    """학습셋에 같은 참가자가 있으면 그 라벨을 그대로. leakage 상한"""
     prior = tr.groupby("participant_id")[y_col].mean()
     return te.participant_id.map(prior).fillna(tr[y_col].mean()).values
 
 
 def fp_audio_knn(tr, te, seed, y_col="label_depressed", k=15):
-    """음성 k-NN. 같은 화자의 다른 녹음이 이웃으로 잡혀서 누수에 가장 민감"""
+    """음성 k-NN. 같은 화자의 다른 녹음이 이웃으로 잡혀서 leakage에 가장 민감"""
     from sklearn.neighbors import KNeighborsClassifier
     from sklearn.preprocessing import StandardScaler
 
