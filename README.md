@@ -2,7 +2,7 @@
 
 [analysis-archive](https://analysis-archive.vercel.app) 글의 재현 코드. 글 하나 = 폴더 하나, 폴더명 = 글 slug.
 
-폴더마다 옛 프로젝트 하나를 같은 스키마의 가상 데이터로 다시 만들고, 원래 분석이 걸려 넘어진 구조를 심어둔 뒤 원본 절차를 그대로 돌려 심어둔 정답과 대조한다. 실제 데이터는 없음. 배경과 해석은 글에 있고 여기엔 숫자를 다시 내는 데 필요한 것만.
+폴더마다 옛 프로젝트 하나를 같은 schema의 가상 데이터로 다시 만들고, 원래 분석이 걸려 넘어진 구조를 넣어 둔 뒤 원본 절차를 그대로 돌려 그 ground truth와 대조한다. 실제 데이터는 없음. 배경과 해석은 글에 있고 여기엔 숫자를 다시 내는 데 필요한 것만.
 
 | 폴더 | 글 | 소요 |
 | --- | --- | --- |
@@ -23,7 +23,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
-Python 3.12 이상. LightGBM이나 XGBoost 쓰는 폴더는 macOS에서 `brew install libomp` 먼저. `depression-screening-multimodal-mentalhealth/`는 `scripts/` 대신 `pipeline/`과 `src/`로 나뉘어 있고 `pipeline/` 안에서 실행한다(폴더 README 참고). `requirements.txt`는 하한만 적었고 재현에 쓴 버전은 폴더 README에 있다. 그 버전에서는 `data/`를 지우고 다시 돌려도 결과 CSV가 같고, 다른 버전에서 어디가 흔들리는지도 폴더 README에.
+Python 3.12 이상. LightGBM이나 XGBoost 쓰는 폴더는 macOS에서 `brew install libomp` 먼저. 경로는 폴더마다 `common.py`가 파일 위치 기준으로 잡아서 어디서 실행해도 된다. `depression-screening-multimodal-mentalhealth/`만 `scripts/` 대신 `pipeline/`과 `src/`로 나뉘어 있고 `pipeline/` 안에서 실행. `requirements.txt`는 하한만 적었고 재현에 쓴 버전은 폴더 README에 있다. 그 버전 조합에서는 `data/`를 지우고 다시 돌려도 결과 CSV가 같고, 다른 버전에서 어디가 흔들리는지도 폴더 README에. 공통 사항은 여기까지, 폴더 README에는 그 폴더에서 다른 것만 적는다.
 
 ## 폴더 구조
 
@@ -36,7 +36,7 @@ Python 3.12 이상. LightGBM이나 XGBoost 쓰는 폴더는 macOS에서 `brew in
   README.md              실행, 스크립트 표, 확인할 숫자, 알려진 문제
 ```
 
-`truth_*` 열은 생성기의 잠재 변수라 채점에만 쓰고 feature에는 안 넣는다. oracle은 그 변수를 아는 판정자의 점수. 모델이 oracle을 넘으면 답을 본 것.
+`truth_*` 열은 생성기의 잠재 변수라 평가에만 쓰고 feature에는 안 넣는다. oracle은 그 변수를 아는 판정자의 점수. 모델이 oracle을 넘으면 답을 본 것.
 
 draft 글의 코드는 발행 전까지 별도 private 저장소에 있음.
 
