@@ -90,7 +90,7 @@ for name, mat in features.items():
     table[name] = mat[dev_idx, day_idx]
 table["target"] = target[dev_idx, day_idx]
 
-assert not table.isna().any().any(), "피처에 NaN이 남아 있음"
+assert not table.isna().any().any(), "feature에 NaN이 남아 있음"
 out = base / "data" / "features.csv"
 table.to_csv(out, index=False)
 

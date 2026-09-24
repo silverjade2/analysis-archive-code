@@ -1,8 +1,8 @@
-"""feature 테이블 누수 검증 3종
+"""feature 테이블 leakage 검증 3종
 
-1. 재계산 대조: 원천을 t까지 잘라서 feature 다시 계산, 저장값과 비교
+1. point-in-time recomputation check: 원천을 t까지 잘라서 feature 다시 계산, 저장값과 비교
 2. 이벤트일 이후 행, target 정의
-3. 음성 대조: 일부러 만든 누수 feature를 1번이 잡는지. 0이면 검증 도구 쪽이 고장
+3. positive control: 일부러 만든 leakage feature를 1번이 잡는지. 0이면 검증 도구 쪽이 고장
 """
 
 from pathlib import Path
@@ -67,7 +67,7 @@ for _, row in sample.iterrows():
             print(f"  불일치: {row['device_id']} day={t} {col}: 저장값 {row[col]} vs 재계산 {recomputed[col]}")
             break
 print(
-    f"[검증 1] 재계산 대조, 표본 {N_SAMPLE}행 x 피처 {len(feature_cols)}개: "
+    f"[검증 1] point-in-time recomputation check, 표본 {N_SAMPLE}행 x feature {len(feature_cols)}개: "
     f"불일치 {mismatch}건 {'ok' if mismatch == 0 else 'FAIL'}"
 )
 
@@ -88,13 +88,13 @@ w3 = raw[raw["event_code"] == "W3"]
 leak_detected = 0
 for _, row in sample.head(50).iterrows():
     t = int(row["day"])
-    # 일부러 만든 누수 feature: t+1~t+3 W3 건수
+    # 일부러 만든 leakage feature: t+1~t+3 W3 건수
     leaky_value = w3[(w3["device_id"] == row["device_id"]) & (w3["day"].between(t + 1, t + 3))]["count"].sum()
     # t까지 자르면 미래분은 항상 0
     recomputed_value = 0
     if not np.isclose(leaky_value, recomputed_value):
         leak_detected += 1
-print(f"[검증 3] 음성 대조, 누수 피처 50행 중 불일치 {leak_detected}건 (0보다 커야 함)")
+print(f"[검증 3] positive control, leakage feature 50행 중 불일치 {leak_detected}건 (0보다 커야 함)")
 
 n_pos = int(table["target"].sum())
 print(

@@ -1,7 +1,7 @@
 """LightGBM x 불균형 처리 3종 (없음 / class_weight / scale_pos_weight)
 
-- 시간 분할. day 150부터 test, 경계 7일 purge (day 143~149는 target window가 test를 봄)
-- 랜덤 분할 안 씀. 인접일 행은 window가 거의 겹치는 준중복이라 성능 부풀려짐
+- time-based split. day 150부터 test, 경계 7일 purge (day 143~149는 target window가 test를 봄)
+- 랜덤 분할 안 씀. 인접일 행은 window가 거의 겹치는 near-duplicate라 성능 부풀려짐
 - 지표는 PR-AUC 중심. 양성 0.36%에서 ROC-AUC는 후함
 """
 
