@@ -278,7 +278,7 @@ for months, dy in [(6, -10), (12, -10), (24, -10)]:
 a0.text(
     live.index.max() + pd.Timedelta(days=12),
     frz.churn_rate.iloc[-1],
-    "스냅샷 고정\n(데이터 갱신 없이 재실행)",
+    "snapshot 고정\n(데이터 갱신 없이 재실행)",
     fontsize=8.5,
     color=RED,
     va="center",

@@ -1,4 +1,4 @@
-"""v2: T(=REF-12M) 시점 절단 feature
+"""v2: T(=REF-12M) 시점 cutoff feature
 
 - 모집단: T 시점 고객 (last_end >= T-90d)
 - feature는 T 이전 정보만. 라벨은 v1과 같은 REF 기준

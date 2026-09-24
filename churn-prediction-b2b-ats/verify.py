@@ -1,7 +1,7 @@
-"""파이프라인 돌린 뒤 확인용. 루트에서 python verify.py
+"""pipeline 돌린 뒤 확인용. 루트에서 python verify.py
 
 1. feature에 truth_* 안 섞였는지
-2. v2 시간 절단 손검산 (5사만)
+2. v2 cutoff 손검산 (5사만)
 3. AUC가 oracle 넘는지
 """
 
@@ -33,12 +33,12 @@ for _, r in sample.iterrows():
     match = (n_before == r.n_contracts_T) and abs(rev12 - r.revenue_last12m_T) < 1
     ok &= match
     print(
-        f"  company {int(r.company_id)}: T 이전 계약 {n_before} (피처 {int(r.n_contracts_T)}), "
+        f"  company {int(r.company_id)}: T 이전 계약 {n_before} (feature {int(r.n_contracts_T)}), "
         f"T 이후 계약 {after.contract_id.nunique()}건 제외, "
-        f"직전12개월 매출 {rev12:,.0f} (피처 {r.revenue_last12m_T:,.0f}) {'ok' if match else 'MISMATCH'}"
+        f"직전12개월 매출 {rev12:,.0f} (feature {r.revenue_last12m_T:,.0f}) {'ok' if match else 'MISMATCH'}"
     )
 assert ok
-print("[2] 시간 절단 손검산 5사: ok")
+print("[2] cutoff 손검산 5사: ok")
 
 ls1 = pd.read_csv(RESULTS / "label_stats_v1.csv").set_index("metric").value
 ls2 = pd.read_csv(RESULTS / "label_stats_v2.csv").set_index("metric").value
@@ -51,8 +51,8 @@ o = mc[mc.model == "truth_churn_p"].auc.iloc[0]
 over = mc[(mc.variant == "v2 timecut (688)") & (mc.auc > o)]
 print(f"    v2 AUC > oracle(688) {o:.3f}: {len(over)}개 (0이어야 함)")
 print(
-    f"    v1 스냅샷 AUC 최대 {mc[mc.variant == 'v1 snapshot'].auc.max():.3f} > "
-    f"oracle(1141) {mc[mc.model == 'truth_churn_p (exposure-aware)'].auc.iloc[0]:.3f} (v1은 누수라 이게 맞음)"
+    f"    v1 snapshot AUC 최대 {mc[mc.variant == 'v1 snapshot'].auc.max():.3f} > "
+    f"oracle(1141) {mc[mc.model == 'truth_churn_p (exposure-aware)'].auc.iloc[0]:.3f} (v1은 leakage라 이게 맞음)"
 )
 assert v1.isna().sum().sum() == 0 and v2.isna().sum().sum() == 0
 print("    결측 0: ok")
