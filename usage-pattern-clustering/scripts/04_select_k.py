@@ -50,7 +50,7 @@ print("k sweep (log1p + 표준화, KMeans n_init=10)")
 print(sweep.round(3).to_string(index=False))
 print()
 
-print("k별 군집 구성: 크기 (최다 정답 레이블, 순도)")
+print("k별 군집 구성: 크기 (최다 정답 라벨, 순도)")
 for k in K_RANGE:
     pred = preds[k]
     parts = []
@@ -120,8 +120,8 @@ for ax, k in zip(axes, (4, 5)):
     ax.set_xticks(comp.index)
     ax.grid(alpha=0.3, axis="y")
 axes[0].set_ylabel("기기 수")
-axes[1].legend(title="ground truth 레이블", fontsize=8, loc="upper right")
-fig.suptitle("k=4 vs k=5: 예측 군집별 ground truth 레이블 구성")
+axes[1].legend(title="ground truth 라벨", fontsize=8, loc="upper right")
+fig.suptitle("k=4 vs k=5: 예측 군집별 ground truth 라벨 구성")
 fig.tight_layout()
 fig.savefig(fig_dir / "fig6_k4_vs_k5.png", dpi=150)
 print(f"플롯 저장: {fig_dir / 'fig6_k4_vs_k5.png'}")

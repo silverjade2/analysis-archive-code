@@ -143,7 +143,7 @@ df.to_csv(data_dir / "usage_profiles.csv", index=False)
 
 print(f"usage_profiles.csv 저장: {len(df)}행 x {len(df.columns)}열")
 print(df["true_cluster"].value_counts().to_string())
-print(f"집계 피처 범위: {df[feature_cols].values.min():.2f} ~ {df[feature_cols].values.max():.2f}")
+print(f"집계 feature 범위: {df[feature_cols].values.min():.2f} ~ {df[feature_cols].values.max():.2f}")
 print(f"total_usage 범위: {df['total_usage'].min():.0f} ~ {df['total_usage'].max():.0f}")
 
 # 검증 플롯. 요일 평균으로 접음
@@ -175,7 +175,7 @@ for ax in axes[1]:
     ax.set_xlabel("시각")
 for ax in axes[:, 0]:
     ax.set_ylabel("평균 사용 강도 (요일 평균)")
-fig.suptitle("ground truth 레이블 기준 시간대별 사용 프로파일 (노이즈 소군집 15대 제외)")
+fig.suptitle("ground truth 라벨 기준 시간대별 사용 프로파일 (노이즈 소군집 15대 제외)")
 fig.tight_layout()
 fig.savefig(fig_dir / "fig1_true_profiles.png", dpi=150)
 print(f"검증 플롯 저장: {fig_dir / 'fig1_true_profiles.png'}")

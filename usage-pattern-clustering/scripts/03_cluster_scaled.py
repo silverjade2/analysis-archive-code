@@ -30,8 +30,8 @@ X_raw = df[feature_cols].to_numpy()
 
 skew_hourly = skew(df[hour_cols].to_numpy(), axis=0)
 skew_total = skew(df["total_usage"].to_numpy())
-print("피처 skewness (0이면 대칭)")
-print(f"  시간대 피처 168개: 평균 {skew_hourly.mean():.2f}, 최대 {skew_hourly.max():.2f} (버스트 셀 영향)")
+print("feature skewness (0이면 대칭)")
+print(f"  시간대 feature 168개: 평균 {skew_hourly.mean():.2f}, 최대 {skew_hourly.max():.2f} (버스트 셀 영향)")
 print(f"  total_usage:        {skew_total:.2f}")
 print()
 
@@ -109,7 +109,7 @@ def plot_result(pred: np.ndarray, method: str, fname: str) -> None:
 
 
 # 02 결과를 읽지 않고 같은 seed로 재계산. 같다는 건 stdout으로만 확인
-naive = run_kmeans(X_raw, "스케일링 없음 (02 재계산)")
+naive = run_kmeans(X_raw, "scaling 없음 (02 재계산)")
 
 X_std = StandardScaler().fit_transform(X_raw)
 result_std = run_kmeans(X_std, "표준화만 (StandardScaler)")
@@ -131,7 +131,7 @@ summary = pd.DataFrame(
     ]
 )
 summary["ARI 변화(1차 대비)"] = summary["ARI"] - summary.loc[0, "ARI"]
-print("스케일링 방법별 ARI")
+print("scaling 방법별 ARI")
 print(summary.to_string(index=False))
 
 res_dir = base / "outputs" / "results"

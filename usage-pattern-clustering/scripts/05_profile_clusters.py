@@ -61,7 +61,7 @@ LABELS = {
     4: "아침 집중형: 평일 6~10시 피크",
 }
 
-print("군집별 평균 z-score (파생 피처)")
+print("군집별 평균 z-score (파생 feature)")
 print(z_by_cluster.round(2).to_string())
 print()
 
@@ -74,7 +74,7 @@ for c in range(K):
     print(f"  근거 z-score: {signs}")
 print()
 
-print("사후 검증, 예측 군집 x 정답 레이블")
+print("사후 검증, 예측 군집 x 정답 라벨")
 print(pd.crosstab(df["pred_cluster"], df["true_cluster"]).to_string())
 
 fig, (ax_hm, ax_prof) = plt.subplots(1, 2, figsize=(14, 5.5), gridspec_kw={"width_ratios": [1.2, 1]})

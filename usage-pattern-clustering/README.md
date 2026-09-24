@@ -2,7 +2,7 @@
 
 [사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering) 재현 코드.
 
-원본은 실제 기기 사용 로그로 했던 사용 패턴 세그멘테이션. scaling을 빼면 총량 하나가 분산을 지배해 군집이 총량 구간 분할이 되고, 지표가 고른 k=5의 실체는 행동 세그먼트 4개와 이상집단 1개였다. 클러스터링은 정답이 없어 틀려도 티가 안 나서, 여기서는 정답 군집과 함정을 심은 가상 프로파일을 만들어 같은 절차를 돌리고 어디서 틀리는지 본다 (실제 데이터 없음).
+클러스터링은 ground truth 라벨이 없어 결과가 틀려도 드러나지 않는다. 그래서 ground truth 군집 4개와 함정 3종을 넣은 가상 프로파일 800대를 만들고, 원본(기기 사용 로그 세그멘테이션)과 같은 순서로 scaling 없는 K-means부터 k sweep까지 돌려 정답과 대조한다. 원본에서 확인한 문제는 두 가지. scaling을 빼면 총량 한 열이 분산을 지배해 군집이 총량 구간 분할이 되는 것, 지표가 고른 k=5의 실체가 행동 세그먼트 4개 + 이상집단 1개였던 것. 실제 로그 없음.
 
 ## 실행
 
@@ -11,9 +11,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
-전체 12초 정도. 경로는 파일 위치 기준이라 어디서 실행해도 된다.
-
-재현에 쓴 버전: Python 3.14, numpy 2.5, pandas 3.0, scipy 1.18, scikit-learn 1.9, matplotlib 3.11. 이 조합에서는 `data/`를 지우고 다시 돌려도 데이터와 결과 CSV가 동일.
+12초 정도. Python 3.14, numpy 2.5, pandas 3.0, scipy 1.18, scikit-learn 1.9, matplotlib 3.11.
 
 ## 스크립트
 
@@ -25,6 +23,8 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 04 | k=2~10 sweep (inertia, silhouette, ARI), k=4 vs 5 대조 | `k_sweep.csv`, `k_composition.csv`, `fig5~6` |
 | 05 | 최종 군집 (k=5) z-score 프로파일과 비즈니스 라벨 | `cluster_zscore.csv`, `cluster_labels.csv`, `fig7` |
 
+`scaling_compare.csv`의 방법 열은 03의 문자열 그대로.
+
 ## 시도 순서와 숫자
 
 - 02: ARI 0.238, 사실상 랜덤. 분산 비율 99.8%는 거리 계산을 total_usage 한 열이 다 정했다는 뜻
@@ -33,11 +33,11 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 
 ## 데이터
 
-`usage_profiles.csv` 800행 x 171열. `device_id`(D0000~D0799), `u_{dow}_h{HH}` 168열 (요일 x 시각 평균 사용 강도, 0~10), `total_usage`(0~5000, 셀 합 x 3.5 + noise), `true_cluster`(morning / allday_low / night / intermittent / noise). 정답 열은 채점 전용이고 클러스터링 입력에 안 들어간다.
+`usage_profiles.csv` 800행 x 171열. `device_id`(D0000~D0799), `u_{dow}_h{HH}` 168열 (요일 x 시각 평균 사용 강도, 0~10), `total_usage`(0~5000, 셀 합 x 3.5 + noise), `true_cluster`(morning / allday_low / night / intermittent / noise). ground truth 열은 평가 전용이고 클러스터링 입력에 안 들어간다.
 
 세그멘테이션 시리즈 2편은 이 폴더의 생성기를 그대로 복사해 쓴다. 01을 고치면 여기 pipeline 전체를 다시 돌려야 함.
 
-## 심어둔 구조
+## 넣은 구조
 
 - 진짜 군집 4개: morning 230, allday_low 240, night 165, intermittent 150
 - 함정 1. `total_usage`만 스케일이 커서 scaling 없이는 이 축이 거리를 지배. `naive_kmeans_summary.csv`의 분산 비율 0.998

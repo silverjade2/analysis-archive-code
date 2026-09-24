@@ -29,10 +29,10 @@ pred = km.fit_predict(X)
 df = df.assign(pred_cluster=pred)
 
 ari = adjusted_rand_score(df["true_cluster"], pred)
-print(f"ARI (스케일링 없음, k={K}): {ari:.3f}")
+print(f"ARI (scaling 없음, k={K}): {ari:.3f}")
 
 crosstab = pd.crosstab(df["true_cluster"], df["pred_cluster"], margins=True)
-print("\n교차표 (정답 레이블 × 예측 군집)")
+print("\n교차표 (정답 라벨 × 예측 군집)")
 print(crosstab.to_string())
 
 usage_by_pred = df.groupby("pred_cluster")["total_usage"].agg(["mean", "std", "count"])
@@ -42,7 +42,7 @@ print(usage_by_pred.to_string())
 
 var_hourly_sum = df[hour_cols].var().sum()
 var_total_usage = df["total_usage"].var()
-print(f"\n시간대 피처 168개 분산의 합: {var_hourly_sum:,.1f}")
+print(f"\n시간대 feature 168개 분산의 합: {var_hourly_sum:,.1f}")
 print(f"total_usage 하나의 분산:      {var_total_usage:,.1f}")
 print(f"total_usage가 전체 분산에서 차지하는 비율: {var_total_usage / (var_hourly_sum + var_total_usage):.1%}")
 print("total_usage 한 열이 이 비율이면 K-means 경계는 사용 모양이 아니라 총량으로 갈림")
@@ -81,7 +81,7 @@ for ax in profile_axes[2:]:
 for ax in [profile_axes[0], profile_axes[2]]:
     ax.set_ylabel("평균 사용 강도")
 
-fig.suptitle(f"스케일링 없는 K-means (k={K}), total_usage 오름차순 (ARI={ari:.3f})")
+fig.suptitle(f"scaling 없는 K-means (k={K}), total_usage 오름차순 (ARI={ari:.3f})")
 fig.tight_layout()
 fig.savefig(base / "outputs" / "figures" / "fig2_naive_kmeans.png", dpi=150)
 print(f"\n플롯 저장: {base / 'outputs' / 'figures' / 'fig2_naive_kmeans.png'}")
