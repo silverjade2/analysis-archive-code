@@ -1,7 +1,7 @@
 """가상 세션 로그 생성
 
 - 올타임 기기 25%, 스케줄 기기 5%, 설치 배치 2회, OTA 4회
-- truth_* 는 채점 전용
+- truth_* 는 평가 전용, feature에 안 씀
 """
 
 import numpy as np

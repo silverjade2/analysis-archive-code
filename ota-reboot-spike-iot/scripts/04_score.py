@@ -1,4 +1,4 @@
-"""채점. 정답(is_ota, truth_source)을 읽는 유일한 스크립트"""
+"""ground truth(is_ota, truth_source)를 읽어 검출 결과를 평가하는 유일한 스크립트"""
 
 import pandas as pd
 from common import DATA, RES
