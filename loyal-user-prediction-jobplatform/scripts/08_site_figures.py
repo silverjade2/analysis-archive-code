@@ -50,7 +50,7 @@ AFTER_TARGET = {
     "test_cnt",
     "complete_cnt",
 }
-# 심어둔 동의의 동인
+# 가상데이터에 넣은 동의의 동인
 PLANTED = {"acca_t_score", "pref_welfare_cnt", "pref_salary_default_yn", "marketing_consent_yn", "join_month"}
 
 
@@ -152,9 +152,16 @@ for i, m in enumerate(models):
         fontsize=9,
         color=DARK,
     )
-ax.scatter(piv["v1_asis"], yy, s=75, color=GRAY, zorder=3, label="v1 스냅샷")
+ax.scatter(piv["v1_asis"], yy, s=75, color=GRAY, zorder=3, label="v1 snapshot")
 ax.scatter(
-    piv["v1_pref"], yy, s=75, facecolor="white", edgecolor=MUTED, linewidth=1.8, zorder=4, label="v1 스냅샷 + 선호 정보"
+    piv["v1_pref"],
+    yy,
+    s=75,
+    facecolor="white",
+    edgecolor=MUTED,
+    linewidth=1.8,
+    zorder=4,
+    label="v1 snapshot + 선호 정보",
 )
 ax.scatter(piv["v2_pref"], yy, s=75, color=BLUE, zorder=3, label="v2 cutoff + 선호 정보")
 ax.axvline(oracle, color=ORANGE, ls="--", lw=1.2, zorder=2)
@@ -233,7 +240,7 @@ ax.set_xlim(-0.75, 1.75)
 ax.set_ylim(NROWS + 0.6, 0.3)
 ax.set_yticks(range(1, NROWS + 1), ylabels)
 ax.set_ylabel("중요도 순위 (LightGBM gain)")
-ax.set_xticks([0, 1], ["v1 스냅샷 (당시 구조)", "v2 cutoff (+ 선호 정보)"])
+ax.set_xticks([0, 1], ["v1 snapshot (당시 구조)", "v2 cutoff (+ 선호 정보)"])
 ax.tick_params(axis="x", labelsize=10.5, length=0)
 ax.tick_params(axis="y", length=0)
 for s in ("left", "bottom"):

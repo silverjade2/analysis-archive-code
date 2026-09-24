@@ -146,7 +146,7 @@ ax.text(
 )
 ax.set_xlim(0, 1)
 ax.set_ylim(0, 1)
-ax.set_xlabel(f"v1 스냅샷 점수 (OOF). 점선 오른쪽이 상위 {k}명")
+ax.set_xlabel(f"v1 snapshot 점수 (OOF). 점선 오른쪽이 상위 {k}명")
 ax.set_ylabel(f"v2 cutoff 점수 (OOF). 점선 위쪽이 상위 {k}명")
 ax.grid()
 n_neg8 = int(summary["deciles: non-consented users"])
@@ -182,7 +182,7 @@ handles = [
     Line2D([], [], marker="s", color=GRAY, ls="none", ms=5.5, label="프로필 완성"),
     Line2D([], [], marker="o", color=ORANGE, ls="none", ms=8, label="추천 동의 (타깃)"),
     Line2D([], [], color=BLUE, lw=2, label="v2 cutoff 시점"),
-    Patch(color=LIGHT, label="v1 스냅샷만 보는 구간"),
+    Patch(color=LIGHT, label="v1 snapshot만 보는 구간"),
 ]
 ax.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.5, -0.12), ncols=6)
 ax.set_title("유저 12명의 첫 1년 타임라인 (파란 선 = v2 cutoff)")
@@ -191,7 +191,7 @@ save(fig, "fig9_timeline_sample")
 roc = pd.read_csv(RES / "roc_curves.csv")
 auc = pd.read_csv(RES / "oof_auc_vs_oracle.csv").set_index("model")["AUC"]
 SERIES = [
-    ("v1 snapshot", GRAY_LINE, "-", "v1 스냅샷"),
+    ("v1 snapshot", GRAY_LINE, "-", "v1 snapshot"),
     ("v2 time cut", BLUE, "-", "v2 cutoff"),
     ("oracle (true propensity)", ORANGE, "--", "ground truth 확률 (oracle)"),
 ]
@@ -247,7 +247,7 @@ n_neg = int(float(summary["deciles: non-consented users"]))
 fig, ax = plt.subplots(figsize=(8.5, 3.9))
 ax.axhline(base, color=ORANGE, ls="--", lw=1.1)
 ax.text(10.55, base + 0.004, f"비동의 전체 평균\n{base:.3f}", color=ORANGE, fontsize=9, va="bottom")
-for vname, c, lab in [("v1", GRAY_LINE, "v1 스냅샷 점수"), ("v2", BLUE, "v2 cutoff 점수")]:
+for vname, c, lab in [("v1", GRAY_LINE, "v1 snapshot 점수"), ("v2", BLUE, "v2 cutoff 점수")]:
     d = dc[dc["score"] == vname]
     ax.plot(d["decile"], d["mean_truth_p"], marker="o", ms=6, color=c, lw=1.9, label=lab)
     ax.text(

@@ -3,8 +3,8 @@
 95/5 split 후 95%에 10-fold stratified CV, LR / RF / XGBoost / LightGBM. seed 786, 123은 원본 값
   v1_asis   snapshot feature, 노트북 feature 집합 (실제로 했던 것)
   v1_pref   + 선호 정보 (있었지만 안 쓴 것)
-  v2_pref   시간 절단 + 선호 정보 (했어야 하는 것)
-마지막에 LightGBM으로 5% holdout 채점 + gain importance
+  v2_pref   cutoff + 선호 정보 (했어야 하는 것)
+마지막에 LightGBM으로 5% holdout 평가 + gain importance
 """
 
 import time

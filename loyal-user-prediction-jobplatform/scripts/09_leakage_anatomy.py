@@ -1,11 +1,7 @@
 """leakage 해부. 그림 7~11 데이터. pipeline은 안 바꾸고 data/와 v1, v2 테이블만 읽음
 
-1. 기준일(동의자 consent_day, 비동의자 v2 cutoff+1) 주변 일별 로그인 확률
-2. 유저 12명 (동의 6, 비동의 6) 타임라인
-3. v1, v2 LightGBM OOF 점수와 ROC
-4. 비동의 유저 점수 분위별 심어둔 동의 성향
-5. v1 x v2 점수 평면 사분면
-3~5는 06 결과와 assert로 대조 (같은 CV, seed). 캡션 숫자는 leakage_anatomy_summary.csv에
+- 기준일 주변 로그인 확률, 유저 12명 타임라인, OOF 점수와 ROC, 점수 분위별 동의 성향, v1 x v2 사분면
+- 점수를 쓰는 셋은 06 결과와 assert로 대조 (같은 CV, seed). 캡션 숫자는 leakage_anatomy_summary.csv
 """
 
 import numpy as np

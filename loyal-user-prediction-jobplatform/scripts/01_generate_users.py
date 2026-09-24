@@ -2,7 +2,7 @@
 
 - 전체 가입 45만 명: 저니 상태와 마지막 로그인만 (저니맵용)
 - 모델링 대상 38355명: 가입 -> 검사 -> 프로필 -> 동의 타임라인 + 로그인/지원/검사/알림 이벤트
-- 심은 구조 3개: 동의 후 로그인 증가 / 시즌 가입자는 한 번 지원하고 떠남 / 선호 정보 완성이 동의 확률을 올림
+- 넣은 구조 3개: 동의 후 로그인 증가 / 시즌 가입자는 한 번 지원하고 떠남 / 선호 정보 완성이 동의 확률을 올림
 - 동의율은 절편을 풀어 원본 기록 81%에 맞춤
 """
 
@@ -230,7 +230,7 @@ users = pd.DataFrame(
         "profile_day": profile,
         "consent_day": consent_day,
         "matching_use_yn": consent.astype(int),
-        # 채점용. feature에 안 씀
+        # 평가용. feature에 안 씀
         "truth_p_consent": p_true,
         "truth_commit": commit,
         "truth_season_joiner": season_joiner.astype(int),

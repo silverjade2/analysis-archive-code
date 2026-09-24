@@ -1,4 +1,4 @@
-"""v1 feature. 원본 노트북대로 전원 snapshot 당일 절단. 타깃 결정 이후 이벤트도 들어감"""
+"""v1 feature. 원본 노트북대로 전원 snapshot 당일이 cutoff. 타깃 결정 이후 이벤트도 들어감"""
 
 import numpy as np
 from common import DATA, N_DAYS

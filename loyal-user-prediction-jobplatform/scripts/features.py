@@ -1,4 +1,4 @@
-"""v1(snapshot), v2(시간 절단) 공용 feature 생성
+"""v1(snapshot), v2(cutoff) 공용 feature 생성
 
 build_features(cutoff): 유저별 cutoff 당일까지 이벤트로 feature 32 + 선호 2. 전원 cutoff = snapshot이면 v1
 """
@@ -39,7 +39,7 @@ def build_features(cutoff, users=None, logins=None, ev_apply=None, ev_test=None,
     f = pd.DataFrame({"user": users["user"].values})
     f["days_since_last_login"] = np.maximum(
         cutoff - last, 0
-    )  # 동의일 = 가입일이면 절단일이 가입일 전날 -> 음수. 0으로 clip
+    )  # 동의일 = 가입일이면 cutoff일이 가입일 전날 -> 음수. 0으로 clip
     f["login_counts"] = window.sum(1)
 
     mid = ev_apply["midas"].values == 1
