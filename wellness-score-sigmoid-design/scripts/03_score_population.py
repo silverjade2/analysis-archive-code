@@ -1,4 +1,4 @@
-"""합성 1000명 + 엣지 케이스 채점. 엣지 케이스는 assert로 기대값 확인"""
+"""합성 1000명 + edge case 점수 계산. edge case는 assert로 기대값 확인"""
 
 import pandas as pd
 from common import DATA, PARAMS, RES
