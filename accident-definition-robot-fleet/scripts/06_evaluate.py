@@ -4,6 +4,7 @@
 - eval_contamination.csv: 전도 코드 행에 섞인 들림, 검사 로그 비중 (배포 전후)
 - eval_truth_rate.csv: 실제 사고의 경과 구간별 발생률, 전반기 vs 후반기
 - eval_truth_sir.csv: 실제 사고로 같은 월별 SIR
+- eval_truth_mix_share.csv: 실제 사고로 같은 구성 효과 몫
 """
 
 import numpy as np
@@ -93,10 +94,14 @@ def main():
     td = pd.DataFrame({"sir_truth": rates.sir(me, nm).round(3), "true_accidents": nm.sum(axis=1).astype(int)})
     td["partial"] = mon["partial"]
     td.to_csv(RES / "eval_truth_sir.csv", index_label="month")
+    full = mon.index[~mon["partial"]]
+    tm = pd.DataFrame([rates.mix_share("truth", me, nm, full[:2], full[-2:])])
+    tm.to_csv(RES / "eval_truth_mix_share.csv", index=False)
 
     expo_m = device_days_per_month(w.assign(obs_to=END))
     print(f"true accidents {n_true:,}  exposure {expo_m.sum():,.0f}  true rate {n_true / expo_m.sum() * 1000:.3f}")
     print(td.to_string())
+    print(tm.to_string(index=False))
     print(cont[[c for c in cont.columns if c.endswith("_share") or c == "rows"]].to_string())
     print(pd.DataFrame(rows).to_string(index=False))
     print(pd.DataFrame(out).to_string(index=False))

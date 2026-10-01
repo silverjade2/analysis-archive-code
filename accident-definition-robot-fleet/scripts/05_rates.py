@@ -4,8 +4,10 @@
 - tenure_rate.csv: 설치 후 경과 구간별
 - cohort_rate.csv: 설치 월 x 경과 30일 구간
 - sir.csv: 경과 구성을 맞춘 기대 대비 관측 (간접 표준화)
+- mix_share.csv: 2~3월 -> 9~10월 하락 중 경과 구성만으로 기대되는 하락의 몫, 두 판
 
-출시 초기 달에는 90일 넘은 기기가 없어 직접 표준화나 Kitagawa 분해는 구간이 안 겹침. 간접 표준화만 씀
+출시 초기 달에는 90일 넘은 기기가 없어 직접 표준화나 Kitagawa 분해는 구간이 안 겹침.
+구성 효과도 간접 표준화의 기대 사고율로 잼
 """
 
 import numpy as np
@@ -69,6 +71,23 @@ def sir(me, nm):
     return nm.sum(axis=1) / expected.replace(0, np.nan)
 
 
+def mix_share(panel, me, nm, w0, w1):
+    """기대 사고율 하락 / 실제 하락. 기대는 전 기간 경과별 사고율 x 그 창의 경과 구성"""
+    age_rate = (nm.sum() / me.sum().replace(0, np.nan)).fillna(0.0)
+    obs = [float(nm.loc[w].sum().sum() / me.loc[w].sum().sum() * 1000) for w in (w0, w1)]
+    exp = [float((me.loc[w] * age_rate).sum().sum() / me.loc[w].sum().sum() * 1000) for w in (w0, w1)]
+    return {
+        "panel": panel,
+        "from": f"{w0[0]:%Y-%m}~{w0[-1]:%m}",
+        "to": f"{w1[0]:%Y-%m}~{w1[-1]:%m}",
+        "rate_from": round(obs[0], 3),
+        "rate_to": round(obs[1], 3),
+        "expected_from": round(exp[0], 3),
+        "expected_to": round(exp[1], 3),
+        "mix_share": round((exp[0] - exp[1]) / (obs[0] - obs[1]), 3),
+    }
+
+
 def main():
     dev = pd.read_csv(DATA / "devices.csv", parse_dates=["install_date"])
     w = obs_window(dev)
@@ -105,6 +124,13 @@ def main():
     s["partial"] = mon["partial"]
     s.to_csv(RES / "sir.csv", index_label="month")
 
+    full = mon.index[~mon["partial"]]
+    w0, w1 = full[:2], full[-2:]  # 한 달씩이면 월 100건 수준 잡음에 흔들려 양 끝 두 달씩
+    ms = pd.DataFrame(
+        [mix_share("basic", me, nm, w0, w1), mix_share("lift_included", me, age_month_count(lift, me), w0, w1)]
+    )
+    ms.to_csv(RES / "mix_share.csv", index=False)
+
     # 설치 월 코호트 x 경과 30일 구간. 코드 분리 전 코호트끼리 첫 30일을 비교하는 근거
     edges = np.arange(0, 301, 30)
     w2 = w.copy()
@@ -132,6 +158,7 @@ def main():
     print(mon[["accidents", "rate", "rate_lift"]].to_string())
     print(ten.to_string())
     print(s.to_string())
+    print(ms.to_string(index=False))
 
 
 if __name__ == "__main__":

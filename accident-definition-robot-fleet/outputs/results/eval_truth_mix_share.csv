@@ -1,0 +1,2 @@
+panel,from,to,rate_from,rate_to,expected_from,expected_to,mix_share
+truth,2025-02~03,2025-09~10,6.032,3.343,5.932,3.38,0.949
