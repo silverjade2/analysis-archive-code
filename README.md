@@ -2,23 +2,34 @@
 
 [analysis-archive](https://analysis-archive.vercel.app) 에 직접 쓴 아티클의 재현 코드. 아티클 하나 = 폴더 하나
 
-폴더마다 과거에 했던 프로젝트 하나를 같은 schema의 가상 데이터로 다시 만들고, 
+폴더마다 과거에 했던 프로젝트 하나를 같은 schema의 가상 데이터로 다시 만들고,
 
-분석 과정에서 어려웠던 점들도 함께 담아 그대로 돌려 그 ground truth와 대조함.
+분석 과정에서 어려웠던 점들도 데이터에 함께 담아 원래 절차를 그대로 돌린 뒤 ground truth와 대조함.
 
-실제 데이터는 없고 배경과 해석은 글에, 여기엔 숫자를 다시 내는 데 필요한 것만 기록함
+실제 데이터는 없고 배경과 해석은 아티클에, 여기엔 숫자를 다시 내는 데 필요한 것만 기록함
 
-| 폴더 | 글 | 소요 |
-| --- | --- | --- |
-| [`precursor-prediction-imbalanced/`](./precursor-prediction-imbalanced) | [이상 이벤트 예측: 불균형 데이터에서 전조 신호 모델링](https://analysis-archive.vercel.app/analyses/precursor-prediction-imbalanced) | 35초 |
-| [`usage-pattern-clustering/`](./usage-pattern-clustering) | [사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering) | 12초 |
-| [`loyal-user-prediction-jobplatform/`](./loyal-user-prediction-jobplatform) | [핵심 유저 전환 예측: 저니맵이 가리킨 병목을 모델로 검증하기](https://analysis-archive.vercel.app/analyses/loyal-user-prediction-jobplatform) | 5분 |
-| [`depression-screening-multimodal-mentalhealth/`](./depression-screening-multimodal-mentalhealth) | [직장인 번아웃 조기 탐지: 발화로 우울을 분류하는 모델이 실제로 배운 것](https://analysis-archive.vercel.app/analyses/depression-screening-multimodal-mentalhealth) | 35분 |
-| [`churn-prediction-b2b-ats/`](./churn-prediction-b2b-ats) | [B2B 고객사 이탈 분류: 타깃을 정의한 열이 feature로 남았을 때](https://analysis-archive.vercel.app/analyses/churn-prediction-b2b-ats) | 3분 |
-| [`wellness-score-sigmoid-design/`](./wellness-score-sigmoid-design) | [지금 바이탈 어때요? rPPG Vital sign Data로 만드는 Wellness score: 의료 데이터를 이해할 수 있는 웰니스 언어로](https://analysis-archive.vercel.app/analyses/wellness-score-sigmoid-design) | 10초 |
-| [`ota-reboot-spike-iot/`](./ota-reboot-spike-iot) | [사용량이 튀는 날은 정말 많이 쓴 날인가: IoT 가전 fleet의 OTA 재부팅 스파이크](https://analysis-archive.vercel.app/analyses/ota-reboot-spike-iot) | 10초 |
-| [`voice-llm-freshness/`](./voice-llm-freshness) | ["다시 말씀해 주시겠어요", 그리고 아무도 다시 말하지 않았다](https://analysis-archive.vercel.app/analyses/voice-llm-freshness) | 10초 |
-| [`accident-definition-robot-fleet/`](./accident-definition-robot-fleet) | [무엇을 사고로 셀 것인가: 자율주행 로봇 fleet의 에러 로그와 타깃 정의](https://analysis-archive.vercel.app/analyses/accident-definition-robot-fleet) | 1분 |
+`truth_*` 열이 그 ground truth. 생성할 때 정해 둔 정답이라 평가에만 쓰고 모델 입력에는 넣지 않음
+
+### 예측 모델링
+
+- [`precursor-prediction-imbalanced/`](./precursor-prediction-imbalanced): [이상 이벤트 예측: 불균형 데이터에서 전조 신호 모델링](https://analysis-archive.vercel.app/analyses/precursor-prediction-imbalanced)
+- [`loyal-user-prediction-jobplatform/`](./loyal-user-prediction-jobplatform): [핵심 유저 전환 예측: 저니맵이 가리킨 병목을 모델로 검증하기](https://analysis-archive.vercel.app/analyses/loyal-user-prediction-jobplatform)
+- [`depression-screening-multimodal-mentalhealth/`](./depression-screening-multimodal-mentalhealth): [직장인 번아웃 조기 탐지: 발화로 우울을 분류하는 모델이 실제로 배운 것](https://analysis-archive.vercel.app/analyses/depression-screening-multimodal-mentalhealth)
+- [`churn-prediction-b2b-ats/`](./churn-prediction-b2b-ats): [B2B 고객사 이탈 분류: 타깃을 정의한 열이 feature로 남았을 때](https://analysis-archive.vercel.app/analyses/churn-prediction-b2b-ats)
+
+### 세그멘테이션
+
+- [`usage-pattern-clustering/`](./usage-pattern-clustering): [사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering)
+
+### 지표, 타깃 정의
+
+- [`wellness-score-sigmoid-design/`](./wellness-score-sigmoid-design): [지금 바이탈 어때요? rPPG Vital sign Data로 만드는 Wellness score: 의료 데이터를 이해할 수 있는 웰니스 언어로](https://analysis-archive.vercel.app/analyses/wellness-score-sigmoid-design)
+- [`accident-definition-robot-fleet/`](./accident-definition-robot-fleet): [무엇을 사고로 셀 것인가: 자율주행 로봇 fleet의 에러 로그와 타깃 정의](https://analysis-archive.vercel.app/analyses/accident-definition-robot-fleet) (기기 사고 사전 탐지 1편)
+
+### 로그 진단
+
+- [`ota-reboot-spike-iot/`](./ota-reboot-spike-iot): [사용량이 튀는 날은 정말 많이 쓴 날인가: IoT 가전 fleet의 OTA 재부팅 스파이크](https://analysis-archive.vercel.app/analyses/ota-reboot-spike-iot)
+- [`voice-llm-freshness/`](./voice-llm-freshness): ["다시 말씀해 주시겠어요", 그리고 아무도 다시 말하지 않았다](https://analysis-archive.vercel.app/analyses/voice-llm-freshness)
 
 ## 실행
 
@@ -28,7 +39,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
-Python 3.12 이상. LightGBM이나 XGBoost 쓰는 폴더는 macOS에서 `brew install libomp` 먼저. 경로는 폴더마다 `common.py`가 파일 위치 기준으로 잡아서 어디서 실행해도 된다. `depression-screening-multimodal-mentalhealth/`만 `scripts/` 대신 `pipeline/`과 `src/`로 나뉘어 있고 `pipeline/` 안에서 실행. `requirements.txt`는 하한만 적었고 재현에 쓴 버전은 폴더 README에 있다. 그 버전 조합에서는 `data/`를 지우고 다시 돌려도 결과 CSV가 같고, 다른 버전에서 어디가 흔들리는지도 폴더 README에. 공통 사항은 여기까지, 폴더 README에는 그 폴더에서 다른 것만 적는다.
+Python 3.12 이상. 대부분 1분 안쪽이고 오래 걸리는 건 depression 35분, loyal 5분, churn 3분. LightGBM이나 XGBoost 쓰는 폴더는 macOS에서 `brew install libomp` 먼저. 경로는 폴더마다 `common.py`가 파일 위치 기준으로 잡아서 어디서 실행해도 된다. `depression-screening-multimodal-mentalhealth/`만 `scripts/` 대신 `pipeline/`과 `src/`로 나뉘어 있고 `pipeline/` 안에서 실행. `requirements.txt`는 하한만 적었고 재현에 쓴 버전은 폴더 README에 있다. 그 버전 조합에서는 `data/`를 지우고 다시 돌려도 결과 CSV가 같고, 다른 버전에서 어디가 흔들리는지도 폴더 README에. 공통 사항은 여기까지, 폴더 README에는 그 폴더에서 다른 것만 적는다.
 
 ## 폴더 구조
 
@@ -36,13 +47,13 @@ Python 3.12 이상. LightGBM이나 XGBoost 쓰는 폴더는 macOS에서 `brew in
 <slug>/
   scripts/               NN_역할.py, 번호 순서. 어디서 실행해도 됨
   data/                  생성 데이터
-  outputs/results/       결과 CSV, JSON. 글의 숫자는 전부 여기서
+  outputs/results/       결과 CSV, JSON. 아티클의 숫자는 전부 여기서
   outputs/figures/       그림 (site/는 사이트용 webp, 일부 폴더)
   README.md              실행, 스크립트 표, 확인할 숫자, 알려진 문제
 ```
 
-draft 글의 코드는 발행 전까지 별도 private 저장소에 있음.
+draft 아티클의 코드는 발행 전까지 별도 private 저장소에 있음.
 
 ## 라이선스
 
-코드는 MIT ([LICENSE](./LICENSE)). 글과 그림은 사이트를 따름.
+코드는 MIT ([LICENSE](./LICENSE)). 아티클과 그림은 사이트를 따름.
