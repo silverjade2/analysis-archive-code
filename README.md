@@ -1,8 +1,10 @@
 # analysis-archive-code
 
-[analysis-archive](https://analysis-archive.vercel.app) 에 쓴 아티클의 재현 코드. 아티클 하나 = 폴더 하나
+[analysis-archive](https://analysis-archive.vercel.app) 에 직접 쓴 아티클의 재현 코드. 아티클 하나 = 폴더 하나
 
-폴더마다 옛 프로젝트 하나를 같은 schema의 가상 데이터로 다시 만들고, 원래 분석이 걸려 넘어진 구조를 넣어 둔 뒤 원본 절차를 그대로 돌려 그 ground truth와 대조한다. 실제 데이터는 없음. 배경과 해석은 글에 있고 여기엔 숫자를 다시 내는 데 필요한 것만.
+폴더마다 과거에 했던 프로젝트 하나를 같은 schema의 가상 데이터로 다시 만들고, 
+분석 과정에서 어려웠던 점들도 함께 담아 그대로 돌려 그 ground truth와 대조함.
+실제 데이터는 없고 배경과 해석은 글에, 여기엔 숫자를 다시 내는 데 필요한 것만 기록함
 
 | 폴더 | 글 | 소요 |
 | --- | --- | --- |
@@ -36,8 +38,6 @@ Python 3.12 이상. LightGBM이나 XGBoost 쓰는 폴더는 macOS에서 `brew in
   outputs/figures/       그림 (site/는 사이트용 webp, 일부 폴더)
   README.md              실행, 스크립트 표, 확인할 숫자, 알려진 문제
 ```
-
-`truth_*` 열은 생성기의 잠재 변수라 평가에만 쓰고 feature에는 안 넣는다. oracle은 그 변수를 아는 판정자의 점수. 모델이 oracle을 넘으면 답을 본 것.
 
 draft 글의 코드는 발행 전까지 별도 private 저장소에 있음.
 
