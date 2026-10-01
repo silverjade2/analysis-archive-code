@@ -1,0 +1,7 @@
+half,age_days,true_accidents,device_days,rate
+first_half,0~30,274,27470,9.975
+first_half,30~90,148,47986,3.084
+first_half,90+,82,27361,2.997
+second_half,0~30,66,7423,8.891
+second_half,30~90,68,19955,3.408
+second_half,90+,436,135234,3.224

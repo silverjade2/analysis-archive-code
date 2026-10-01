@@ -1,0 +1,5 @@
+period,post_install,accident_drop,accident_tip,lift,qa,rows,accident_tip_share,accident_drop_share,lift_share,qa_share
+after_split,False,0,0,0,31,31,0.0,0.0,0.0,1.0
+after_split,True,0,677,0,0,677,1.0,0.0,0.0,0.0
+before_split,False,0,0,0,156,156,0.0,0.0,0.0,1.0
+before_split,True,139,902,307,0,1348,0.669,0.103,0.228,0.0
