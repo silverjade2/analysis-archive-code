@@ -1,6 +1,6 @@
 # analysis-archive-code
 
-[analysis-archive](https://analysis-archive.vercel.app) 글의 재현 코드. 글 하나 = 폴더 하나, 폴더명 = 글 slug.
+[analysis-archive](https://analysis-archive.vercel.app) 에 쓴 아티클의 재현 코드. 아티클 하나 = 폴더 하나
 
 폴더마다 옛 프로젝트 하나를 같은 schema의 가상 데이터로 다시 만들고, 원래 분석이 걸려 넘어진 구조를 넣어 둔 뒤 원본 절차를 그대로 돌려 그 ground truth와 대조한다. 실제 데이터는 없음. 배경과 해석은 글에 있고 여기엔 숫자를 다시 내는 데 필요한 것만.
 
