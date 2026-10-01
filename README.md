@@ -14,6 +14,7 @@
 | [`wellness-score-sigmoid-design/`](./wellness-score-sigmoid-design) | [지금 바이탈 어때요? rPPG Vital sign Data로 만드는 Wellness score: 의료 데이터를 이해할 수 있는 웰니스 언어로](https://analysis-archive.vercel.app/analyses/wellness-score-sigmoid-design) | 10초 |
 | [`ota-reboot-spike-iot/`](./ota-reboot-spike-iot) | [사용량이 튀는 날은 정말 많이 쓴 날인가: IoT 가전 fleet의 OTA 재부팅 스파이크](https://analysis-archive.vercel.app/analyses/ota-reboot-spike-iot) | 10초 |
 | [`voice-llm-freshness/`](./voice-llm-freshness) | ["다시 말씀해 주시겠어요", 그리고 아무도 다시 말하지 않았다](https://analysis-archive.vercel.app/analyses/voice-llm-freshness) | 10초 |
+| [`accident-definition-robot-fleet/`](./accident-definition-robot-fleet) | [무엇을 사고로 셀 것인가: 자율주행 로봇 fleet의 에러 로그와 타깃 정의](https://analysis-archive.vercel.app/analyses/accident-definition-robot-fleet) | 1분 |
 
 ## 실행
 
