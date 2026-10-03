@@ -1,0 +1,5 @@
+method,ari,recovered,missed_total,clusters
+기준선 K-means (로그+표준화),0.928,0,28,5
+GMM k=5 (같은 feature),0.925,3,28,5
+"DBSCAN eps=10 (같은 feature, ARI 최선)",0.92,0,28,5
+K-means k=5 (버스트성 feature 7개),0.907,0,28,5

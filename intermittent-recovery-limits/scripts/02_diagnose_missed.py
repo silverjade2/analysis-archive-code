@@ -1,0 +1,196 @@
+# 미회수 28대 해부: blur 복원, 피크 시각, 모양 지표, GMM 사후확률, 강화 feature 재클러스터링
+# 00을 import하면 생성이 처음부터 다시 돎 (seed 고정이라 같은 데이터)
+# 출력: fig3_missed_anatomy.png, outputs/results/missed_anatomy.csv
+
+import importlib.util
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from common import setup_font
+from sklearn.cluster import KMeans
+from sklearn.metrics import adjusted_rand_score
+from sklearn.mixture import GaussianMixture
+from sklearn.preprocessing import StandardScaler
+
+setup_font()
+
+SEED = 42
+base = Path(__file__).resolve().parents[1]
+fig_dir = base / "outputs" / "figures"
+fig_dir.mkdir(parents=True, exist_ok=True)
+
+# 기준선과 미회수 28대 (01과 같음)
+df = pd.read_csv(base / "data" / "usage_profiles.csv")
+hour_cols = [c for c in df.columns if c.startswith("u_")]
+true = df["true_cluster"]
+cube = df[hour_cols].to_numpy().reshape(len(df), 7, 24)
+hm = cube.mean(axis=1)
+
+X_log = StandardScaler().fit_transform(np.log1p(df[hour_cols + ["total_usage"]].to_numpy()))
+km = KMeans(n_clusters=5, random_state=SEED, n_init=10).fit_predict(X_log)
+maj = {c: true[km == c].value_counts().index[0] for c in range(5)}
+missed = np.flatnonzero((true == "intermittent") & (pd.Series(km).map(maj) != "intermittent"))
+print(f"미회수 intermittent: {len(missed)}대")
+
+# blur 플래그 복원. 같은 seed로 생성기의 난수를 다시 밟음
+spec = importlib.util.spec_from_file_location("gen08", Path(__file__).with_name("00_generate_usage_profiles.py"))
+gen = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(gen)
+
+rng = np.random.default_rng(gen.SEED)
+labels = np.repeat(list(gen.CLUSTER_SIZES), list(gen.CLUSTER_SIZES.values()))
+labels = labels[rng.permutation(gen.N_DEVICES)]
+blurred = []
+for label in labels:
+    gen.PROFILE_FN[label](rng)  # 난수 소비 순서를 00과 동일하게 유지
+    is_blur = False
+    if label in ("night", "intermittent") and rng.random() < gen.BLUR_FRAC:
+        other = "intermittent" if label == "night" else "night"
+        rng.uniform(*gen.BLUR_ALPHA)
+        gen.PROFILE_FN[other](rng)
+        is_blur = True
+    rng.lognormal(0, gen.AMP_SIGMA)
+    rng.normal(0, gen.CELL_NOISE_SD, size=(7, 24))
+    blurred.append(is_blur)
+blur = np.array(blurred)
+assert (true.to_numpy() == labels).all(), "라벨 시퀀스 불일치, seed 재현 실패"
+
+n_blur_missed = blur[missed].sum()
+int_mask = (true == "intermittent").to_numpy()
+print(f"혼합(blur) 기기: 전체 {blur.sum()}대 (intermittent {blur[int_mask].sum()}대)")
+print(f"미회수 28대 중 혼합: {n_blur_missed}대 / 순수인데 미회수: {len(missed) - n_blur_missed}대")
+print(f"혼합인데 회수됨: {blur[int_mask].sum() - n_blur_missed}대")
+
+# 미회수 28대의 피크 시각
+peak_missed = hm[missed].argmax(axis=1)
+night_window = {21, 22, 23, 0, 1, 2}
+in_night = sum(1 for h in peak_missed if h in night_window)
+print(f"\n미회수 28대의 피크 시각: {np.sort(peak_missed).tolist()}")
+print(f"야간 창(21~02시)에 피크: {in_night}/{len(missed)}대")
+
+
+# 모양 지표
+def roughness(h: np.ndarray) -> np.ndarray:
+    """인접 시각 차이 합 / 총량: 매끈한 범프(night)면 작고 스파이크(간헐)면 크다."""
+    return np.abs(np.diff(h, axis=1)).sum(axis=1) / np.maximum(h.sum(axis=1), 1e-9)
+
+
+def dow_burst_cv(c: np.ndarray) -> np.ndarray:
+    """피크 시각 강도의 요일 간 변동계수: 간헐은 요일별 가동률이 들쭉날쭉."""
+    top_hour = c.mean(axis=1).argmax(axis=1)
+    vals = np.take_along_axis(c, top_hour[:, None, None], axis=2).squeeze(-1)
+    return vals.std(axis=1) / np.maximum(vals.mean(axis=1), 1e-9)
+
+
+r = roughness(hm)
+dcv = dow_burst_cv(cube)
+night_mask = (true == "night").to_numpy()
+print("\n모양 지표 (평균): night / 미회수 28대 / intermittent 전체")
+print(f"  roughness:    {r[night_mask].mean():.3f} / {r[missed].mean():.3f} / {r[int_mask].mean():.3f}")
+print(f"  dow_burst_cv: {dcv[night_mask].mean():.3f} / {dcv[missed].mean():.3f} / {dcv[int_mask].mean():.3f}")
+print("28대는 두 지표 모두 night 쪽 중간")
+
+# GMM 사후확률
+gmm = GaussianMixture(n_components=5, covariance_type="diag", random_state=SEED, n_init=3).fit(X_log)
+post = gmm.predict_proba(X_log)
+gmm_maj = {c: true[post.argmax(axis=1) == c].value_counts().index[0] for c in range(5)}
+int_comp = next(c for c, m in gmm_maj.items() if m == "intermittent")
+print(
+    f"\nGMM, 미회수 28대의 간헐 성분 사후확률: 평균 {post[missed, int_comp].mean():.2f}, "
+    f"중앙값 {np.median(post[missed, int_comp]):.2f}"
+)
+print(f"      최대 성분 사후확률 평균: {post[missed].max(axis=1).mean():.2f} (night 쪽으로 확신)")
+
+# 강화 feature(roughness, dow_burst_cv 추가) 재클러스터링
+daily_sum = cube.sum(axis=2)
+burst_plus = np.column_stack(
+    [
+        (cube < 0.5).mean(axis=(1, 2)),
+        np.sort(cube.reshape(len(df), -1), axis=1)[:, -8:].mean(axis=1),
+        np.sort(hm, axis=1)[:, -3:].sum(axis=1) / np.maximum(hm.sum(axis=1), 1e-9),
+        daily_sum.std(axis=1) / np.maximum(daily_sum.mean(axis=1), 1e-9),
+        hm[:, [21, 22, 23, 0, 1, 2]].sum(axis=1) / np.maximum(hm.sum(axis=1), 1e-9),
+        hm[:, 6:11].sum(axis=1) / np.maximum(hm.sum(axis=1), 1e-9),
+        np.log1p(df["total_usage"]),
+        r,
+        dcv,
+    ]
+)
+bp = KMeans(n_clusters=5, random_state=SEED, n_init=10).fit_predict(StandardScaler().fit_transform(burst_plus))
+bmaj = {c: true[bp == c].value_counts().index[0] for c in set(bp)}
+rec = sum(1 for i in missed if bmaj[bp[i]] == "intermittent")
+print(f"\n강화 feature(9개) 재클러스터링: ARI {adjusted_rand_score(true, bp):.3f}, 미회수 28대 회수 {rec}/28")
+
+pd.DataFrame(
+    [
+        ("missed", len(missed)),
+        ("blur_total", int(blur.sum())),
+        ("blur_intermittent", int(blur[int_mask].sum())),
+        ("missed_blur", int(n_blur_missed)),
+        ("missed_pure", int(len(missed) - n_blur_missed)),
+        ("blur_recovered", int(blur[int_mask].sum() - n_blur_missed)),
+        ("missed_peak_in_night", int(in_night)),
+        ("roughness_night", round(r[night_mask].mean(), 3)),
+        ("roughness_missed", round(r[missed].mean(), 3)),
+        ("roughness_intermittent", round(r[int_mask].mean(), 3)),
+        ("dow_burst_cv_night", round(dcv[night_mask].mean(), 3)),
+        ("dow_burst_cv_missed", round(dcv[missed].mean(), 3)),
+        ("dow_burst_cv_intermittent", round(dcv[int_mask].mean(), 3)),
+        ("gmm_int_post_missed_mean", round(post[missed, int_comp].mean(), 2)),
+        ("gmm_max_post_missed_mean", round(post[missed].max(axis=1).mean(), 2)),
+        ("burst_plus_ari", round(adjusted_rand_score(true, bp), 3)),
+        ("burst_plus_recovered", rec),
+    ],
+    columns=["metric", "value"],
+    dtype=object,
+).to_csv(base / "outputs" / "results" / "missed_anatomy.csv", index=False)
+
+# 플롯: 해부 3면
+fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.2))
+
+# (a) 피크 시각 분포
+ax = axes[0]
+bins = np.arange(25)
+ax.hist(hm[night_mask].argmax(axis=1), bins=bins, alpha=0.5, color="tab:purple", label="night", density=True)
+ax.hist(peak_missed, bins=bins, alpha=0.6, color="black", label="미회수 28대", density=True, histtype="step", lw=2)
+ax.set_xlabel("피크 시각")
+ax.set_ylabel("밀도")
+ax.set_title(f"(a) 피크 시각 ({in_night}/28대 야간 창)")
+ax.legend(fontsize=8)
+ax.grid(alpha=0.3)
+
+# (b) 모양 지표 산점도
+ax = axes[1]
+for label, color in [("night", "tab:purple"), ("intermittent", "tab:orange")]:
+    m = (true == label).to_numpy()
+    ax.scatter(r[m], dcv[m], s=10, alpha=0.4, color=color, label=label)
+ax.scatter(r[missed], dcv[missed], s=42, facecolors="none", edgecolors="black", lw=1.2, label="미회수 28대")
+ax.set_xlabel("roughness (프로파일 요철)")
+ax.set_ylabel("dow_burst_cv (요일 간 변동)")
+ax.set_title("(b) 모양 지표")
+ax.legend(fontsize=8)
+ax.grid(alpha=0.3)
+
+# (c) GMM 간헐 성분 사후확률: 0/1에 몰려 있어 밀도 대신 비율 막대
+ax = axes[2]
+pure_int_idx = np.flatnonzero(int_mask & ~np.isin(np.arange(len(df)), missed))
+bins_p = np.linspace(0, 1, 11)
+for idx, color, label, shift in [
+    (pure_int_idx, "tab:orange", "회수된 intermittent", -0.012),
+    (missed, "black", "미회수 28대", 0.012),
+]:
+    counts, _ = np.histogram(post[idx, int_comp], bins=bins_p)
+    frac = counts / counts.sum()
+    ax.bar(bins_p[:-1] + 0.05 + shift, frac, width=0.024, color=color, alpha=0.75, label=label)
+ax.set_xlabel("GMM 간헐 성분 사후확률")
+ax.set_ylabel("기기 비율")
+ax.set_title("(c) GMM 간헐 성분 사후확률")
+ax.legend(fontsize=8)
+ax.grid(alpha=0.3, axis="y")
+
+fig.suptitle("미회수 28대 해부")
+fig.tight_layout()
+fig.savefig(fig_dir / "fig3_missed_anatomy.png", dpi=150)
+print(f"\n플롯 저장: {fig_dir / 'fig3_missed_anatomy.png'}")
