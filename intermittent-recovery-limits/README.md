@@ -1,8 +1,8 @@
 # intermittent-recovery-limits
 
-[feature 표현의 한계](https://analysis-archive.vercel.app/analyses/intermittent-recovery-limits) 재현 코드.
+[취업했는지 떠났는지 모르는 고객](https://analysis-archive.vercel.app/analyses/intermittent-recovery-limits) 재현 코드.
 
-[usage-pattern-clustering](../usage-pattern-clustering)의 K-means(k=5)가 어떤 k로도 회수하지 못한 intermittent 28대를 두 가설(알고리즘 교체, feature 재설계)로 추적하고, 둘 다 실패한 원인을 해부함. 03~05는 같은 질문을 가상 구직자 데이터에 대본 것. 실제 구직 플랫폼 데이터는 없고, 비활성 고객(취업 완료/이탈)과 입력 빈약 고객이라는 구조만 옮김.
+구직자 군집화에서 해석이 안 된 두 고객군(취업 완료/이탈이 안 갈리는 비활성, 입력 빈약)을 가상 구직자 6,000명으로 재현함(03~05). 실제 구직 플랫폼 데이터는 없고 구조만 옮김. 00~02는 같은 질문을 정답 구조를 아는 기기 데이터에 대본 통제 실험: [usage-pattern-clustering](../usage-pattern-clustering)의 K-means(k=5)가 어떤 k로도 회수하지 못한 intermittent 28대 추적.
 
 ## 실행
 
@@ -23,6 +23,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 03 | 가상 구직자 6,000명. 잠재 유형 4개, 비활성 30%(취업 완료/이탈), 입력 빈약 25% | `data/jobseekers.csv` |
 | 04 | k sweep, k=5 구성, 비활성 군집 재분할, 채용 진행 상태로 확인되는 범위, 최근 경력 신입 규칙 | `js_*.csv` |
 | 05 | 구직자 그림 | fig4 |
+| 06 | 사이트용 그림 5장, CSV에서 읽기만 함 | `outputs/figures/site/` |
 
 02는 00을 모듈로 불러 같은 seed로 난수를 다시 밟고, 생성 때만 있던 혼합(blur) 플래그를 복원함. 그래서 00의 생성 순서를 바꾸면 02도 깨짐. `truth_*` 열은 04의 평가에만 씀.
 
@@ -36,4 +37,3 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ## 알려진 문제
 
 - 채용 진행 상태가 취업 완료자의 35%에만 남는다는 건 생성기 가정. 실제 비율은 모름
-- 그림은 `outputs/figures/`에 png로만 있음. 사이트용 webp는 사이트 저장소에서 변환
