@@ -20,6 +20,7 @@
 ### 세그멘테이션
 
 - [`usage-pattern-clustering/`](./usage-pattern-clustering): [사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering)
+- [`intermittent-recovery-limits/`](./intermittent-recovery-limits): [feature 표현의 한계: 클러스터링이 못 찾은 28대의 행방](https://analysis-archive.vercel.app/analyses/intermittent-recovery-limits) (세그멘테이션 2편, 구직자 군집 재현 포함)
 
 ### 지표, 타깃 정의
 
