@@ -1,14 +1,13 @@
 # 구직자 군집 그림. 값은 outputs/results/js_*.csv 에서 읽기만 함
-# 출력: outputs/figures/fig4_jobseeker_clusters.png
+# 출력: outputs/figures/fig1_jobseeker_clusters.png
 
 from pathlib import Path
 
-import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
+from common import setup_font
 
-matplotlib.rcParams["font.family"] = "AppleGothic"
-matplotlib.rcParams["axes.unicode_minus"] = False
+setup_font()
 
 base = Path(__file__).resolve().parents[1]
 res = base / "outputs" / "results"
@@ -57,4 +56,4 @@ ax.legend(fontsize=8, frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0
 for a in axes:
     a.spines[["top", "right"]].set_visible(False)
 fig.tight_layout()
-fig.savefig(fig_dir / "fig4_jobseeker_clusters.png", dpi=150, bbox_inches="tight")
+fig.savefig(fig_dir / "fig1_jobseeker_clusters.png", dpi=150, bbox_inches="tight")

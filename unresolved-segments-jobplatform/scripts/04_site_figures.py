@@ -1,4 +1,4 @@
-"""사이트용 그림 5장. 값은 outputs/results 의 CSV에서 읽기만 함"""
+"""사이트용 그림 4장. 값은 outputs/results 의 CSV에서 읽기만 함"""
 
 from pathlib import Path
 
@@ -132,25 +132,7 @@ def fig4():
     ss.save(fig, "fig4_target_rule")
 
 
-def fig5():
-    rc = pd.read_csv(RES / "recovery_comparison.csv")
-    names = ["기준선 K-means", "GMM", "DBSCAN (eps=10)", "버스트 feature 7개"]
-    fig, ax = plt.subplots(figsize=(8, 3.2))
-    y = np.arange(len(rc))
-    ax.barh(y, rc["missed_total"], color=ss.LIGHT, height=0.55)
-    ax.barh(y, rc["recovered"], color=ss.ORANGE, height=0.55)
-    for yi, r in zip(y, rc.itertuples(index=False)):
-        ax.text(r.missed_total + 0.4, yi, f"{r.recovered}/{r.missed_total}  (ARI {r.ari:.3f})", va="center", fontsize=9)
-    ax.set_yticks(y)
-    ax.set_yticklabels(names)
-    ax.invert_yaxis()
-    ax.set_xlim(0, 40)
-    ax.set_xlabel("미회수 28대 중 되찾은 기기 수")
-    ax.set_title("기기 데이터: 방법별 미회수 28대 회수")
-    ss.save(fig, "fig5_device_recovery")
-
-
 if __name__ == "__main__":
     ss.setup()
-    for f in (fig1, fig2, fig3, fig4, fig5):
+    for f in (fig1, fig2, fig3, fig4):
         f()
