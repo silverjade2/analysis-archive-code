@@ -1,9 +1,9 @@
-"""그림 4장. 1~3은 운영 로그 분석 기록(data/record_rates.csv), 4는 가상 로그 결과. 다시 계산하지 않는다."""
+"""그림 4장. 1~2는 04, 3은 05, 4는 06의 결과 CSV를 그린다. 다시 계산하지 않는다."""
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from common import DATA, RES, UNMATCHED
+from common import RES, UNMATCHED
 from sitestyle import BLUE, GRAY, LIGHT, MUTED, ORANGE, save, setup
 
 setup()
@@ -11,9 +11,21 @@ setup()
 STATE_KO = {"normal": "정상", "fallback": "fallback", "none": "무응답"}
 STATE_COLOR = {"normal": GRAY, "fallback": ORANGE, "none": LIGHT}
 
-rec = pd.read_csv(DATA / "record_rates.csv")
-
-f1 = rec[rec["figure"] == "fig1"]
+phr = pd.read_csv(RES / "fallback_phrases.csv")
+top15 = phr[phr["rank"] <= 15]
+info_pct = top15.loc[top15["category"] == "정보 부재", "share"].sum() * 100
+f1 = pd.DataFrame(
+    {
+        "item": ["1위 문구", "2위 문구", "3~15위 인식 실패 문구", "상위 15개 밖", "정보 부재 문구"],
+        "value_pct": [
+            phr.loc[phr["rank"] == 1, "share"].iloc[0] * 100,
+            phr.loc[phr["rank"] == 2, "share"].iloc[0] * 100,
+            top15.loc[(top15["rank"] > 2) & (top15["category"] != "정보 부재"), "share"].sum() * 100,
+            100 - top15["share"].sum() * 100,
+            info_pct,
+        ],
+    }
+).round(1)
 fig, ax = plt.subplots(figsize=(7.2, 2.4))
 left = 0.0
 seg_color = {"1위 문구": GRAY, "2위 문구": "#8A8F98", "3~15위 인식 실패 문구": LIGHT, "상위 15개 밖": "#f4f4f5"}
@@ -49,7 +61,8 @@ ax.set_xlabel("fallback 중 비중 (%)")
 ax.set_title("fallback 문구 구성")
 save(fig, "fig1_fallback_phrases")
 
-f2 = rec[rec["figure"] == "fig2"].pivot(index="group", columns="item", values="value_pct")
+f2 = pd.read_csv(RES / "state_by_fresh.csv").set_index("fresh")[["normal", "fallback", "none"]] * 100
+f2.index = f2.index.map({True: "최신성 요구 있음", False: "최신성 요구 없음"})
 f2 = f2.loc[["최신성 요구 있음", "최신성 요구 없음"]]
 fig, ax = plt.subplots(figsize=(7.2, 2.6))
 left = np.zeros(len(f2))
@@ -64,9 +77,9 @@ ax.set_title("최신성 요구 여부별 응답 상태")
 ax.legend(ncol=3, loc="upper center", bbox_to_anchor=(0.5, -0.35))
 save(fig, "fig2_state_by_fresh")
 
-f3 = rec[rec["figure"] == "fig3"].set_index("item").loc[["fallback", "normal", "none"]]
+f3 = pd.read_csv(RES / "retry_by_prev_state.csv").set_index("prev_state").loc[["fallback", "normal", "none"]]
 fig, ax = plt.subplots(figsize=(5.6, 3.4))
-ax.bar([STATE_KO[s] + " 직후" for s in f3.index], f3["value_pct"], color=[ORANGE, GRAY, GRAY], width=0.6)
+ax.bar([STATE_KO[s] + " 직후" for s in f3.index], f3["retry_rate"] * 100, color=[ORANGE, GRAY, GRAY], width=0.6)
 ax.set_ylabel("재시도율 (%)")
 ax.set_title("직전 응답 상태별 재시도율")
 ax.grid(axis="y")
