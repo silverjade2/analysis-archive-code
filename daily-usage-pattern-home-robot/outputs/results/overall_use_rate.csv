@@ -1,0 +1,10 @@
+feature,use_rate
+fixed,0.793
+patrol,0.365
+schedule,0.361
+autocall,0.242
+camera,0.041
+follow,0.003
+voice,0.51
+vital,0.001
+spacescan,0.057
