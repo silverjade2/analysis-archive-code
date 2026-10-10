@@ -1,0 +1,4 @@
+pattern,device_days,day_share,devices,device_share,consistency,days_per_device
+1,7575,0.42,449,0.304,0.889,16.9
+2,6183,0.343,373,0.252,0.895,16.6
+3,4278,0.237,657,0.444,0.847,6.5
