@@ -1,0 +1,5 @@
+feature,name,devices,within_sd_h,between_sd_h,median_p10_h,median_p90_h
+fixed,제자리 모드,748,3.14,2.3,8.3,9.9
+patrol,이동 모드,528,3.23,1.8,11.6,16.2
+voice,음성 대화,862,0.43,4.64,5.4,17.6
+autocall,센서 호출 모드,307,3.28,1.87,9.2,13.8

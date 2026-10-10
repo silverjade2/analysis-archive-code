@@ -1,0 +1,4 @@
+pattern,devices,within_device,between_device,same_full_seq_share
+1,388,0.293,0.189,0.105
+2,371,0.416,0.369,0.231
+3,475,0.5,0.462,0.22
