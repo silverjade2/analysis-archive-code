@@ -1,0 +1,4 @@
+device_type,use_fixed,use_patrol,use_schedule,use_autocall,use_camera,use_follow,use_voice,use_vital,use_spacescan,active_days,fixed_hours,fixed_evening,voice_per_day
+1,-0.962,-0.793,-0.6,-0.313,-0.121,-0.148,0.063,-0.052,-0.206,-0.892,-0.899,-0.237,0.251
+2,0.991,0.808,0.627,0.325,0.13,-0.148,-0.07,0.059,0.221,0.914,0.931,0.229,-0.266
+3,0.531,0.598,0.175,0.118,-0.043,5.69,0.064,-0.078,-0.058,0.583,0.401,0.422,0.006
