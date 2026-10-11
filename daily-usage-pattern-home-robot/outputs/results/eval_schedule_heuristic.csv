@@ -1,0 +1,2 @@
+precision,recall,false_schedule_events,devices_truth_on,devices_any_schedule,devices_schedule_half_days
+0.984,1.0,399,0.275,0.417,0.247
