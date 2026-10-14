@@ -21,6 +21,7 @@
 
 - [`usage-pattern-clustering/`](./usage-pattern-clustering): [사용 패턴 세그멘테이션: 클러스터링의 함정들](https://analysis-archive.vercel.app/analyses/usage-pattern-clustering)
 - [`unresolved-segments-jobplatform/`](./unresolved-segments-jobplatform): [취업했는지 떠났는지 모르는 고객: 구직자 세그멘테이션에서 군집이 답하지 못한 것](https://analysis-archive.vercel.app/analyses/unresolved-segments-jobplatform)
+- [`daily-usage-pattern-home-robot/`](./daily-usage-pattern-home-robot): [하루를 읽는 로봇: 일정한 생활 루틴에서 출발한 추천 서비스](https://analysis-archive.vercel.app/analyses/daily-usage-pattern-home-robot)
 
 ### 지표, 타깃 정의
 
