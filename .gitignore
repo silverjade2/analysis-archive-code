@@ -4,3 +4,4 @@ __pycache__/
 *.joblib
 out/
 docs/
+CLAUDE.md
