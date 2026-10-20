@@ -1,0 +1,6 @@
+stat,mean,min,max,n_positive,n_total
+pr_auc_no_handling,0.6285,0.5226,0.7476,,
+pr_auc_class_weight,0.6345,0.5223,0.7261,,
+pr_auc_scale_pos_weight,0.3313,0.0056,0.6769,,
+diff_no_handling_minus_class_weight,-0.0061,-0.0774,0.0335,17.0,40.0
+diff_no_handling_minus_scale_pos_weight,0.2971,-0.0019,0.7172,39.0,40.0

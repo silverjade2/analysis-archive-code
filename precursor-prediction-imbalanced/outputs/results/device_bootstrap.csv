@@ -1,0 +1,5 @@
+stat,point,ci_lo,ci_hi,n_boot,test_devices,test_positive_devices
+no_handling,0.6089,0.411,0.767,999,467,7
+class_weight,0.5927,0.3984,0.771,999,467,7
+scale_pos_weight,0.2498,0.0967,0.4139,999,467,7
+diff_no_handling_minus_class_weight,0.0162,-0.0626,0.0802,999,467,7

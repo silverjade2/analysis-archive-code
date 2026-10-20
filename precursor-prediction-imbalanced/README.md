@@ -8,10 +8,11 @@
 
 ```bash
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
-for s in scripts/0*.py; do .venv/bin/python "$s"; done
+for s in scripts/0[1-8]*.py; do .venv/bin/python "$s"; done
+.venv/bin/python scripts/09_seed_split_repeat.py
 ```
 
-35초 정도 (05 학습 12초, 06 SHAP 11초).
+01~08은 35초 정도 (05 학습 12초, 06 SHAP 11초). 09는 데이터 10벌을 다시 만들고 모델 120개를 학습해서 15분쯤, 인자로 seed를 주면 그것만 돌림 (`09_seed_split_repeat.py 42`).
 
 Python 3.14, numpy 2.5, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, shap 0.52, matplotlib 3.11. fig5만 shap 라이브러리가 그리는 그림이라 픽셀이 조금 다를 수 있음.
 
@@ -27,6 +28,7 @@ Python 3.14, numpy 2.5, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, shap 0.52, m
 | 06 | SHAP 순위, W7 기여 방향, W7 제거 ablation | `shap_ranking.csv`, `ablation_w7.csv`, `fig5~6` |
 | 07 | test 구간 threshold sweep. 위젯 ThresholdExplorer 데이터 | `threshold_sweep.json` (사이트 `src/data/threshold-sweep.json`) |
 | 08 | 06에서 W3 순위가 낮은 이유. 이벤트까지 남은 일수별 feature 평균, 단일 feature AUC | `w3_by_horizon.csv`, `single_feature_auc.csv` |
+| 09 | 05의 비교를 seed 10개 x test 시작일 4개(day 120~150)로 반복, seed 42 test는 기기 단위 bootstrap CI | `model_compare_repeat.csv`, `model_compare_repeat_summary.csv`, `device_bootstrap.csv` |
 
 ## 확인할 숫자
 
@@ -34,6 +36,7 @@ Python 3.14, numpy 2.5, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, shap 0.52, m
 - 04: point-in-time recomputation check 불일치 0건. positive control 34건은 일부러 넣은 leakage를 검증이 잡는다는 뜻, 여기가 0이면 검증 쪽이 망가진 것
 - 05: no_handling PR-AUC 0.609. 무작위 기준선 0.004의 150배쯤이고 불균형 처리 2종보다 높음
 - 06: W7 제거 ablation 차이 -0.007. 함정은 빼도 성능 그대로
+- 09: 05의 test 양성 42행은 기기 7대. no_handling - class_weight 차이는 40회 평균 -0.006, 양수 17회, seed 42 bootstrap 95% CI -0.063~0.080. 05의 0.016은 seed 42 x day 150 한 칸의 값이고 둘은 구분되지 않음. scale_pos_weight는 40회 중 39회 아래지만 0.3 아래로 무너지는 건 17회
 
 ## 데이터
 
