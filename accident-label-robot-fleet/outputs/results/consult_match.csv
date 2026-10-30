@@ -1,0 +1,9 @@
+item,value
+consults,1424.0
+code_match,0.8968
+fall_note,0.0021
+outcome:정상 작동 확인,0.4937
+"outcome:전원, 원격 복구",0.217
+outcome:기타,0.1503
+"outcome:안내, SMS",0.1299
+outcome:AS 접수,0.0091
