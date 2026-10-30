@@ -36,7 +36,8 @@ Python 3.14, numpy 2.5, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, shap 0.52, m
 - 04: point-in-time recomputation check 불일치 0건. positive control 34건은 일부러 넣은 leakage를 검증이 잡는다는 뜻, 여기가 0이면 검증 쪽이 망가진 것
 - 05: no_handling PR-AUC 0.609. 무작위 기준선 0.004의 150배쯤이고 불균형 처리 2종보다 높음
 - 06: W7 제거 ablation 차이 -0.007. 함정은 빼도 성능 그대로
-- 09: 05의 test 양성 42행은 기기 7대. no_handling - class_weight 차이는 40회 평균 -0.006, 양수 17회, seed 42 bootstrap 95% CI -0.063~0.080. 05의 0.016은 seed 42 x day 150 한 칸의 값이고 둘은 구분되지 않음. scale_pos_weight는 40회 중 39회 아래지만 0.3 아래로 무너지는 건 17회
+- 09: 05의 test 양성 42행은 기기 7대뿐이라, 05에서 no_handling이 class_weight보다 0.016 높은 건 seed 42, day 150 한 번의 값. 40회 반복하면 차이 평균 -0.006, no_handling이 높은 건 17회. seed 42 test를 기기 단위로 bootstrap해도 95% CI -0.063~0.080으로 0을 걸침
+- 09: scale_pos_weight는 40회 중 39회 no_handling보다 낮고, 그중 17회는 0.3 아래
 
 ## 데이터
 
