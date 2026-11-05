@@ -1,0 +1,20 @@
+version: 2
+
+sources:
+  - name: jobkko
+    database: BIGDATA
+    schema: JOBKKO
+    description: 채용 공고 수집기에서 내보낸 공고 (snowflake/01_load_jobkko.sql 로 적재). 원문이라 저장소에는 없음
+    tables:
+      - name: postings
+        identifier: POSTINGS
+
+  - name: activity
+    database: BIGDATA
+    schema: ACTIVITY
+    description: ClickHouse 에서 받은 주별 활동량 (scripts/01_fetch_activity.py, snowflake/02_load_activity.sql)
+    tables:
+      - name: pypi_weekly
+        identifier: PYPI_WEEKLY
+      - name: github_weekly
+        identifier: GITHUB_WEEKLY

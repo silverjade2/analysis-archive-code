@@ -1,0 +1,30 @@
+version: 2
+
+models:
+  - name: stg_jobkko_postings
+    description: 공고 한 건 = 한 행. text_lower 는 제목 + 본문 소문자 (기술 정규식 대상)
+    columns:
+      - name: posting_id
+        tests: [unique, not_null]
+      - name: group_key
+        tests: [not_null]
+
+  - name: stg_pypi_weekly
+    columns:
+      - name: skill
+        tests:
+          - not_null
+          - relationships:
+              to: ref('skills')
+              field: skill
+      - name: downloads
+        tests: [not_null]
+
+  - name: stg_github_weekly
+    description: 2025-03 까지 (수집 단절 이후 제외)
+    columns:
+      - name: skill
+        tests:
+          - relationships:
+              to: ref('skills')
+              field: skill

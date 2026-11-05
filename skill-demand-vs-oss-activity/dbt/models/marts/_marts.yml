@@ -1,0 +1,15 @@
+version: 2
+
+models:
+  - name: skill_demand_vs_activity
+    description: 기술별 국내 공고 수요 vs PyPI 활동량. Streamlit 대시보드가 읽는 표
+    columns:
+      - name: skill
+        tests: [unique, not_null]
+      - name: posting_share
+        description: 공고 그룹 중 이 기술이 나온 비율
+        tests: [not_null]
+      - name: quadrant
+        tests:
+          - accepted_values:
+              values: ['수요 높음 · 활동 높음', '수요 높음 · 활동 낮음', '수요 낮음 · 활동 높음', '수요 낮음 · 활동 낮음', '활동량 측정 안 함']
