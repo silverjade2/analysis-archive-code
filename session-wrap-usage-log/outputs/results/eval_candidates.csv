@@ -1,0 +1,5 @@
+candidate,name,sum_overlap,union_overlap,first,first_ctx,truth,rank_truth
+A,세션 마감 도구,500,463,434,648,755,1
+B,보고 페이지 생성기,184,184,158,222,180,2
+C,결과 회수 폼,94,94,94,117,80,4
+D,상태 메뉴바,73,73,73,98,123,3

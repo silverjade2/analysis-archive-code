@@ -1,0 +1,7 @@
+cluster,label,messages,skill,calls
+commit,커밋/푸시/배포,280,,0
+report,보고서/아티팩트/덱,158,artifact-design,26
+ui,UI 시안/미세 조정,130,frontend-design,9
+wording,용어/문체 다듬기,56,term-check,8
+notebook,노트북 실행 오류,57,notebook-check,3
+sql,SQL 쿼리,62,sql-check,1

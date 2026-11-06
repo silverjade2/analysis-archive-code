@@ -1,0 +1,9 @@
+cluster,clears,label,share
+wrapup,64,세션 마감/인계,0.61
+commit,15,커밋/푸시/배포,0.143
+tooling,12,Claude Code 사용법/설정,0.114
+other,8,기타/짧은 응답,0.076
+ui,2,UI 시안/미세 조정,0.019
+question,2,설명/개념 질문,0.019
+mac,1,Mac/시스템 관리,0.01
+career,1,채용/면접/CV,0.01
