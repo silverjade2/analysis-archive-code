@@ -2,6 +2,8 @@
 
 글: [데이터 직무 공고는 줄었는데 왜 DS는 늘었나](https://analysis-archive.vercel.app/analyses/job-role-shift-commoncrawl)
 
+앱: [job-role-shift.streamlit.app](https://job-role-shift.streamlit.app/)
+
 가상데이터가 아니다. 공고 원문은 저장소에 없고 집계만 둔다
 
 원문이 필요한 단계는 코드만 있다. 저장소만으로 도는 것은 앱과 집계에서 만드는 표
