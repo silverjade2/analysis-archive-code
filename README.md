@@ -35,6 +35,7 @@
 
 - [`ota-reboot-spike-iot/`](./ota-reboot-spike-iot): [사용량이 튀는 날은 정말 많이 쓴 날인가: IoT 가전 fleet의 OTA 재부팅 스파이크](https://analysis-archive.vercel.app/analyses/ota-reboot-spike-iot)
 - [`voice-llm-freshness/`](./voice-llm-freshness): ["다시 말씀해 주시겠어요", 그리고 아무도 다시 말하지 않았다](https://analysis-archive.vercel.app/analyses/voice-llm-freshness)
+- [`session-wrap-usage-log/`](./session-wrap-usage-log): [무엇을 자동화할 것인가: 쓰면서 느낀 필요를 대화 기록으로 확인한 세션 마감 도구](https://analysis-archive.vercel.app/analyses/session-wrap-usage-log)
 
 ## 실행
 
