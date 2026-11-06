@@ -29,6 +29,7 @@
 - [`accident-definition-robot-fleet/`](./accident-definition-robot-fleet): [무엇을 사고로 셀 것인가: 자율주행 로봇 fleet의 에러 로그와 타깃 정의](https://analysis-archive.vercel.app/analyses/accident-definition-robot-fleet) (기기 사고 사전 탐지 1편)
 - [`accident-label-robot-fleet/`](./accident-label-robot-fleet): [넘어짐 알림 중 무엇이 사고인가: 자율주행 로봇 fleet의 사고 라벨 정제와 재발 기간](https://analysis-archive.vercel.app/analyses/accident-label-robot-fleet) (기기 사고 사전 탐지 2편)
 - [`skill-demand-vs-oss-activity/`](./skill-demand-vs-oss-activity): [찾는 만큼 쓰이지 않는다: 데이터 직무 기술 32개를 사분면에 놓다](https://analysis-archive.vercel.app/analyses/skill-demand-vs-oss-activity)
+- [`job-role-shift-commoncrawl/`](./job-role-shift-commoncrawl): [데이터 직무 공고는 줄었는데 왜 DS는 늘었나: Common Crawl 공고 16만 건으로 본 직함과 업무](https://analysis-archive.vercel.app/analyses/job-role-shift-commoncrawl)
 
 ### 로그 진단
 
