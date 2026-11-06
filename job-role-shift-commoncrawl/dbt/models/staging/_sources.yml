@@ -1,0 +1,32 @@
+version: 2
+
+sources:
+  - name: jobkko
+    database: BIGDATA
+    schema: JOBKKO
+    description: 직접 운영하는 채용 공고 수집기에서 내보낸 공고 (snowflake/01_load_jobkko.sql 로 적재)
+    tables:
+      - name: postings
+        identifier: POSTINGS
+      - name: skill_weekly
+        identifier: SKILL_WEEKLY
+
+  - name: activity
+    database: BIGDATA
+    schema: ACTIVITY
+    description: ClickHouse 에서 받은 주별 활동량 (snowflake/02_load_activity.sql 로 적재)
+    tables:
+      - name: pypi_weekly
+        identifier: PYPI_WEEKLY
+      - name: github_weekly
+        identifier: GITHUB_WEEKLY
+
+  - name: task1
+    database: BIGDATA
+    schema: TASK1
+    description: 업무 유형 라벨 (snowflake/03_load_labels.sql 로 적재)
+    tables:
+      - name: label_pool
+        identifier: LABEL_POOL
+      - name: agent_labels
+        identifier: AGENT_LABELS

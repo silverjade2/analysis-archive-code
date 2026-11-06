@@ -1,0 +1,61 @@
+skill,category,source,pattern,jobkko,wdc_all,wdc_2022,wdc_2023,wdc_2024,strength,github_repos,pypi_packages,note
+Looker,BI,base,looker|루커,0.033,0.039,0.023,0.049,0.053,proxy,looker-open-source/sdk-codegen,looker-sdk,공식 SDK
+Power BI,BI,base,power\s?bi|파워\s?bi,0.067,0.189,0.160,0.200,0.220,none,,,
+Superset · Metabase · Redash,BI,base,superset|metabase|메타베이스|redash|리대시,0.047,0.006,0.004,0.008,0.008,strong,apache/superset|metabase/metabase|getredash/redash,apache-superset,
+Tableau,BI,base,tableau|태블로|타블로,0.138,0.191,0.177,0.194,0.208,none,,,
+Airflow,데이터 처리,base,airflow|에어플로,0.083,0.015,0.012,0.014,0.020,strong,apache/airflow,apache-airflow,
+Hadoop,데이터 처리,base,hadoop|하둡|(^|[^a-z0-9])hive([^a-z0-9]|$),0.034,0.047,0.053,0.041,0.043,strong,apache/hadoop|apache/hive,,
+Spark,데이터 처리,base,spark|스파크,0.070,0.069,0.067,0.062,0.079,strong,apache/spark,pyspark,
+dbt,데이터 처리,base,(^|[^a-z0-9])dbt([^a-z0-9]|$),0.020,0.013,0.006,0.016,0.022,strong,dbt-labs/dbt-core,dbt-core,
+LLM,모델링,base,(^|[^a-z0-9])llms?([^a-z0-9]|$)|대규모\s?언어\s?모델|대형\s?언어\s?모델|생성형\s?ai|gen\s?ai|(^|[^a-z0-9])(chat)?gpt|(^|[^a-z0-9])rag([^a-z0-9]|$)|프롬프트|prompt engineer|prompt design|(^|[^a-z0-9])prompting([^a-z0-9]|$),0.291,0.017,0.002,0.014,0.044,proxy,langchain-ai/langchain|huggingface/transformers|vllm-project/vllm,langchain|transformers|vllm,대표 프레임워크 묶음. OpenAI · Anthropic SDK 는 OpenAI API 로 따로
+MLOps,모델링,base,ml\s?ops|mlflow|kubeflow,0.071,0.015,0.010,0.014,0.023,strong,mlflow/mlflow|kubeflow/kubeflow,mlflow,
+NLP,모델링,base,(^|[^a-z0-9])nlp([^a-z0-9]|$)|자연어\s?(처리|분석|이해|생성|모델)|natural language,0.058,0.046,0.042,0.044,0.056,proxy,explosion/spaCy|nltk/nltk,spacy|nltk,전통 NLP 만
+PyTorch,모델링,base,pytorch|파이토치,0.056,0.028,0.020,0.029,0.040,strong,pytorch/pytorch,torch,
+Scikit-learn,모델링,base,scikit|sklearn|사이킷,0.029,0.031,0.026,0.031,0.037,strong,scikit-learn/scikit-learn,scikit-learn,
+TensorFlow,모델링,base,tensorflow|텐서플로|keras|케라스,0.047,0.037,0.031,0.037,0.045,strong,tensorflow/tensorflow|keras-team/keras,tensorflow|keras,
+딥러닝,모델링,base,딥\s?러닝|deep learning|pytorch|tensorflow|파이토치|텐서플로,0.101,0.065,0.057,0.064,0.079,none,,,
+머신러닝,모델링,base,머신\s?러닝|machine learning|(^|[^a-z0-9])ml([^a-z0-9]|$)|기계\s?학습,0.287,0.217,0.198,0.210,0.251,none,,,
+추천,모델링,base,추천\s?(시스템|모델|알고리즘|엔진|서비스|로직|랭킹|피드|결과|품질|성능)|개인화\s?(추천|모델|서비스)|recommender|(^|[^a-z0-9])recommendation (systems?|engines?|models?|algorithms?|platforms?)([^a-z0-9]|$)|recsys|(검색|search)\s?(/|·|및|과)\s?추천|추천\s?(/|·|및|과)\s?(검색|랭킹),0.052,0.012,0.011,0.011,0.014,none,,,
+A/B 테스트,분석 방법,base,a\s?/\s?b\s?(test|테스트|테스팅|실험)|(^|[^a-z0-9])ab\s?(test|테스트)|에이비\s?테스트,0.116,0.037,0.028,0.038,0.049,none,,,
+그로스 · 퍼널,분석 방법,base,그로스\s?(해킹|해커|분석|마케팅|실험|전략|지표|데이터)|growth\s?(·|/)?\s?(hack|analy|marketing|experiment|metric|model)|퍼널|funnel,0.095,0.018,0.016,0.019,0.020,none,,,
+시계열,분석 방법,base,시계열|time[\s-]?series,0.077,0.023,0.022,0.021,0.026,proxy,facebook/prophet|unit8co/darts|sktime/sktime,prophet|darts|sktime,
+실험 설계,분석 방법,base,실험\s?(설계|디자인)|experiment(al)?\s?design|가설\s?검정|hypothesis test|causal|인과\s?(추론|분석|관계),0.120,0.035,0.028,0.034,0.046,none,,,
+코호트 · 리텐션,분석 방법,base,코호트|cohort analys|cohort retention|리텐션|(user|customer|client|subscriber|member|donor)s? retention|retention (rate|analys|curve|metric),0.073,0.006,0.005,0.007,0.007,none,,,
+통계,분석 방법,base,통계|statistic,0.296,0.291,0.273,0.283,0.326,proxy,statsmodels/statsmodels,statsmodels,
+Python,언어,base,python|파이썬|pandas,0.446,0.340,0.305,0.335,0.395,none,,,
+R,언어,base,"(^|[^a-z0-9])r\s*(언어|studio|스튜디오|프로그래밍)|(python|파이썬|sql)\s*(/|,|·|및|또는|or|and|&)\s*r([^a-z0-9&\-]|$)|(^|[^a-z0-9])r\s*(/|,|·|및|또는|or|and|&)\s*(python|파이썬|sql)",0.078,0.131,0.126,0.128,0.141,none,,,
+SQL,언어,base,(^|[^a-z0-9])(sql|mysql|postgresql|postgres|mssql|oracle sql|쿼리)([^a-z0-9]|$),0.446,0.421,0.391,0.432,0.451,none,,,
+BigQuery,웨어하우스,base,bigquery|big query|빅쿼리,0.057,0.024,0.019,0.026,0.028,proxy,googleapis/python-bigquery,google-cloud-bigquery,공식 Python SDK
+Databricks,웨어하우스,base,databricks|데이터브릭스,0.058,0.024,0.016,0.025,0.034,proxy,databricks/databricks-sdk-py|databricks/databricks-sql-python,databricks-sdk|databricks-sql-connector,공식 SDK
+Redshift,웨어하우스,base,redshift|레드시프트,0.011,0.016,0.015,0.015,0.017,proxy,aws/amazon-redshift-python-driver,redshift-connector,공식 드라이버
+Snowflake,웨어하우스,base,snowflake|스노우플레이크,0.040,0.033,0.026,0.034,0.040,proxy,snowflakedb/snowflake-connector-python,snowflake-connector-python,공식 커넥터
+Amplitude,제품 분석 도구,base,amplitude|앰플리튜드,0.039,0.006,0.003,0.007,0.008,proxy,amplitude/Amplitude-Python,amplitude-analytics,공식 SDK
+Braze,제품 분석 도구,base,braze|브레이즈,0.009,0.001,0.001,0.000,0.001,none,,,
+Google Analytics,제품 분석 도구,base,(^|[^a-z0-9])ga4|google\s?analytics,0.025,0.035,0.038,0.037,0.030,proxy,,google-analytics-data,GA4 Data API 패키지
+Mixpanel,제품 분석 도구,base,mixpanel|믹스패널,0.013,0.004,0.003,0.004,0.004,proxy,mixpanel/mixpanel-python,mixpanel,공식 SDK
+AWS,클라우드,base,(^|[^a-z0-9])aws([^a-z0-9]|$)|amazon web services|아마존\s?웹\s?서비스|(^|[^a-z0-9])(s3|ec2|athena|aurora|rds|glue)([^a-z0-9]|$)|sagemaker,0.111,0.082,0.073,0.080,0.097,proxy,boto/boto3,boto3,
+Azure,클라우드,base,azure|애저,0.044,0.076,0.069,0.083,0.079,proxy,Azure/azure-sdk-for-python,azure-storage-blob,
+GCP,클라우드,base,(^|[^a-z0-9])gcp([^a-z0-9]|$)|google\s?cloud|구글\s?클라우드|vertex\s?ai,0.053,0.038,0.030,0.038,0.049,proxy,googleapis/google-cloud-python,google-cloud-storage,
+Qlik,BI,new,(^|[^a-z0-9])qlik([^a-z0-9]|$)|(^|[^a-z0-9])qlikview([^a-z0-9]|$)|(^|[^a-z0-9])qliksense([^a-z0-9]|$),0.000,0.036,0.039,0.036,0.032,none,,,
+ETL · ELT,데이터 처리,new,(^|[^a-z0-9])etl([^a-z0-9]|$)|(^|[^a-z0-9])elt([^a-z0-9]|$)|데이터 파이프라인|(^|[^a-z0-9])data pipeline([^a-z0-9]|$),0.134,0.086,0.081,0.088,0.091,none,,,
+Kafka,데이터 처리,new,(^|[^a-z0-9])kafka([^a-z0-9]|$)|카프카,0.016,0.009,0.011,0.008,0.008,strong,apache/kafka,confluent-kafka|kafka-python,
+NoSQL,데이터 처리,new,(^|[^a-z0-9])nosql([^a-z0-9]|$)|(^|[^a-z0-9])mongodb([^a-z0-9]|$)|몽고db([^a-z0-9]|$)|(^|[^a-z0-9])cassandra([^a-z0-9]|$)|(^|[^a-z0-9])dynamodb([^a-z0-9]|$)|(^|[^a-z0-9])redis([^a-z0-9]|$),0.035,0.022,0.024,0.021,0.021,proxy,mongodb/mongo-python-driver|redis/redis-py,pymongo|redis,대표 드라이버
+AI 에이전트,모델링,new,(^|[^a-z0-9])ai agent([^a-z0-9]|$)|(^|[^a-z0-9])agentic([^a-z0-9]|$)|(^|[^a-z0-9])llm agent([^a-z0-9]|$)|(^|[^a-z0-9])ai 에이전트|에이전트,0.163,0.000,0.000,0.000,0.001,proxy,langchain-ai/langgraph|crewAIInc/crewAI,langgraph|crewai,에이전트 프레임워크
+OpenAI API,모델링,new,(^|[^a-z0-9])openai([^a-z0-9]|$)|(^|[^a-z0-9])gpt-4([^a-z0-9]|$)|(^|[^a-z0-9])gpt-3[.]5([^a-z0-9]|$)|(^|[^a-z0-9])chatgpt api([^a-z0-9]|$)|(^|[^a-z0-9])claude([^a-z0-9]|$)|(^|[^a-z0-9])gemini([^a-z0-9]|$),0.080,0.003,0.001,0.002,0.007,proxy,openai/openai-python|anthropics/anthropic-sdk-python,openai|anthropic,LLM API SDK
+RAG,모델링,new,(^|[^a-z0-9])rag([^a-z0-9]|$)|(^|[^a-z0-9])retrieval augmented([^a-z0-9]|$)|(^|[^a-z0-9])retrieval-augmented([^a-z0-9]|$),0.087,0.002,0.000,0.000,0.007,proxy,run-llama/llama_index|chroma-core/chroma,llama-index|chromadb,RAG 프레임워크 · 벡터 저장소
+CRM,분석 방법,new,(^|[^a-z0-9])crm([^a-z0-9]|$),0.086,0.040,0.041,0.039,0.037,none,,,
+KPI · 지표 설계,분석 방법,new,(^|[^a-z0-9])kpi([^a-z0-9]|$)|지표\s?설계|(^|[^a-z0-9])metric design([^a-z0-9]|$)|(^|[^a-z0-9])north star([^a-z0-9]|$)|핵심\s?지표,0.195,0.033,0.033,0.035,0.030,none,,,
+군집 · 세그먼트,분석 방법,new,(^|[^a-z0-9])clustering([^a-z0-9]|$)|클러스터링|군집|(^|[^a-z0-9])segmentation([^a-z0-9]|$)|세그멘테이션|세그먼트 분석,0.064,0.051,0.050,0.051,0.052,none,,,
+수요 예측,분석 방법,new,(^|[^a-z0-9])demand forecast([^a-z0-9]|$)|(^|[^a-z0-9])(demand|sales) forecasting([^a-z0-9]|$)|수요\s?예측|판매\s?예측,0.042,0.004,0.004,0.006,0.004,none,,,
+이상 탐지,분석 방법,new,(^|[^a-z0-9])anomaly detection([^a-z0-9]|$)|이상\s?탐지|이상\s?감지|(^|[^a-z0-9])fraud detection([^a-z0-9]|$)|이상거래,0.056,0.011,0.009,0.010,0.014,none,,,
+최적화,분석 방법,new,(^|[^a-z0-9])mathematical optimization([^a-z0-9]|$)|(^|[^a-z0-9])optimization model([^a-z0-9]|$)|(^|[^a-z0-9])optimization algorithm([^a-z0-9]|$)|(^|[^a-z0-9])operations research([^a-z0-9]|$)|(^|[^a-z0-9])linear programming([^a-z0-9]|$)|(^|[^a-z0-9])integer programming([^a-z0-9]|$)|수리\s?최적화|최적화\s?(모델|알고리즘|문제|기법)|(가격|재고|배차|스케줄링|경로|노출)\s?최적화|(^|[^a-z0-9])pricing optimization([^a-z0-9]|$),0.042,0.028,0.029,0.025,0.028,proxy,google/or-tools|coin-or/pulp,ortools|pulp,수리 최적화 솔버
+Excel,언어,new,(^|[^a-z0-9])excel([^a-z0-9]|$)|엑셀|(^|[^a-z0-9])vba([^a-z0-9]|$)|(^|[^a-z0-9])spreadsheet([^a-z0-9]|$)|스프레드시트|(^|[^a-z0-9])google sheets([^a-z0-9]|$)|구글 시트,0.105,0.217,0.217,0.217,0.215,none,,,
+Java,언어,new,(^|[^a-z0-9])java([^a-z0-9]|$)|자바,0.018,0.048,0.053,0.046,0.043,none,,,
+SAS,언어,new,(^|[^a-z0-9])sas([^a-z0-9]|$),0.013,0.056,0.065,0.051,0.050,none,,,
+Scala,언어,new,(^|[^a-z0-9])scala([^a-z0-9]|$)|스칼라,0.001,0.024,0.027,0.021,0.022,none,,,
+Iceberg · Delta Lake,웨어하우스,new,(^|[^a-z0-9])iceberg([^a-z0-9]|$)|(^|[^a-z0-9])delta lake([^a-z0-9]|$)|(^|[^a-z0-9])hudi([^a-z0-9]|$)|(^|[^a-z0-9])lakehouse([^a-z0-9]|$)|레이크하우스,0.039,0.002,0.001,0.002,0.003,strong,apache/iceberg|delta-io/delta,pyiceberg|deltalake,
+CI/CD,인프라,new,(^|[^a-z0-9])ci/cd([^a-z0-9]|$)|(^|[^a-z0-9])cicd([^a-z0-9]|$)|(^|[^a-z0-9])jenkins([^a-z0-9]|$)|(^|[^a-z0-9])github actions([^a-z0-9]|$),0.024,0.016,0.014,0.015,0.021,none,,,
+Docker,인프라,new,(^|[^a-z0-9])docker([^a-z0-9]|$)|도커|containeriz|container orchestration|container technolog|컨테이너,0.044,0.017,0.013,0.017,0.022,proxy,docker/docker-py,docker,Python SDK. 도커 자체 사용량은 아님
+Git,인프라,new,(^|[^a-z0-9])git([^a-z0-9]|$)|(^|[^a-z0-9])github([^a-z0-9]|$)|(^|[^a-z0-9])gitlab([^a-z0-9]|$)|깃허브|깃랩,0.057,0.040,0.035,0.040,0.048,none,,,
+Kubernetes,인프라,new,(^|[^a-z0-9])kubernetes([^a-z0-9]|$)|(^|[^a-z0-9])k8s([^a-z0-9]|$)|쿠버네티스,0.037,0.011,0.009,0.012,0.015,strong,kubernetes/kubernetes,kubernetes,
+Linux,인프라,new,(^|[^a-z0-9])linux([^a-z0-9]|$)|리눅스|(^|[^a-z0-9])unix([^a-z0-9]|$)|(^|[^a-z0-9])shell script([^a-z0-9]|$)|쉘 스크립트,0.016,0.021,0.024,0.020,0.018,none,,,

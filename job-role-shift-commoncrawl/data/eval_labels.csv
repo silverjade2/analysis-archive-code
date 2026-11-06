@@ -1,0 +1,511 @@
+doc_id,role_family,crawl,cell,tasks,primary_task,english,label_row
+wdc-2022-12-313520357101248318,DA,2022-12,DA|2022-12,"[""customer_marketing"", ""business_insight""]",customer_marketing,False,285
+wdc-2022-12-5051037421121269105,DA,2022-12,DA|2022-12,"[""business_insight"", ""experimentation_causal""]",business_insight,True,502
+wdc-2022-12-14532175484680514507,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,467
+wdc-2022-12-7414827083955638109,DA,2022-12,DA|2022-12,"[""business_insight""]",business_insight,True,478
+wdc-2022-12-4875471543203307473,DA,2022-12,DA|2022-12,"[""data_pipeline""]",data_pipeline,True,312
+wdc-2022-12-10864028149950591408,DA,2022-12,DA|2022-12,"[""business_insight""]",business_insight,True,155
+wdc-2022-12-9192164427437883017,DA,2022-12,DA|2022-12,[],none,True,22
+wdc-2022-12-338817147477919225,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,479
+wdc-2022-12-12755598699361196901,DA,2022-12,DA|2022-12,"[""reporting_dashboard""]",reporting_dashboard,True,269
+wdc-2022-12-9135887289393500533,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""business_insight"", ""data_pipeline"", ""data_governance""]",reporting_dashboard,True,465
+wdc-2022-12-5775227841577448354,DA,2022-12,DA|2022-12,"[""reporting_dashboard""]",reporting_dashboard,True,486
+wdc-2022-12-3833566614566140764,DA,2022-12,DA|2022-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,377
+wdc-2022-12-10351818142956342301,DA,2022-12,DA|2022-12,"[""business_insight""]",business_insight,True,356
+wdc-2022-12-6516214208376880643,DA,2022-12,DA|2022-12,[],none,True,366
+wdc-2022-12-8232767775600668246,DA,2022-12,DA|2022-12,"[""business_insight""]",business_insight,True,499
+wdc-2022-12-12581034408130222539,DA,2022-12,DA|2022-12,[],none,True,151
+wdc-2022-12-7319507685345128840,DA,2022-12,DA|2022-12,"[""data_governance""]",data_governance,True,340
+wdc-2022-12-6148532432528648730,DA,2022-12,DA|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,107
+wdc-2022-12-8806006332432510135,DA,2022-12,DA|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,286
+wdc-2022-12-7915970940851791924,DA,2022-12,DA|2022-12,"[""business_insight""]",business_insight,True,336
+wdc-2022-12-2810508278143634035,DA,2022-12,DA|2022-12,"[""experimentation_causal"", ""reporting_dashboard"", ""business_insight""]",experimentation_causal,True,371
+wdc-2022-12-16498774667556398575,DA,2022-12,DA|2022-12,[],none,True,184
+wdc-2022-12-16595801715048014941,DA,2022-12,DA|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,469
+wdc-2022-12-13368855509988676173,DA,2022-12,DA|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,477
+wdc-2022-12-8305310871683859276,DA,2022-12,DA|2022-12,"[""data_governance"", ""data_pipeline"", ""business_insight""]",data_governance,True,60
+wdc-2022-12-3792733178618389647,DA,2022-12,DA|2022-12,"[""experimentation_causal"", ""metric_design"", ""business_insight""]",experimentation_causal,False,383
+wdc-2022-12-933748270004507525,DA,2022-12,DA|2022-12,"[""business_insight""]",business_insight,False,433
+wdc-2022-12-10984258800210545096,DA,2022-12,DA|2022-12,"[""research""]",research,True,175
+wdc-2022-12-5051348938434443788,DA,2022-12,DA|2022-12,"[""metric_design"", ""business_insight""]",metric_design,True,448
+wdc-2022-12-4480317766614081082,DA,2022-12,DA|2022-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,295
+wdc-2022-12-782222800454314334,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,False,236
+wdc-2022-12-4693360411094715852,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,246
+wdc-2022-12-307568629743051167,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,True,451
+wdc-2022-12-1937967508744423738,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""business_insight"", ""predictive_modeling"", ""customer_marketing"", ""data_pipeline""]",reporting_dashboard,True,52
+wdc-2022-12-1781209804525347338,DA,2022-12,DA|2022-12,"[""data_governance"", ""business_insight""]",data_governance,True,319
+wdc-2022-12-13390309354215464115,DA,2022-12,DA|2022-12,[],none,True,402
+wdc-2022-12-881404573657733335,DA,2022-12,DA|2022-12,"[""customer_marketing"", ""reporting_dashboard"", ""business_insight""]",customer_marketing,True,21
+wdc-2022-12-6504780561402356238,DA,2022-12,DA|2022-12,"[""business_insight"", ""metric_design"", ""reporting_dashboard"", ""data_pipeline""]",business_insight,True,110
+wdc-2022-12-12099444200135283449,DA,2022-12,DA|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,164
+wdc-2022-12-877622754206466598,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""business_insight""]",business_insight,True,7
+wdc-2022-12-1266986871736986444,DA,2022-12,DA|2022-12,[],none,True,83
+wdc-2022-12-17218781612783123207,DA,2022-12,DA|2022-12,"[""data_pipeline"", ""predictive_modeling"", ""business_insight""]",data_pipeline,True,495
+wdc-2022-12-8866411730871803493,DA,2022-12,DA|2022-12,"[""metric_design"", ""reporting_dashboard""]",metric_design,True,475
+wdc-2022-12-12980862309222198455,DA,2022-12,DA|2022-12,"[""metric_design"", ""reporting_dashboard"", ""data_pipeline""]",data_pipeline,True,85
+wdc-2022-12-99053537432402430,DA,2022-12,DA|2022-12,"[""data_governance""]",data_governance,True,447
+wdc-2022-12-12138113350878848075,DA,2022-12,DA|2022-12,[],none,True,248
+wdc-2022-12-8750999116298015896,DA,2022-12,DA|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,101
+wdc-2022-12-3096974346634173699,DA,2022-12,DA|2022-12,"[""data_governance"", ""reporting_dashboard""]",data_governance,True,405
+wdc-2022-12-4941838826757194531,DA,2022-12,DA|2022-12,"[""business_insight"", ""reporting_dashboard"", ""customer_marketing""]",business_insight,True,506
+wdc-2022-12-7917265670796072059,DA,2022-12,DA|2022-12,"[""reporting_dashboard"", ""experimentation_causal"", ""metric_design"", ""business_insight""]",reporting_dashboard,True,133
+wdc-2022-12-14453866785258395326,BA/BI,2022-12,BA/BI|2022-12,[],none,True,42
+wdc-2022-12-12861618113685142943,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,True,265
+wdc-2022-12-10979005895619663571,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,True,181
+wdc-2022-12-9936337070709943945,BA/BI,2022-12,BA/BI|2022-12,"[""customer_marketing"", ""business_insight""]",customer_marketing,True,410
+wdc-2022-12-15002656091681300072,BA/BI,2022-12,BA/BI|2022-12,[],none,True,459
+wdc-2022-12-11038224504362192130,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard""]",reporting_dashboard,True,234
+wdc-2022-12-4132787454767921032,BA/BI,2022-12,BA/BI|2022-12,[],none,True,474
+wdc-2022-12-13050527771508928796,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""business_insight"", ""data_pipeline"", ""data_governance""]",reporting_dashboard,True,476
+wdc-2022-12-12383831295240081660,BA/BI,2022-12,BA/BI|2022-12,[],none,False,460
+wdc-2022-12-17291902366978624198,BA/BI,2022-12,BA/BI|2022-12,"[""data_governance""]",data_governance,False,347
+wdc-2022-12-7838464133095784693,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""metric_design"", ""business_insight""]",reporting_dashboard,True,109
+wdc-2022-12-8447382952450261460,BA/BI,2022-12,BA/BI|2022-12,[],none,True,359
+wdc-2022-12-16296158326662892820,BA/BI,2022-12,BA/BI|2022-12,[],none,True,82
+wdc-2022-12-15510258722848117929,BA/BI,2022-12,BA/BI|2022-12,[],none,True,421
+wdc-2022-12-13123690123873640633,BA/BI,2022-12,BA/BI|2022-12,[],none,True,407
+wdc-2022-12-5940009132223327114,BA/BI,2022-12,BA/BI|2022-12,[],none,True,30
+wdc-2022-12-283571110447324272,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,False,201
+wdc-2022-12-2943309112456898417,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,389
+wdc-2022-12-5546858838445478469,BA/BI,2022-12,BA/BI|2022-12,[],none,True,239
+wdc-2022-12-16826188862276158011,BA/BI,2022-12,BA/BI|2022-12,[],none,False,55
+wdc-2022-12-15112916566914454024,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,373
+wdc-2022-12-4146235564837831377,BA/BI,2022-12,BA/BI|2022-12,"[""business_insight""]",business_insight,True,463
+wdc-2022-12-7442051655851655528,BA/BI,2022-12,BA/BI|2022-12,"[""data_governance""]",data_governance,True,147
+wdc-2022-12-15885205733371817206,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""business_insight""]",business_insight,False,3
+wdc-2022-12-16479797962760825374,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard""]",reporting_dashboard,True,345
+wdc-2022-12-17081537002861519669,BA/BI,2022-12,BA/BI|2022-12,"[""data_governance"", ""data_pipeline""]",data_governance,False,57
+wdc-2022-12-13680236329500674916,BA/BI,2022-12,BA/BI|2022-12,[],none,True,326
+wdc-2022-12-4725237610566644070,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard""]",reporting_dashboard,True,330
+wdc-2022-12-9135300729304480276,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""data_pipeline"", ""business_insight"", ""data_governance""]",reporting_dashboard,True,53
+wdc-2022-12-8637929746552825338,BA/BI,2022-12,BA/BI|2022-12,"[""data_pipeline""]",data_pipeline,False,99
+wdc-2022-12-15869485587631150286,BA/BI,2022-12,BA/BI|2022-12,[],none,True,227
+wdc-2022-12-6705530065465818906,BA/BI,2022-12,BA/BI|2022-12,[],none,True,117
+wdc-2022-12-15555003618707461776,BA/BI,2022-12,BA/BI|2022-12,"[""business_insight""]",business_insight,False,98
+wdc-2022-12-5548724376777484288,BA/BI,2022-12,BA/BI|2022-12,[],none,True,66
+wdc-2022-12-6185557871948538567,BA/BI,2022-12,BA/BI|2022-12,[],none,True,331
+wdc-2022-12-11031647884432677654,BA/BI,2022-12,BA/BI|2022-12,[],none,True,124
+wdc-2022-12-16287366650657710034,BA/BI,2022-12,BA/BI|2022-12,[],none,True,10
+wdc-2022-12-1364357976129193136,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""metric_design""]",reporting_dashboard,True,45
+wdc-2022-12-16646008582028222981,BA/BI,2022-12,BA/BI|2022-12,[],none,True,458
+wdc-2022-12-16241930048772464451,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard""]",reporting_dashboard,True,439
+wdc-2022-12-534245543196944240,BA/BI,2022-12,BA/BI|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,328
+wdc-2022-12-12471374875541926506,BA/BI,2022-12,BA/BI|2022-12,[],none,True,40
+wdc-2022-12-3713194534734019274,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,False,390
+wdc-2022-12-10890006301305428037,BA/BI,2022-12,BA/BI|2022-12,[],none,False,189
+wdc-2022-12-371859570661760147,BA/BI,2022-12,BA/BI|2022-12,"[""reporting_dashboard""]",reporting_dashboard,False,339
+wdc-2022-12-2986909440466697436,BA/BI,2022-12,BA/BI|2022-12,"[""business_insight""]",business_insight,True,219
+wdc-2022-12-3111666003956573440,BA/BI,2022-12,BA/BI|2022-12,"[""data_pipeline""]",data_pipeline,True,165
+wdc-2022-12-5093211404978605774,BA/BI,2022-12,BA/BI|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,False,350
+wdc-2022-12-4719758085558681054,BA/BI,2022-12,BA/BI|2022-12,[],none,False,221
+wdc-2022-12-15081637761369946755,BA/BI,2022-12,BA/BI|2022-12,[],none,True,462
+wdc-2022-12-8260295542096573161,DS,2022-12,DS|2022-12,"[""experimentation_causal"", ""business_insight"", ""customer_marketing""]",experimentation_causal,True,450
+wdc-2022-12-13580877919580968961,DS,2022-12,DS|2022-12,"[""business_insight"", ""data_pipeline""]",business_insight,True,191
+wdc-2022-12-8082470903559967127,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,187
+wdc-2022-12-5295897967629322569,DS,2022-12,DS|2022-12,"[""reporting_dashboard""]",reporting_dashboard,False,70
+wdc-2022-12-14980332221269604078,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""ml_engineering"", ""data_pipeline""]",predictive_modeling,True,287
+wdc-2022-12-6627267224423569702,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""customer_marketing"", ""reporting_dashboard"", ""business_insight""]",predictive_modeling,False,364
+wdc-2022-12-16222701441706860872,DS,2022-12,DS|2022-12,"[""experimentation_causal"", ""business_insight"", ""customer_marketing""]",business_insight,True,509
+wdc-2022-12-1071552134364256084,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,217
+wdc-2022-12-4252304221037135684,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""customer_marketing"", ""business_insight""]",predictive_modeling,True,63
+wdc-2022-12-51822520655742753,DS,2022-12,DS|2022-12,[],none,True,252
+wdc-2022-12-16670672756008337759,DS,2022-12,DS|2022-12,"[""predictive_modeling""]",predictive_modeling,False,156
+wdc-2022-12-4297330127440545516,DS,2022-12,DS|2022-12,"[""customer_marketing"", ""predictive_modeling""]",customer_marketing,True,393
+wdc-2022-12-4675927550307515236,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,121
+wdc-2022-12-10779833566480674800,DS,2022-12,DS|2022-12,"[""ml_engineering""]",ml_engineering,True,292
+wdc-2022-12-546890174729416195,DS,2022-12,DS|2022-12,"[""recommendation_search""]",recommendation_search,False,296
+wdc-2022-12-10336681233974889259,DS,2022-12,DS|2022-12,"[""business_insight"", ""predictive_modeling"", ""data_pipeline""]",business_insight,True,308
+wdc-2022-12-6186904802273302597,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,202
+wdc-2022-12-14404140649896268791,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight"", ""ml_engineering""]",predictive_modeling,True,48
+wdc-2022-12-15166443646911277555,DS,2022-12,DS|2022-12,"[""research"", ""predictive_modeling""]",research,True,250
+wdc-2022-12-5315324481470345839,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""data_pipeline"", ""research""]",predictive_modeling,True,20
+wdc-2022-12-7298583090506999167,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,354
+wdc-2022-12-14820077016802565648,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""data_pipeline""]",predictive_modeling,True,279
+wdc-2022-12-14113905975893572025,DS,2022-12,DS|2022-12,"[""business_insight""]",business_insight,True,442
+wdc-2022-12-5025764733712373724,DS,2022-12,DS|2022-12,"[""business_insight"", ""data_governance"", ""reporting_dashboard""]",business_insight,True,71
+wdc-2022-12-12074803215050922071,DS,2022-12,DS|2022-12,"[""ml_engineering"", ""ai_adoption_automation""]",ml_engineering,True,378
+wdc-2022-12-1059564914967245040,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""customer_marketing"", ""recommendation_search""]",predictive_modeling,True,397
+wdc-2022-12-14741007456143137408,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,153
+wdc-2022-12-1508594196761340183,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,76
+wdc-2022-12-8882012627374228602,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""ml_engineering"", ""business_insight""]",predictive_modeling,True,176
+wdc-2022-12-11799034709468756551,DS,2022-12,DS|2022-12,"[""customer_marketing"", ""metric_design"", ""reporting_dashboard"", ""business_insight"", ""experimentation_causal""]",customer_marketing,True,120
+wdc-2022-12-5273659450923692323,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,324
+wdc-2022-12-1568688163907779668,DS,2022-12,DS|2022-12,"[""ai_adoption_automation""]",ai_adoption_automation,False,420
+wdc-2022-12-5092734983636601084,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,472
+wdc-2022-12-3362829885165721228,DS,2022-12,DS|2022-12,"[""experimentation_causal"", ""metric_design""]",experimentation_causal,True,355
+wdc-2022-12-17446738144513266983,DS,2022-12,DS|2022-12,"[""business_insight""]",business_insight,True,229
+wdc-2022-12-17092089703650276414,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,129
+wdc-2022-12-7016405456823648001,DS,2022-12,DS|2022-12,"[""business_insight"", ""predictive_modeling"", ""experimentation_causal"", ""reporting_dashboard""]",business_insight,True,122
+wdc-2022-12-107992661910315634,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,289
+wdc-2022-12-10849012090376660158,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,False,35
+wdc-2022-12-454011037551551954,DS,2022-12,DS|2022-12,"[""metric_design"", ""reporting_dashboard"", ""business_insight""]",metric_design,True,115
+wdc-2022-12-15722876439967184838,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,12
+wdc-2022-12-8934542162396894898,DS,2022-12,DS|2022-12,"[""predictive_modeling""]",predictive_modeling,True,297
+wdc-2022-12-14410581297952700849,DS,2022-12,DS|2022-12,"[""predictive_modeling""]",predictive_modeling,True,31
+wdc-2022-12-16245571064030600256,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,212
+wdc-2022-12-3532102104440171404,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight"", ""research""]",predictive_modeling,True,480
+wdc-2022-12-17112247415502080302,DS,2022-12,DS|2022-12,"[""predictive_modeling""]",predictive_modeling,True,344
+wdc-2022-12-6790731937710923410,DS,2022-12,DS|2022-12,"[""predictive_modeling""]",predictive_modeling,False,349
+wdc-2022-12-9874180447553326640,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""experimentation_causal"", ""business_insight""]",predictive_modeling,True,441
+wdc-2022-12-4867300636494928406,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""business_insight"", ""ai_adoption_automation""]",predictive_modeling,True,379
+wdc-2022-12-8658249826857324741,DS,2022-12,DS|2022-12,"[""predictive_modeling"", ""experimentation_causal"", ""metric_design"", ""business_insight""]",predictive_modeling,True,278
+wdc-2022-12-1435796794759501389,DA 인접,2022-12,DA 인접|2022-12,"[""business_insight""]",business_insight,True,256
+wdc-2022-12-12050598816808477568,DA 인접,2022-12,DA 인접|2022-12,[],none,False,370
+wdc-2022-12-9528312876078026600,DA 인접,2022-12,DA 인접|2022-12,[],none,True,436
+wdc-2022-12-16515755770454545153,DA 인접,2022-12,DA 인접|2022-12,[],none,True,338
+wdc-2022-12-12337840188971366552,DA 인접,2022-12,DA 인접|2022-12,[],none,True,283
+wdc-2022-12-5771370004139795780,DA 인접,2022-12,DA 인접|2022-12,"[""research""]",research,True,425
+wdc-2022-12-614360337684429384,DA 인접,2022-12,DA 인접|2022-12,[],none,True,36
+wdc-2022-12-16745997913493460711,DA 인접,2022-12,DA 인접|2022-12,[],none,True,157
+wdc-2022-12-14092588026029605427,DA 인접,2022-12,DA 인접|2022-12,[],none,False,210
+wdc-2022-12-3567005896107107755,DA 인접,2022-12,DA 인접|2022-12,[],none,True,310
+wdc-2022-12-2096097393821016137,DA 인접,2022-12,DA 인접|2022-12,[],none,True,323
+wdc-2022-12-12730555872736591403,DA 인접,2022-12,DA 인접|2022-12,[],none,True,38
+wdc-2022-12-5954333904749925785,DA 인접,2022-12,DA 인접|2022-12,[],none,True,452
+wdc-2022-12-13059716245631356568,DA 인접,2022-12,DA 인접|2022-12,[],none,True,207
+wdc-2022-12-2871797299922205741,DA 인접,2022-12,DA 인접|2022-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,75
+wdc-2022-12-17230684472462693493,DA 인접,2022-12,DA 인접|2022-12,"[""business_insight""]",business_insight,True,160
+wdc-2022-12-4069904509465298880,DA 인접,2022-12,DA 인접|2022-12,"[""business_insight""]",business_insight,True,88
+wdc-2022-12-9699891358625379267,DA 인접,2022-12,DA 인접|2022-12,"[""business_insight""]",business_insight,True,193
+wdc-2022-12-16635744624539178441,DA 인접,2022-12,DA 인접|2022-12,"[""data_governance"", ""business_insight"", ""reporting_dashboard""]",data_governance,True,481
+wdc-2022-12-15234620092854739719,DA 인접,2022-12,DA 인접|2022-12,[],none,True,414
+wdc-2023-12-7386112475781236018,DA,2023-12,DA|2023-12,"[""business_insight"", ""reporting_dashboard"", ""metric_design"", ""experimentation_causal""]",business_insight,True,494
+wdc-2023-12-11334289683715025612,DA,2023-12,DA|2023-12,[],none,True,174
+wdc-2023-12-4265045004610815075,DA,2023-12,DA|2023-12,"[""business_insight"", ""optimization_operations""]",business_insight,True,190
+wdc-2023-12-5941149812088318840,DA,2023-12,DA|2023-12,"[""reporting_dashboard""]",reporting_dashboard,True,142
+wdc-2023-12-16892415842967647787,DA,2023-12,DA|2023-12,"[""business_insight"", ""reporting_dashboard"", ""experimentation_causal""]",business_insight,True,136
+wdc-2023-12-368060967913598448,DA,2023-12,DA|2023-12,"[""business_insight""]",business_insight,True,342
+wdc-2023-12-10361423236568874691,DA,2023-12,DA|2023-12,"[""business_insight"", ""reporting_dashboard"", ""predictive_modeling""]",business_insight,True,103
+wdc-2023-12-12480352816342532030,DA,2023-12,DA|2023-12,"[""business_insight""]",business_insight,True,302
+wdc-2023-12-3920390521437731303,DA,2023-12,DA|2023-12,"[""data_pipeline""]",data_pipeline,True,449
+wdc-2023-12-13904734336519816531,DA,2023-12,DA|2023-12,"[""business_insight""]",business_insight,True,168
+wdc-2023-12-17066385067804614552,DA,2023-12,DA|2023-12,[],none,True,380
+wdc-2023-12-15265051092460997688,DA,2023-12,DA|2023-12,"[""business_insight"", ""optimization_operations""]",business_insight,True,284
+wdc-2023-12-5850516242968800116,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""business_insight"", ""metric_design"", ""data_governance""]",reporting_dashboard,False,8
+wdc-2023-12-8463877672159093134,DA,2023-12,DA|2023-12,"[""business_insight""]",business_insight,True,488
+wdc-2023-12-11664150389817779206,DA,2023-12,DA|2023-12,"[""experimentation_causal"", ""business_insight"", ""customer_marketing""]",business_insight,True,394
+wdc-2023-12-4853256586835864483,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,154
+wdc-2023-12-17418188038556978230,DA,2023-12,DA|2023-12,[],none,True,218
+wdc-2023-12-17414753118492947252,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""ai_adoption_automation""]",reporting_dashboard,False,368
+wdc-2023-12-2628218037027503126,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""metric_design"", ""business_insight"", ""data_governance""]",reporting_dashboard,True,417
+wdc-2023-12-11255625362371286157,DA,2023-12,DA|2023-12,"[""business_insight"", ""predictive_modeling""]",business_insight,False,230
+wdc-2023-12-2219951817456604444,DA,2023-12,DA|2023-12,[],none,True,226
+wdc-2023-12-12548617827973069737,DA,2023-12,DA|2023-12,"[""business_insight""]",business_insight,True,461
+wdc-2023-12-8608640264380969742,DA,2023-12,DA|2023-12,"[""customer_marketing"", ""business_insight"", ""reporting_dashboard"", ""experimentation_causal""]",customer_marketing,True,341
+wdc-2023-12-17039750044043687501,DA,2023-12,DA|2023-12,"[""predictive_modeling"", ""business_insight""]",business_insight,True,159
+wdc-2023-12-1980105688241482855,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,388
+wdc-2023-12-13817387031645741048,DA,2023-12,DA|2023-12,"[""data_pipeline"", ""data_governance"", ""business_insight""]",data_pipeline,True,195
+wdc-2023-12-14315214553966256951,DA,2023-12,DA|2023-12,[],none,True,68
+wdc-2023-12-370903384673464565,DA,2023-12,DA|2023-12,"[""business_insight""]",business_insight,True,169
+wdc-2023-12-4901023850465216391,DA,2023-12,DA|2023-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,257
+wdc-2023-12-15653373113731959418,DA,2023-12,DA|2023-12,"[""customer_marketing""]",customer_marketing,True,253
+wdc-2023-12-17973119301434177930,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""ai_adoption_automation""]",reporting_dashboard,True,81
+wdc-2023-12-3102811386443267506,DA,2023-12,DA|2023-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,501
+wdc-2023-12-14533632206449533038,DA,2023-12,DA|2023-12,[],none,True,25
+wdc-2023-12-11871223696959047165,DA,2023-12,DA|2023-12,[],none,True,198
+wdc-2023-12-4944832535094183322,DA,2023-12,DA|2023-12,[],none,True,111
+wdc-2023-12-12044741964061901370,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""data_governance""]",reporting_dashboard,False,273
+wdc-2023-12-1711177899117579825,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""data_governance""]",reporting_dashboard,True,126
+wdc-2023-12-5898871547166710539,DA,2023-12,DA|2023-12,"[""metric_design""]",metric_design,True,37
+wdc-2023-12-11204237396030658667,DA,2023-12,DA|2023-12,"[""reporting_dashboard""]",reporting_dashboard,True,108
+wdc-2023-12-3997149561864395870,DA,2023-12,DA|2023-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,192
+wdc-2023-12-7321429329259314195,DA,2023-12,DA|2023-12,"[""business_insight"", ""data_governance"", ""reporting_dashboard""]",business_insight,True,50
+wdc-2023-12-3994841473095804863,DA,2023-12,DA|2023-12,"[""metric_design"", ""business_insight""]",metric_design,True,384
+wdc-2023-12-12442426805103749223,DA,2023-12,DA|2023-12,[],none,True,84
+wdc-2023-12-9515281344518648986,DA,2023-12,DA|2023-12,[],none,True,80
+wdc-2023-12-11714341823474629806,DA,2023-12,DA|2023-12,[],none,True,186
+wdc-2023-12-2396494053027469498,DA,2023-12,DA|2023-12,"[""reporting_dashboard""]",reporting_dashboard,True,313
+wdc-2023-12-6601154215319187495,DA,2023-12,DA|2023-12,"[""business_insight"", ""experimentation_causal"", ""metric_design"", ""reporting_dashboard"", ""customer_marketing""]",business_insight,False,270
+wdc-2023-12-18246958737847639834,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""customer_marketing"", ""business_insight""]",business_insight,True,132
+wdc-2023-12-14180319593048719891,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,237
+wdc-2023-12-11178370676715732881,DA,2023-12,DA|2023-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,73
+wdc-2023-12-2733573311599004891,BA/BI,2023-12,BA/BI|2023-12,[],none,True,1
+wdc-2023-12-16476516912060358131,BA/BI,2023-12,BA/BI|2023-12,[],none,False,172
+wdc-2023-12-10516925810931377501,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard"", ""data_pipeline"", ""metric_design"", ""business_insight""]",reporting_dashboard,True,437
+wdc-2023-12-18280402964627132055,BA/BI,2023-12,BA/BI|2023-12,"[""business_insight"", ""metric_design"", ""experimentation_causal"", ""reporting_dashboard""]",business_insight,True,489
+wdc-2023-12-5085169828062811578,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard""]",reporting_dashboard,True,446
+wdc-2023-12-18297089365223787048,BA/BI,2023-12,BA/BI|2023-12,[],none,True,329
+wdc-2023-12-2188510670779802446,BA/BI,2023-12,BA/BI|2023-12,"[""data_pipeline"", ""reporting_dashboard""]",data_pipeline,True,496
+wdc-2023-12-9750919801236770203,BA/BI,2023-12,BA/BI|2023-12,[],none,True,15
+wdc-2023-12-48353546076948358,BA/BI,2023-12,BA/BI|2023-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,482
+wdc-2023-12-11641583967169691010,BA/BI,2023-12,BA/BI|2023-12,[],none,False,423
+wdc-2023-12-203891679989448776,BA/BI,2023-12,BA/BI|2023-12,[],none,True,268
+wdc-2023-12-12587608465203754084,BA/BI,2023-12,BA/BI|2023-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,14
+wdc-2023-12-3587562660957970305,BA/BI,2023-12,BA/BI|2023-12,[],none,True,262
+wdc-2023-12-8830025519831058245,BA/BI,2023-12,BA/BI|2023-12,"[""data_governance""]",data_governance,True,445
+wdc-2023-12-16913091742144348454,BA/BI,2023-12,BA/BI|2023-12,[],none,True,300
+wdc-2023-12-18259267250850515275,BA/BI,2023-12,BA/BI|2023-12,[],none,False,90
+wdc-2023-12-7580069365121093232,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,500
+wdc-2023-12-10660585567701226724,BA/BI,2023-12,BA/BI|2023-12,[],none,True,299
+wdc-2023-12-8949877580138214702,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,True,105
+wdc-2023-12-15477062933369989986,BA/BI,2023-12,BA/BI|2023-12,[],none,False,258
+wdc-2023-12-8159693143120278194,BA/BI,2023-12,BA/BI|2023-12,"[""data_pipeline"", ""reporting_dashboard""]",data_pipeline,True,311
+wdc-2023-12-13842410762593081896,BA/BI,2023-12,BA/BI|2023-12,[],none,True,320
+wdc-2023-12-4657571708102163553,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard"", ""customer_marketing"", ""business_insight""]",reporting_dashboard,True,171
+wdc-2023-12-5128635339484632400,BA/BI,2023-12,BA/BI|2023-12,[],none,True,413
+wdc-2023-12-4659385208615015549,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard""]",reporting_dashboard,True,102
+wdc-2023-12-11439546731395619827,BA/BI,2023-12,BA/BI|2023-12,[],none,True,112
+wdc-2023-12-3405227278110116655,BA/BI,2023-12,BA/BI|2023-12,[],none,False,72
+wdc-2023-12-7259486966282873699,BA/BI,2023-12,BA/BI|2023-12,[],none,True,100
+wdc-2023-12-362467654329677960,BA/BI,2023-12,BA/BI|2023-12,[],none,False,470
+wdc-2023-12-70045781743965836,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,True,95
+wdc-2023-12-10926574892754592864,BA/BI,2023-12,BA/BI|2023-12,[],none,True,2
+wdc-2023-12-2696873241361598217,BA/BI,2023-12,BA/BI|2023-12,"[""business_insight"", ""reporting_dashboard"", ""customer_marketing""]",business_insight,True,225
+wdc-2023-12-8929172876226166145,BA/BI,2023-12,BA/BI|2023-12,[],none,True,137
+wdc-2023-12-5275886980487156894,BA/BI,2023-12,BA/BI|2023-12,"[""data_pipeline"", ""reporting_dashboard""]",data_pipeline,False,209
+wdc-2023-12-5214000824389579205,BA/BI,2023-12,BA/BI|2023-12,[],none,True,220
+wdc-2023-12-5028471650864809540,BA/BI,2023-12,BA/BI|2023-12,[],none,True,206
+wdc-2023-12-15092653761883360060,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard"", ""data_governance""]",reporting_dashboard,True,358
+wdc-2023-12-6440250052474721281,BA/BI,2023-12,BA/BI|2023-12,[],none,True,185
+wdc-2023-12-2341489056461079340,BA/BI,2023-12,BA/BI|2023-12,[],none,True,216
+wdc-2023-12-3714707627130317276,BA/BI,2023-12,BA/BI|2023-12,[],none,True,318
+wdc-2023-12-3068345672376454228,BA/BI,2023-12,BA/BI|2023-12,[],none,True,314
+wdc-2023-12-7070039843108936388,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard"", ""metric_design""]",reporting_dashboard,True,435
+wdc-2023-12-18381663901645570579,BA/BI,2023-12,BA/BI|2023-12,"[""business_insight""]",business_insight,True,303
+wdc-2023-12-10747155343558941277,BA/BI,2023-12,BA/BI|2023-12,[],none,False,411
+wdc-2023-12-6972994594418569354,BA/BI,2023-12,BA/BI|2023-12,[],none,False,274
+wdc-2023-12-2484164445757195655,BA/BI,2023-12,BA/BI|2023-12,"[""data_pipeline""]",data_pipeline,True,61
+wdc-2023-12-14137783227952033555,BA/BI,2023-12,BA/BI|2023-12,"[""reporting_dashboard"", ""data_governance"", ""data_pipeline""]",reporting_dashboard,False,13
+wdc-2023-12-6529066704864276222,BA/BI,2023-12,BA/BI|2023-12,[],none,True,497
+wdc-2023-12-5202496102215248739,BA/BI,2023-12,BA/BI|2023-12,[],none,True,485
+wdc-2023-12-2448856395488483577,BA/BI,2023-12,BA/BI|2023-12,[],none,True,455
+wdc-2023-12-12174624483968384699,DS,2023-12,DS|2023-12,"[""ml_engineering"", ""predictive_modeling""]",ml_engineering,True,46
+wdc-2023-12-1340097295259456722,DS,2023-12,DS|2023-12,"[""ai_adoption_automation""]",ai_adoption_automation,True,381
+wdc-2023-12-15722223999930693233,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""reporting_dashboard"", ""data_pipeline""]",predictive_modeling,False,113
+wdc-2023-12-4976045947067624828,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,False,41
+wdc-2023-12-5912813557926771560,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,244
+wdc-2023-12-10768089171463052841,DS,2023-12,DS|2023-12,"[""business_insight"", ""data_governance"", ""reporting_dashboard""]",business_insight,False,281
+wdc-2023-12-10245957544145547660,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""optimization_operations"", ""ml_engineering""]",predictive_modeling,True,369
+wdc-2023-12-9461854444834811323,DS,2023-12,DS|2023-12,[],none,True,304
+wdc-2023-12-16144044688050712719,DS,2023-12,DS|2023-12,"[""predictive_modeling""]",predictive_modeling,True,484
+wdc-2023-12-11469301937365471007,DS,2023-12,DS|2023-12,"[""predictive_modeling""]",predictive_modeling,True,316
+wdc-2023-12-16411873119373380906,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,332
+wdc-2023-12-12114987379547702865,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,333
+wdc-2023-12-13541238580024333416,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,173
+wdc-2023-12-4744044259536018462,DS,2023-12,DS|2023-12,"[""predictive_modeling""]",predictive_modeling,False,77
+wdc-2023-12-2566921036325498103,DS,2023-12,DS|2023-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,False,145
+wdc-2023-12-7223730491712303633,DS,2023-12,DS|2023-12,"[""predictive_modeling""]",predictive_modeling,True,123
+wdc-2023-12-2127206057489794535,DS,2023-12,DS|2023-12,"[""research""]",research,True,67
+wdc-2023-12-13725531911394180238,DS,2023-12,DS|2023-12,"[""research"", ""business_insight""]",research,True,440
+wdc-2023-12-3073404737339060488,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,406
+wdc-2023-12-8523525030151482336,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""data_pipeline""]",predictive_modeling,True,255
+wdc-2023-12-4359231910934963087,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,301
+wdc-2023-12-10611049695100723153,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,24
+wdc-2023-12-8715783038820053925,DS,2023-12,DS|2023-12,"[""experimentation_causal"", ""metric_design"", ""business_insight""]",experimentation_causal,True,267
+wdc-2023-12-15578505451490229641,DS,2023-12,DS|2023-12,"[""research""]",research,True,44
+wdc-2023-12-4578356940165504114,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""experimentation_causal"", ""optimization_operations""]",predictive_modeling,True,490
+wdc-2023-12-6819286784479814636,DS,2023-12,DS|2023-12,[],none,True,131
+wdc-2023-12-13917085484934207374,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""data_pipeline""]",predictive_modeling,True,376
+wdc-2023-12-2083488676854935390,DS,2023-12,DS|2023-12,"[""metric_design"", ""experimentation_causal"", ""reporting_dashboard""]",metric_design,True,249
+wdc-2023-12-5256533933135767029,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,149
+wdc-2023-12-7000067349459464568,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,444
+wdc-2023-12-8171160798655282482,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,453
+wdc-2023-12-17643953015193290227,DS,2023-12,DS|2023-12,"[""predictive_modeling""]",predictive_modeling,True,148
+wdc-2023-12-7411346058479576349,DS,2023-12,DS|2023-12,"[""data_pipeline""]",data_pipeline,True,288
+wdc-2023-12-1752112303960904786,DS,2023-12,DS|2023-12,"[""data_pipeline"", ""ml_engineering"", ""reporting_dashboard""]",data_pipeline,True,363
+wdc-2023-12-12852036044360082570,DS,2023-12,DS|2023-12,"[""recommendation_search""]",recommendation_search,True,114
+wdc-2023-12-5712699662752757456,DS,2023-12,DS|2023-12,"[""predictive_modeling""]",predictive_modeling,True,259
+wdc-2023-12-14327693654538641395,DS,2023-12,DS|2023-12,"[""research"", ""ml_engineering""]",research,True,275
+wdc-2023-12-9391336674262529148,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""customer_marketing"", ""business_insight""]",predictive_modeling,True,199
+wdc-2023-12-6998411481120190119,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""data_pipeline"", ""business_insight""]",predictive_modeling,True,232
+wdc-2023-12-10060863012526473804,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,272
+wdc-2023-12-3884598181114529274,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""ai_adoption_automation""]",predictive_modeling,True,150
+wdc-2023-12-12857887358429926324,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""ml_engineering"", ""business_insight""]",predictive_modeling,True,119
+wdc-2023-12-11990725028824221728,DS,2023-12,DS|2023-12,"[""research""]",research,True,487
+wdc-2023-12-8450218845831051329,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,231
+wdc-2023-12-14793959848747284659,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""optimization_operations""]",predictive_modeling,True,391
+wdc-2023-12-13011292295106901361,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,False,412
+wdc-2023-12-17665011519469491481,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,106
+wdc-2023-12-8359599826644350647,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,28
+wdc-2023-12-10727652132086429189,DS,2023-12,DS|2023-12,"[""predictive_modeling"", ""optimization_operations"", ""ml_engineering""]",predictive_modeling,True,434
+wdc-2023-12-4130876289896392104,DS,2023-12,DS|2023-12,"[""research""]",research,True,367
+wdc-2023-12-16827449309413053122,DA 인접,2023-12,DA 인접|2023-12,[],none,True,211
+wdc-2023-12-14741342829257254004,DA 인접,2023-12,DA 인접|2023-12,"[""business_insight"", ""data_governance""]",business_insight,True,158
+wdc-2023-12-8528770795790151425,DA 인접,2023-12,DA 인접|2023-12,"[""business_insight"", ""data_pipeline""]",business_insight,True,280
+wdc-2023-12-1209869128505875950,DA 인접,2023-12,DA 인접|2023-12,[],none,True,6
+wdc-2023-12-11335324509244620859,DA 인접,2023-12,DA 인접|2023-12,[],none,True,203
+wdc-2023-12-10270701321327970738,DA 인접,2023-12,DA 인접|2023-12,[],none,True,235
+wdc-2023-12-6528053686318351223,DA 인접,2023-12,DA 인접|2023-12,[],none,True,315
+wdc-2023-12-6913415781099624558,DA 인접,2023-12,DA 인접|2023-12,[],none,True,34
+wdc-2023-12-16509602722439933,DA 인접,2023-12,DA 인접|2023-12,[],none,True,135
+wdc-2023-12-7514394015387274186,DA 인접,2023-12,DA 인접|2023-12,"[""business_insight""]",business_insight,True,97
+wdc-2023-12-7922682753744360322,DA 인접,2023-12,DA 인접|2023-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,139
+wdc-2023-12-6907685924116505393,DA 인접,2023-12,DA 인접|2023-12,[],none,False,309
+wdc-2023-12-15634937768905269960,DA 인접,2023-12,DA 인접|2023-12,[],none,True,200
+wdc-2023-12-6526089326670793551,DA 인접,2023-12,DA 인접|2023-12,[],none,True,11
+wdc-2023-12-8852042511789581742,DA 인접,2023-12,DA 인접|2023-12,[],none,True,260
+wdc-2023-12-13014354019403480373,DA 인접,2023-12,DA 인접|2023-12,"[""reporting_dashboard"", ""business_insight"", ""data_governance""]",reporting_dashboard,True,240
+wdc-2023-12-3741169437406768591,DA 인접,2023-12,DA 인접|2023-12,[],none,True,307
+wdc-2023-12-14129348934283441034,DA 인접,2023-12,DA 인접|2023-12,[],none,True,454
+wdc-2023-12-8650768459477481437,DA 인접,2023-12,DA 인접|2023-12,[],none,True,428
+wdc-2023-12-2637810196629762364,DA 인접,2023-12,DA 인접|2023-12,[],none,True,87
+wdc-2024-12-11643591557738064661,DA,2024-12,DA|2024-12,"[""business_insight"", ""predictive_modeling""]",business_insight,True,51
+wdc-2024-12-14604364238552612960,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,False,9
+wdc-2024-12-5625784853309251356,DA,2024-12,DA|2024-12,"[""data_pipeline"", ""reporting_dashboard""]",data_pipeline,True,327
+wdc-2024-12-2793192347276099638,DA,2024-12,DA|2024-12,"[""experimentation_causal"", ""metric_design"", ""predictive_modeling"", ""business_insight""]",experimentation_causal,False,138
+wdc-2024-12-4070253599722927745,DA,2024-12,DA|2024-12,"[""customer_marketing"", ""business_insight"", ""reporting_dashboard""]",customer_marketing,True,43
+wdc-2024-12-7192742523761273085,DA,2024-12,DA|2024-12,"[""business_insight"", ""predictive_modeling""]",business_insight,True,228
+wdc-2024-12-15589210836621449383,DA,2024-12,DA|2024-12,"[""predictive_modeling"", ""optimization_operations"", ""business_insight""]",predictive_modeling,True,74
+wdc-2024-12-6415917138219469867,DA,2024-12,DA|2024-12,"[""data_governance""]",data_governance,True,418
+wdc-2024-12-17299072217541804555,DA,2024-12,DA|2024-12,"[""business_insight""]",business_insight,True,93
+wdc-2024-12-18273456259823054290,DA,2024-12,DA|2024-12,"[""business_insight""]",business_insight,True,197
+wdc-2024-12-3865255387694081360,DA,2024-12,DA|2024-12,[],none,False,409
+wdc-2024-12-9193763023182395227,DA,2024-12,DA|2024-12,"[""business_insight"", ""customer_marketing""]",business_insight,True,116
+wdc-2024-12-9349683047977598284,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,False,261
+wdc-2024-12-13931806165298201869,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""business_insight"", ""ai_adoption_automation""]",reporting_dashboard,True,473
+wdc-2024-12-17879576592766205585,DA,2024-12,DA|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,431
+wdc-2024-12-2421738728455098153,DA,2024-12,DA|2024-12,"[""data_governance""]",data_governance,True,400
+wdc-2024-12-5968448432229313011,DA,2024-12,DA|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,396
+wdc-2024-12-8872277494029428210,DA,2024-12,DA|2024-12,"[""business_insight"", ""metric_design"", ""experimentation_causal"", ""reporting_dashboard""]",business_insight,True,213
+wdc-2024-12-15336533360401869199,DA,2024-12,DA|2024-12,[],none,True,241
+wdc-2024-12-15766123965476503282,DA,2024-12,DA|2024-12,"[""ai_adoption_automation""]",ai_adoption_automation,True,416
+wdc-2024-12-7023555566574084547,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,208
+wdc-2024-12-3110856248483752175,DA,2024-12,DA|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,398
+wdc-2024-12-11386041288802495808,DA,2024-12,DA|2024-12,"[""business_insight"", ""predictive_modeling""]",business_insight,True,205
+wdc-2024-12-4111128257338821960,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,True,505
+wdc-2024-12-87518385892676407,DA,2024-12,DA|2024-12,[],none,True,466
+wdc-2024-12-3348472483167013167,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""metric_design""]",reporting_dashboard,False,429
+wdc-2024-12-2636357684365231506,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""business_insight"", ""data_pipeline""]",reporting_dashboard,True,503
+wdc-2024-12-4046678657190181417,DA,2024-12,DA|2024-12,"[""reporting_dashboard""]",reporting_dashboard,True,69
+wdc-2024-12-2434079521685086727,DA,2024-12,DA|2024-12,"[""data_governance""]",data_governance,True,188
+wdc-2024-12-17740613146627588363,DA,2024-12,DA|2024-12,"[""data_governance""]",data_governance,True,144
+wdc-2024-12-6381045540697233870,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""data_pipeline"", ""business_insight""]",reporting_dashboard,True,401
+wdc-2024-12-11601492861425068631,DA,2024-12,DA|2024-12,[],none,True,162
+wdc-2024-12-17760061966692683030,DA,2024-12,DA|2024-12,"[""data_pipeline"", ""data_governance""]",data_pipeline,False,508
+wdc-2024-12-227567135517029601,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""ai_adoption_automation""]",reporting_dashboard,False,27
+wdc-2024-12-13375836899774184061,DA,2024-12,DA|2024-12,[],none,False,426
+wdc-2024-12-18232193705907701160,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""data_governance""]",reporting_dashboard,True,118
+wdc-2024-12-5360276981521296982,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,17
+wdc-2024-12-11197789154749352070,DA,2024-12,DA|2024-12,[],none,True,263
+wdc-2024-12-11929921163321436648,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,360
+wdc-2024-12-3225358681054019341,DA,2024-12,DA|2024-12,"[""data_pipeline"", ""data_governance""]",data_pipeline,False,130
+wdc-2024-12-18086569909043018460,DA,2024-12,DA|2024-12,"[""business_insight"", ""reporting_dashboard"", ""metric_design"", ""experimentation_causal""]",business_insight,True,346
+wdc-2024-12-5933701437391471177,DA,2024-12,DA|2024-12,"[""research"", ""predictive_modeling""]",research,True,374
+wdc-2024-12-14129524959947856459,DA,2024-12,DA|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,351
+wdc-2024-12-4894128285642399496,DA,2024-12,DA|2024-12,"[""data_pipeline"", ""business_insight"", ""data_governance""]",data_pipeline,True,65
+wdc-2024-12-5155270439792501345,DA,2024-12,DA|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,306
+wdc-2024-12-7498462271426171532,DA,2024-12,DA|2024-12,"[""reporting_dashboard"", ""business_insight"", ""metric_design""]",reporting_dashboard,True,507
+wdc-2024-12-1657174764703696003,DA,2024-12,DA|2024-12,"[""ai_adoption_automation""]",ai_adoption_automation,True,403
+wdc-2024-12-17291826356410634970,DA,2024-12,DA|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,504
+wdc-2024-12-2369903786411965203,DA,2024-12,DA|2024-12,"[""business_insight""]",business_insight,True,23
+wdc-2024-12-12331952204509346702,DA,2024-12,DA|2024-12,"[""business_insight""]",business_insight,True,456
+wdc-2024-12-4889735383299932411,BA/BI,2024-12,BA/BI|2024-12,[],none,True,438
+wdc-2024-12-582457820326748845,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard""]",reporting_dashboard,True,264
+wdc-2024-12-15546086675829169709,BA/BI,2024-12,BA/BI|2024-12,[],none,False,163
+wdc-2024-12-16620660791730639140,BA/BI,2024-12,BA/BI|2024-12,"[""data_governance"", ""data_pipeline"", ""metric_design"", ""reporting_dashboard""]",data_governance,True,290
+wdc-2024-12-14078180438116531944,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard""]",reporting_dashboard,True,294
+wdc-2024-12-695378314902654785,BA/BI,2024-12,BA/BI|2024-12,[],none,True,79
+wdc-2024-12-3551101002506364041,BA/BI,2024-12,BA/BI|2024-12,"[""business_insight"", ""metric_design"", ""data_pipeline"", ""reporting_dashboard""]",business_insight,True,293
+wdc-2024-12-12038382212076224918,BA/BI,2024-12,BA/BI|2024-12,"[""data_pipeline""]",data_pipeline,False,222
+wdc-2024-12-8338763928787508245,BA/BI,2024-12,BA/BI|2024-12,[],none,False,357
+wdc-2024-12-760587561242618396,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,False,375
+wdc-2024-12-13032492910083253515,BA/BI,2024-12,BA/BI|2024-12,[],none,True,395
+wdc-2024-12-8721809264178173247,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard""]",reporting_dashboard,True,179
+wdc-2024-12-6378523086930289005,BA/BI,2024-12,BA/BI|2024-12,[],none,True,247
+wdc-2024-12-14145575344958358908,BA/BI,2024-12,BA/BI|2024-12,[],none,True,305
+wdc-2024-12-15987113661085637610,BA/BI,2024-12,BA/BI|2024-12,"[""business_insight"", ""customer_marketing""]",business_insight,True,399
+wdc-2024-12-1625699401437121995,BA/BI,2024-12,BA/BI|2024-12,"[""metric_design"", ""reporting_dashboard"", ""business_insight""]",metric_design,True,152
+wdc-2024-12-11043645194416184736,BA/BI,2024-12,BA/BI|2024-12,[],none,True,78
+wdc-2024-12-9840580580842877835,BA/BI,2024-12,BA/BI|2024-12,[],none,False,254
+wdc-2024-12-17206490200222473472,BA/BI,2024-12,BA/BI|2024-12,[],none,False,49
+wdc-2024-12-15508509373931914562,BA/BI,2024-12,BA/BI|2024-12,"[""business_insight""]",business_insight,True,352
+wdc-2024-12-11254660470681474551,BA/BI,2024-12,BA/BI|2024-12,"[""business_insight"", ""reporting_dashboard"", ""data_pipeline""]",business_insight,True,492
+wdc-2024-12-11771526507610413979,BA/BI,2024-12,BA/BI|2024-12,[],none,True,224
+wdc-2024-12-11848617913325673465,BA/BI,2024-12,BA/BI|2024-12,[],none,True,196
+wdc-2024-12-10654301479135252554,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,False,91
+wdc-2024-12-2334458018033404273,BA/BI,2024-12,BA/BI|2024-12,[],none,True,166
+wdc-2024-12-6589169268891481556,BA/BI,2024-12,BA/BI|2024-12,[],none,False,464
+wdc-2024-12-17622567242748829189,BA/BI,2024-12,BA/BI|2024-12,"[""metric_design"", ""reporting_dashboard"", ""business_insight""]",business_insight,False,19
+wdc-2024-12-15640657422846850462,BA/BI,2024-12,BA/BI|2024-12,[],none,True,146
+wdc-2024-12-6475487914190256562,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard""]",reporting_dashboard,False,59
+wdc-2024-12-6979342660977171688,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard"", ""data_pipeline""]",reporting_dashboard,True,180
+wdc-2024-12-12561223345719115114,BA/BI,2024-12,BA/BI|2024-12,"[""business_insight"", ""reporting_dashboard"", ""data_pipeline""]",business_insight,True,266
+wdc-2024-12-13900182813876303701,BA/BI,2024-12,BA/BI|2024-12,"[""metric_design"", ""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,348
+wdc-2024-12-9339160891496444604,BA/BI,2024-12,BA/BI|2024-12,"[""data_governance"", ""business_insight""]",data_governance,True,430
+wdc-2024-12-14774517882676229064,BA/BI,2024-12,BA/BI|2024-12,[],none,True,96
+wdc-2024-12-11984656026455896269,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard"", ""metric_design""]",reporting_dashboard,True,161
+wdc-2024-12-8429100644377508937,BA/BI,2024-12,BA/BI|2024-12,[],none,True,5
+wdc-2024-12-15007049983120518450,BA/BI,2024-12,BA/BI|2024-12,[],none,True,26
+wdc-2024-12-425222339021436161,BA/BI,2024-12,BA/BI|2024-12,[],none,False,457
+wdc-2024-12-16791987479160024434,BA/BI,2024-12,BA/BI|2024-12,"[""data_pipeline"", ""reporting_dashboard""]",data_pipeline,True,167
+wdc-2024-12-16543747147744173706,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard""]",reporting_dashboard,False,64
+wdc-2024-12-17922855385668966335,BA/BI,2024-12,BA/BI|2024-12,[],none,True,365
+wdc-2024-12-6405837243943191915,BA/BI,2024-12,BA/BI|2024-12,[],none,True,291
+wdc-2024-12-12156801952592731732,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard"", ""predictive_modeling""]",reporting_dashboard,False,170
+wdc-2024-12-7057020589766708097,BA/BI,2024-12,BA/BI|2024-12,[],none,False,498
+wdc-2024-12-6278421838501636758,BA/BI,2024-12,BA/BI|2024-12,"[""business_insight"", ""metric_design""]",business_insight,False,141
+wdc-2024-12-44086768424326412,BA/BI,2024-12,BA/BI|2024-12,[],none,True,140
+wdc-2024-12-17765103679118403326,BA/BI,2024-12,BA/BI|2024-12,"[""business_insight"", ""reporting_dashboard"", ""metric_design""]",business_insight,True,127
+wdc-2024-12-8029864736308477097,BA/BI,2024-12,BA/BI|2024-12,"[""reporting_dashboard""]",reporting_dashboard,True,56
+wdc-2024-12-10043581426350700438,BA/BI,2024-12,BA/BI|2024-12,"[""data_governance""]",data_governance,False,29
+wdc-2024-12-3333045643997346330,BA/BI,2024-12,BA/BI|2024-12,[],none,True,408
+wdc-2024-12-2101128868858512996,DS,2024-12,DS|2024-12,"[""data_governance""]",data_governance,True,427
+wdc-2024-12-14508377423274376925,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,4
+wdc-2024-12-8881835645109801021,DS,2024-12,DS|2024-12,[],none,True,424
+wdc-2024-12-3138727560673762420,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""customer_marketing""]",predictive_modeling,True,415
+wdc-2024-12-9533636589788031145,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""research""]",predictive_modeling,True,32
+wdc-2024-12-13975405995499654038,DS,2024-12,DS|2024-12,"[""llm_agent_dev"", ""ml_engineering"", ""predictive_modeling""]",llm_agent_dev,True,183
+wdc-2024-12-396785597063486262,DS,2024-12,DS|2024-12,"[""ai_adoption_automation"", ""predictive_modeling""]",ai_adoption_automation,True,471
+wdc-2024-12-5988077486301705207,DS,2024-12,DS|2024-12,"[""predictive_modeling""]",predictive_modeling,True,104
+wdc-2024-12-16758323405587163392,DS,2024-12,DS|2024-12,"[""research"", ""predictive_modeling"", ""data_pipeline""]",research,True,282
+wdc-2024-12-9662778005459952969,DS,2024-12,DS|2024-12,"[""business_insight"", ""experimentation_causal"", ""predictive_modeling"", ""data_pipeline""]",business_insight,True,47
+wdc-2024-12-11992166834833335198,DS,2024-12,DS|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,39
+wdc-2024-12-16010568722276203087,DS,2024-12,DS|2024-12,"[""optimization_operations"", ""customer_marketing"", ""business_insight""]",optimization_operations,True,143
+wdc-2024-12-5388112844211481974,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""recommendation_search"", ""business_insight"", ""data_pipeline""]",predictive_modeling,True,422
+wdc-2024-12-10043034619348172843,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,False,382
+wdc-2024-12-18213698275923966913,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""optimization_operations"", ""ml_engineering""]",predictive_modeling,False,251
+wdc-2024-12-17371233970128616370,DS,2024-12,DS|2024-12,"[""data_pipeline"", ""data_governance""]",data_pipeline,True,128
+wdc-2024-12-1002879314901183944,DS,2024-12,DS|2024-12,"[""predictive_modeling""]",predictive_modeling,True,491
+wdc-2024-12-17912338979273390519,DS,2024-12,DS|2024-12,"[""business_insight"", ""experimentation_causal"", ""metric_design"", ""reporting_dashboard""]",business_insight,True,404
+wdc-2024-12-6422173754825494238,DS,2024-12,DS|2024-12,"[""business_insight""]",business_insight,True,92
+wdc-2024-12-7126562572834338161,DS,2024-12,DS|2024-12,"[""data_pipeline"", ""data_governance""]",data_pipeline,False,277
+wdc-2024-12-5858962385092176487,DS,2024-12,DS|2024-12,"[""business_insight"", ""predictive_modeling""]",predictive_modeling,True,54
+wdc-2024-12-16379906584104876572,DS,2024-12,DS|2024-12,"[""experimentation_causal"", ""recommendation_search"", ""metric_design""]",experimentation_causal,True,432
+wdc-2024-12-8569464798540528543,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""experimentation_causal"", ""business_insight"", ""reporting_dashboard""]",predictive_modeling,True,16
+wdc-2024-12-13003819608688359962,DS,2024-12,DS|2024-12,"[""predictive_modeling""]",predictive_modeling,False,322
+wdc-2024-12-5367290296030173793,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,387
+wdc-2024-12-18257481222376795640,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""ai_adoption_automation""]",predictive_modeling,True,89
+wdc-2024-12-7452771889662420495,DS,2024-12,DS|2024-12,"[""ml_engineering""]",ml_engineering,True,233
+wdc-2024-12-17033824836652536748,DS,2024-12,DS|2024-12,"[""ml_engineering"", ""data_pipeline""]",ml_engineering,False,317
+wdc-2024-12-16567427296742121313,DS,2024-12,DS|2024-12,"[""business_insight"", ""experimentation_causal"", ""metric_design"", ""reporting_dashboard""]",business_insight,True,245
+wdc-2024-12-8540527422754254498,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,177
+wdc-2024-12-8630312457137979817,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""ml_engineering"", ""business_insight""]",predictive_modeling,True,493
+wdc-2024-12-18083557751580575541,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,238
+wdc-2024-12-18006233359730838922,DS,2024-12,DS|2024-12,"[""business_insight"", ""reporting_dashboard"", ""customer_marketing""]",business_insight,True,386
+wdc-2024-12-2601237422523173204,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,361
+wdc-2024-12-6061470095402858747,DS,2024-12,DS|2024-12,"[""business_insight"", ""predictive_modeling""]",business_insight,True,194
+wdc-2024-12-7793555001178304030,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""llm_agent_dev"", ""business_insight""]",predictive_modeling,True,94
+wdc-2024-12-4391937726753665448,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,204
+wdc-2024-12-7470776053710045459,DS,2024-12,DS|2024-12,"[""business_insight"", ""customer_marketing""]",business_insight,True,215
+wdc-2024-12-11115291498622329068,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""research"", ""ml_engineering""]",predictive_modeling,True,392
+wdc-2024-12-10592188297264762366,DS,2024-12,DS|2024-12,"[""data_governance""]",data_governance,True,483
+wdc-2024-12-15492017182280885583,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""business_insight""]",predictive_modeling,True,0
+wdc-2024-12-1404942856435339622,DS,2024-12,DS|2024-12,"[""predictive_modeling""]",predictive_modeling,True,362
+wdc-2024-12-158968637940512954,DS,2024-12,DS|2024-12,"[""ml_engineering"", ""data_pipeline""]",ml_engineering,True,62
+wdc-2024-12-8838171824529467790,DS,2024-12,DS|2024-12,"[""metric_design"", ""experimentation_causal"", ""business_insight""]",business_insight,True,134
+wdc-2024-12-7683063526676751282,DS,2024-12,DS|2024-12,"[""data_pipeline"", ""ai_adoption_automation""]",data_pipeline,False,214
+wdc-2024-12-7497101422227054859,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,243
+wdc-2024-12-6328689692229909234,DS,2024-12,DS|2024-12,"[""experimentation_causal"", ""business_insight""]",experimentation_causal,True,223
+wdc-2024-12-4016228521145103610,DS,2024-12,DS|2024-12,"[""predictive_modeling"", ""ml_engineering""]",predictive_modeling,True,298
+wdc-2024-12-2347934411252599657,DS,2024-12,DS|2024-12,"[""ml_engineering""]",ml_engineering,True,443
+wdc-2024-12-16979982824064089824,DS,2024-12,DS|2024-12,"[""optimization_operations"", ""research""]",optimization_operations,True,337
+wdc-2024-12-3915250509403524935,DA 인접,2024-12,DA 인접|2024-12,"[""reporting_dashboard"", ""business_insight""]",reporting_dashboard,True,321
+wdc-2024-12-11056182159042233227,DA 인접,2024-12,DA 인접|2024-12,[],none,True,353
+wdc-2024-12-14628355915332270986,DA 인접,2024-12,DA 인접|2024-12,[],none,True,86
+wdc-2024-12-10908792102773106262,DA 인접,2024-12,DA 인접|2024-12,[],none,True,334
+wdc-2024-12-16745711529474520576,DA 인접,2024-12,DA 인접|2024-12,[],none,True,343
+wdc-2024-12-1496225284138590659,DA 인접,2024-12,DA 인접|2024-12,[],none,True,468
+wdc-2024-12-5583514444521825247,DA 인접,2024-12,DA 인접|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,385
+wdc-2024-12-13069262192618605596,DA 인접,2024-12,DA 인접|2024-12,"[""business_insight""]",business_insight,True,335
+wdc-2024-12-9829008132808046443,DA 인접,2024-12,DA 인접|2024-12,[],none,True,271
+wdc-2024-12-6451372055028124831,DA 인접,2024-12,DA 인접|2024-12,"[""optimization_operations"", ""business_insight""]",optimization_operations,True,178
+wdc-2024-12-15417680471534718939,DA 인접,2024-12,DA 인접|2024-12,[],none,True,58
+wdc-2024-12-15466359816224775969,DA 인접,2024-12,DA 인접|2024-12,[],none,True,242
+wdc-2024-12-8374977519419062977,DA 인접,2024-12,DA 인접|2024-12,[],none,True,182
+wdc-2024-12-7468845920898762873,DA 인접,2024-12,DA 인접|2024-12,[],none,True,18
+wdc-2024-12-15589771505552745803,DA 인접,2024-12,DA 인접|2024-12,[],none,True,372
+wdc-2024-12-2815701696714133808,DA 인접,2024-12,DA 인접|2024-12,"[""business_insight"", ""reporting_dashboard""]",business_insight,True,419
+wdc-2024-12-2090109661397647289,DA 인접,2024-12,DA 인접|2024-12,[],none,True,276
+wdc-2024-12-3780601353312533507,DA 인접,2024-12,DA 인접|2024-12,"[""business_insight"", ""predictive_modeling""]",business_insight,True,125
+wdc-2024-12-9274210709652129330,DA 인접,2024-12,DA 인접|2024-12,[],none,True,33
+wdc-2024-12-6548002367240006083,DA 인접,2024-12,DA 인접|2024-12,[],none,True,325

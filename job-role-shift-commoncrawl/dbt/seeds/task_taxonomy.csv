@@ -1,0 +1,15 @@
+task_id,task,task_group
+reporting_dashboard,리포팅 · 대시보드,분석
+metric_design,지표 설계 · 트래킹,분석
+experimentation_causal,실험 · 인과 분석,분석
+business_insight,비즈니스 인사이트 · 의사결정 지원,분석
+customer_marketing,고객 · 마케팅 · CRM 분석,분석
+predictive_modeling,예측 · ML 모델링,모델링
+recommendation_search,추천 · 검색 · 개인화,모델링
+optimization_operations,최적화 · 운영 의사결정,모델링
+data_pipeline,데이터 파이프라인 · 마트 구축,데이터 엔지니어링
+data_governance,데이터 거버넌스 · 품질,데이터 엔지니어링
+ml_engineering,ML 엔지니어링 · MLOps,AI 엔지니어링
+llm_agent_dev,LLM · AI 에이전트 개발,AI 엔지니어링
+ai_adoption_automation,AI 도입 · 업무 자동화,AI 엔지니어링
+research,연구 · 새 방법론,연구

@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: skill_demand_vs_activity
+    description: 기술별 국내 공고 수요 vs PyPI 활동량. Streamlit 대시보드가 읽는 표
+    columns:
+      - name: skill
+        tests: [unique, not_null]
+      - name: posting_share
+        description: jobkko 공고 그룹 중 이 기술이 나온 비율
+        tests: [not_null]
+      - name: quadrant
+        tests:
+          - accepted_values:
+              values: ['수요 높음 · 활동 높음', '수요 높음 · 활동 낮음', '수요 낮음 · 활동 높음', '수요 낮음 · 활동 낮음', '활동량 측정 안 함']
+
+  - name: task_mix
+    description: >-
+      출처 × 회차 × 직무군 × 업무 유형 비중. 공고 하나에 업무가 여러 개라 posting_share 합은 1보다 크다.
+      국내는 라벨을 그대로 센 값 (구간 없음), wdc 는 전체 공고에 모델을 적용해 평가 표본으로 보정한 값 + 95% 구간 (period ALL = 세 회차 합).
+      evidence 가 참고용인 행은 근거 수치로 쓰지 않는다
+    columns:
+      - name: cell_key
+        description: source | period | role_family | task_id
+        tests: [unique, not_null]
+      - name: task_id
+        tests:
+          - relationships:
+              to: ref('task_taxonomy')
+              field: task_id
+      - name: evidence
+        tests:
+          - accepted_values:
+              values: ['라벨', '근거', '참고용']
+      - name: posting_share
+        description: 그 칸의 데이터 직무 공고 중 이 업무가 목록에 있는 비율
+        tests: [not_null]
+      - name: primary_share
+        description: 그 칸의 데이터 직무 공고 중 이 업무가 대표 업무인 비율 (칸 안 합계 1)
+        tests: [not_null]
+
+  - name: task_group_mix
+    description: 출처 × 회차 × 직무군 × 업무 묶음 비중. 묶음 안 업무가 하나라도 목록에 있는 공고의 비율. 직무군 단위 근거는 이 표다
+    columns:
+      - name: cell_key
+        description: source | period | role_family | task_group
+        tests: [unique, not_null]
+      - name: evidence
+        tests:
+          - accepted_values:
+              values: ['라벨', '근거', '참고용']
+      - name: posting_share
+        tests: [not_null]

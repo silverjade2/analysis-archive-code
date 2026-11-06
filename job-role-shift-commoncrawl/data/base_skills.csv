@@ -1,0 +1,38 @@
+skill,category,mine,pattern
+SQL,언어,Y,(^|[^a-z0-9])(sql|mysql|postgresql|postgres|mssql|oracle sql|쿼리)([^a-z0-9]|$)
+Python,언어,Y,python|파이썬|pandas
+R,언어,N,"(^|[^a-z0-9])r\s*(언어|studio|스튜디오|프로그래밍)|(python|파이썬|sql)\s*(/|,|·|및|또는|or|and|&)\s*r([^a-z0-9&\-]|$)|(^|[^a-z0-9])r\s*(/|,|·|및|또는|or|and|&)\s*(python|파이썬|sql)"
+Spark,데이터 처리,N,spark|스파크
+Hadoop,데이터 처리,N,hadoop|하둡|(^|[^a-z0-9])hive([^a-z0-9]|$)
+Airflow,데이터 처리,N,airflow|에어플로
+dbt,데이터 처리,N,(^|[^a-z0-9])dbt([^a-z0-9]|$)
+BigQuery,웨어하우스,Y,bigquery|big query|빅쿼리
+Redshift,웨어하우스,N,redshift|레드시프트
+Snowflake,웨어하우스,N,snowflake|스노우플레이크
+Tableau,BI,Y,tableau|태블로|타블로
+Power BI,BI,Y,power\s?bi|파워\s?bi
+Looker,BI,N,looker|루커
+A/B 테스트,분석 방법,Y,a\s?/\s?b\s?(test|테스트|테스팅|실험)|(^|[^a-z0-9])ab\s?(test|테스트)|에이비\s?테스트
+통계,분석 방법,Y,통계|statistic
+실험 설계,분석 방법,N,실험\s?(설계|디자인)|experiment(al)?\s?design|가설\s?검정|hypothesis test|causal|인과\s?(추론|분석|관계)
+머신러닝,모델링,Y,머신\s?러닝|machine learning|(^|[^a-z0-9])ml([^a-z0-9]|$)|기계\s?학습
+딥러닝,모델링,Y,딥\s?러닝|deep learning|pytorch|tensorflow|파이토치|텐서플로
+LLM,모델링,N,(^|[^a-z0-9])llms?([^a-z0-9]|$)|대규모\s?언어\s?모델|대형\s?언어\s?모델|생성형\s?ai|gen\s?ai|(^|[^a-z0-9])(chat)?gpt|(^|[^a-z0-9])rag([^a-z0-9]|$)|프롬프트|prompt
+추천,모델링,N,추천\s?(시스템|모델|알고리즘|엔진|서비스|로직|랭킹|피드|결과|품질|성능)|개인화\s?(추천|모델|서비스)|recommend|recsys|(검색|search)\s?(/|·|및|과)\s?추천|추천\s?(/|·|및|과)\s?(검색|랭킹)
+Google Analytics,제품 분석 도구,N,(^|[^a-z0-9])ga4|google\s?analytics
+Amplitude,제품 분석 도구,N,amplitude|앰플리튜드
+Mixpanel,제품 분석 도구,N,mixpanel|믹스패널
+GCP,클라우드,Y,(^|[^a-z0-9])gcp([^a-z0-9]|$)|google\s?cloud|구글\s?클라우드|vertex\s?ai
+Braze,제품 분석 도구,N,braze|브레이즈
+AWS,클라우드,Y,(^|[^a-z0-9])aws([^a-z0-9]|$)|amazon web services|아마존\s?웹\s?서비스|(^|[^a-z0-9])(s3|ec2|athena|aurora|rds|glue)([^a-z0-9]|$)|sagemaker
+Azure,클라우드,N,azure|애저
+Superset · Metabase · Redash,BI,Y,superset|metabase|메타베이스|redash|리대시
+Databricks,웨어하우스,N,databricks|데이터브릭스
+시계열,분석 방법,N,시계열|time[\s-]?series
+그로스 · 퍼널,분석 방법,N,그로스\s?(해킹|해커|분석|마케팅|실험|전략|지표|데이터)|growth\s?(·|/)?\s?(hack|analy|marketing|experiment|metric|model)|퍼널|funnel
+코호트 · 리텐션,분석 방법,N,코호트|cohort|리텐션|retention
+NLP,모델링,N,(^|[^a-z0-9])nlp([^a-z0-9]|$)|자연어\s?(처리|분석|이해|생성|모델)|natural language
+MLOps,모델링,N,ml\s?ops|mlflow|kubeflow
+Scikit-learn,모델링,Y,scikit|sklearn|사이킷
+PyTorch,모델링,Y,pytorch|파이토치
+TensorFlow,모델링,Y,tensorflow|텐서플로|keras|케라스

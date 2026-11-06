@@ -1,0 +1,13 @@
+# dbt Projects on Snowflake 용. Snowflake 안에서 돌면 지금 로그인한 계정 · 사용자로 실행되므로 account · user · 비밀번호가 필요 없다
+bigdata:
+  target: dev
+  outputs:
+    dev:
+      type: snowflake
+      account: "not needed"
+      user: "not needed"
+      role: ACCOUNTADMIN
+      database: BIGDATA
+      schema: ANALYTICS
+      warehouse: BIGDATA_WH
+      threads: 4

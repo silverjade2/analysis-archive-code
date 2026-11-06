@@ -1,0 +1,134 @@
+평가 범위,n,unit,f1
+전체 510,510,reporting_dashboard,0.627886632849412
+전체 510,510,metric_design,0.3446503721755211
+전체 510,510,experimentation_causal,0.59879177677797
+전체 510,510,business_insight,0.5965298945292468
+전체 510,510,customer_marketing,0.5110062177392192
+전체 510,510,predictive_modeling,0.6868064682813322
+전체 510,510,recommendation_search,0.24240976849890222
+전체 510,510,optimization_operations,0.20566782400715705
+전체 510,510,data_pipeline,0.3944656167905355
+전체 510,510,data_governance,0.36085279998442016
+전체 510,510,ml_engineering,0.5849024912724069
+전체 510,510,llm_agent_dev,0.3258260116322237
+전체 510,510,ai_adoption_automation,0.0
+전체 510,510,research,0.7811409482204805
+전체 510,510,[그룹] 분석,0.6739936724773219
+전체 510,510,[그룹] 모델링,0.6139370120412065
+전체 510,510,[그룹] 데이터 엔지니어링,0.4436830795064126
+전체 510,510,[그룹] AI 엔지니어링,0.5388783024352432
+전체 510,510,[그룹] 연구,0.7811409482204805
+주 대상 450,450,reporting_dashboard,0.7512265948491291
+주 대상 450,450,metric_design,0.3594548273510979
+주 대상 450,450,experimentation_causal,0.6584224792798421
+주 대상 450,450,business_insight,0.7210750074319864
+주 대상 450,450,customer_marketing,0.5110062177392192
+주 대상 450,450,predictive_modeling,0.7720549127189437
+주 대상 450,450,recommendation_search,0.24240976849890222
+주 대상 450,450,optimization_operations,0.32812044870508583
+주 대상 450,450,data_pipeline,0.47505643796686503
+주 대상 450,450,data_governance,0.5203859185488722
+주 대상 450,450,ml_engineering,0.5849024912724069
+주 대상 450,450,llm_agent_dev,0.3258260116322237
+주 대상 450,450,ai_adoption_automation,0.0
+주 대상 450,450,research,0.6905027526936425
+주 대상 450,450,[그룹] 분석,0.8095772886331849
+주 대상 450,450,[그룹] 모델링,0.7603395162876057
+주 대상 450,450,[그룹] 데이터 엔지니어링,0.5639528153082537
+주 대상 450,450,[그룹] AI 엔지니어링,0.5388783024352432
+주 대상 450,450,[그룹] 연구,0.6905027526936425
+"주 대상, 학습과 같은 조직 제외",380,reporting_dashboard,0.7550085778873015
+"주 대상, 학습과 같은 조직 제외",380,metric_design,0.3809078576406715
+"주 대상, 학습과 같은 조직 제외",380,experimentation_causal,0.62525279195476
+"주 대상, 학습과 같은 조직 제외",380,business_insight,0.7044193407739291
+"주 대상, 학습과 같은 조직 제외",380,customer_marketing,0.532433247421214
+"주 대상, 학습과 같은 조직 제외",380,predictive_modeling,0.7500540175696003
+"주 대상, 학습과 같은 조직 제외",380,recommendation_search,0.19117284457960057
+"주 대상, 학습과 같은 조직 제외",380,optimization_operations,0.22317564727119862
+"주 대상, 학습과 같은 조직 제외",380,data_pipeline,0.4875361337559187
+"주 대상, 학습과 같은 조직 제외",380,data_governance,0.5192281023649765
+"주 대상, 학습과 같은 조직 제외",380,ml_engineering,0.6113245899376712
+"주 대상, 학습과 같은 조직 제외",380,llm_agent_dev,0.2155987717502559
+"주 대상, 학습과 같은 조직 제외",380,ai_adoption_automation,0.0
+"주 대상, 학습과 같은 조직 제외",380,research,0.7273508291322883
+"주 대상, 학습과 같은 조직 제외",380,[그룹] 분석,0.8061601901254387
+"주 대상, 학습과 같은 조직 제외",380,[그룹] 모델링,0.7268230586088065
+"주 대상, 학습과 같은 조직 제외",380,[그룹] 데이터 엔지니어링,0.5659650736840924
+"주 대상, 학습과 같은 조직 제외",380,[그룹] AI 엔지니어링,0.5331667962306366
+"주 대상, 학습과 같은 조직 제외",380,[그룹] 연구,0.7273508291322883
+DA,150,reporting_dashboard,0.756370724060763
+DA,150,metric_design,0.28859438029119994
+DA,150,experimentation_causal,0.566782553998113
+DA,150,business_insight,0.7488606267682657
+DA,150,customer_marketing,0.5278085392228676
+DA,150,predictive_modeling,0.3174368389749424
+DA,150,recommendation_search,0.0
+DA,150,optimization_operations,0.5295193052878406
+DA,150,data_pipeline,0.4851334512514409
+DA,150,data_governance,0.6120420010649008
+DA,150,ml_engineering,0.0
+DA,150,llm_agent_dev,0.0
+DA,150,ai_adoption_automation,0.0
+DA,150,research,0.8291751582108763
+DA,150,[그룹] 분석,0.8548687052467413
+DA,150,[그룹] 모델링,0.4192491145892837
+DA,150,[그룹] 데이터 엔지니어링,0.572469199290982
+DA,150,[그룹] AI 엔지니어링,0.0
+DA,150,[그룹] 연구,0.8291751582108763
+BA/BI,150,reporting_dashboard,0.7663495088491236
+BA/BI,150,metric_design,0.382122752948268
+BA/BI,150,experimentation_causal,0.0
+BA/BI,150,business_insight,0.624424835459258
+BA/BI,150,customer_marketing,0.7804056222322059
+BA/BI,150,predictive_modeling,0.0
+BA/BI,150,recommendation_search,0.0
+BA/BI,150,optimization_operations,0.0
+BA/BI,150,data_pipeline,0.508674077367719
+BA/BI,150,data_governance,0.3821920130030987
+BA/BI,150,ml_engineering,0.0
+BA/BI,150,llm_agent_dev,0.0
+BA/BI,150,ai_adoption_automation,0.0
+BA/BI,150,research,0.0
+BA/BI,150,[그룹] 분석,0.7746462996799198
+BA/BI,150,[그룹] 모델링,0.2314601074663925
+BA/BI,150,[그룹] 데이터 엔지니어링,0.58216465892124
+BA/BI,150,[그룹] AI 엔지니어링,0.0
+BA/BI,150,[그룹] 연구,0.0
+DS,150,reporting_dashboard,0.6142418974958324
+DS,150,metric_design,0.5082391090105651
+DS,150,experimentation_causal,0.7882511730798278
+DS,150,business_insight,0.731993540507701
+DS,150,customer_marketing,0.26798494466603
+DS,150,predictive_modeling,0.869786936710268
+DS,150,recommendation_search,0.2656658955438105
+DS,150,optimization_operations,0.2820956548774836
+DS,150,data_pipeline,0.3706889964626511
+DS,150,data_governance,0.3927567979427592
+DS,150,ml_engineering,0.6025961855878688
+DS,150,llm_agent_dev,0.3258260116322237
+DS,150,ai_adoption_automation,0.0
+DS,150,research,0.662221638885243
+DS,150,[그룹] 분석,0.7313771645021645
+DS,150,[그룹] 모델링,0.8748942394428342
+DS,150,[그룹] 데이터 엔지니어링,0.4962284142238414
+DS,150,[그룹] AI 엔지니어링,0.6324023405112169
+DS,150,[그룹] 연구,0.662221638885243
+DA 인접,60,reporting_dashboard,0.37975273566688117
+DA 인접,60,metric_design,0.0
+DA 인접,60,experimentation_causal,0.0
+DA 인접,60,business_insight,0.4130906778741025
+DA 인접,60,customer_marketing,0.0
+DA 인접,60,predictive_modeling,0.0
+DA 인접,60,recommendation_search,0.0
+DA 인접,60,optimization_operations,0.0
+DA 인접,60,data_pipeline,0.0
+DA 인접,60,data_governance,0.17273443775861286
+DA 인접,60,ml_engineering,0.0
+DA 인접,60,llm_agent_dev,0.0
+DA 인접,60,ai_adoption_automation,0.0
+DA 인접,60,research,1.0
+DA 인접,60,[그룹] 분석,0.43187206997277733
+DA 인접,60,[그룹] 모델링,0.0
+DA 인접,60,[그룹] 데이터 엔지니어링,0.22391952823094868
+DA 인접,60,[그룹] AI 엔지니어링,0.0
+DA 인접,60,[그룹] 연구,1.0

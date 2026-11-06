@@ -1,0 +1,313 @@
+role,kind,name,value,n,lo,hi
+BA/BI,n,공고 그룹,24.0,24,,
+BA/BI,n,라벨 공고,24.0,24,,
+BA/BI,label,none,0.0417,24,,
+BA/BI,label,분석,1.0,23,0.8569,1.0
+BA/BI,label,모델링,0.2609,23,0.1255,0.4647
+BA/BI,label,데이터 엔지니어링,0.3913,23,0.2216,0.5921
+BA/BI,label,AI 엔지니어링,0.2174,23,0.0966,0.419
+BA/BI,label,연구,0.0,23,-0.0,0.1431
+BA/BI,skill,SQL,0.7917,24,0.5953,0.9076
+BA/BI,skill,Python,0.5,24,0.3143,0.6857
+BA/BI,skill,R,0.0417,24,0.0074,0.2024
+BA/BI,skill,Spark,0.0,24,0.0,0.138
+BA/BI,skill,Hadoop,0.0833,24,0.0232,0.2585
+BA/BI,skill,Airflow,0.25,24,0.12,0.449
+BA/BI,skill,dbt,0.0,24,0.0,0.138
+BA/BI,skill,BigQuery,0.125,24,0.0434,0.31
+BA/BI,skill,Redshift,0.125,24,0.0434,0.31
+BA/BI,skill,Snowflake,0.0417,24,0.0074,0.2024
+BA/BI,skill,Tableau,0.6667,24,0.4671,0.8203
+BA/BI,skill,Power BI,0.5,24,0.3143,0.6857
+BA/BI,skill,Looker,0.1667,24,0.0668,0.3585
+BA/BI,skill,A/B 테스트,0.0,24,0.0,0.138
+BA/BI,skill,통계,0.375,24,0.2116,0.5729
+BA/BI,skill,실험 설계,0.0,24,0.0,0.138
+BA/BI,skill,머신러닝,0.125,24,0.0434,0.31
+BA/BI,skill,딥러닝,0.0,24,0.0,0.138
+BA/BI,skill,LLM,0.125,24,0.0434,0.31
+BA/BI,skill,추천,0.0,24,0.0,0.138
+BA/BI,skill,Google Analytics,0.0,24,0.0,0.138
+BA/BI,skill,Amplitude,0.125,24,0.0434,0.31
+BA/BI,skill,Mixpanel,0.0417,24,0.0074,0.2024
+BA/BI,skill,GCP,0.0833,24,0.0232,0.2585
+BA/BI,skill,Braze,0.0417,24,0.0074,0.2024
+BA/BI,skill,AWS,0.125,24,0.0434,0.31
+BA/BI,skill,Azure,0.0833,24,0.0232,0.2585
+BA/BI,skill,Superset · Metabase · Redash,0.2083,24,0.0924,0.4047
+BA/BI,skill,Databricks,0.125,24,0.0434,0.31
+BA/BI,skill,시계열,0.0,24,0.0,0.138
+BA/BI,skill,그로스 · 퍼널,0.125,24,0.0434,0.31
+BA/BI,skill,코호트 · 리텐션,0.0417,24,0.0074,0.2024
+BA/BI,skill,NLP,0.0,24,0.0,0.138
+BA/BI,skill,MLOps,0.0,24,0.0,0.138
+BA/BI,skill,Scikit-learn,0.0,24,0.0,0.138
+BA/BI,skill,PyTorch,0.0,24,0.0,0.138
+BA/BI,skill,TensorFlow,0.0,24,0.0,0.138
+BA/BI,skill,Scala,0.0,24,0.0,0.138
+BA/BI,skill,Java,0.0,24,0.0,0.138
+BA/BI,skill,SAS,0.0,24,0.0,0.138
+BA/BI,skill,SPSS,0.0,24,0.0,0.138
+BA/BI,skill,MATLAB,0.0,24,0.0,0.138
+BA/BI,skill,Excel,0.25,24,0.12,0.449
+BA/BI,skill,Kafka,0.0,24,0.0,0.138
+BA/BI,skill,Flink,0.0,24,0.0,0.138
+BA/BI,skill,Beam · Dataflow,0.0,24,0.0,0.138
+BA/BI,skill,Dagster · Prefect,0.0,24,0.0,0.138
+BA/BI,skill,Trino · Presto,0.0,24,0.0,0.138
+BA/BI,skill,Athena,0.0,24,0.0,0.138
+BA/BI,skill,Glue · EMR,0.0,24,0.0,0.138
+BA/BI,skill,Iceberg · Delta Lake,0.0833,24,0.0232,0.2585
+BA/BI,skill,DuckDB,0.0,24,0.0,0.138
+BA/BI,skill,Polars,0.0,24,0.0,0.138
+BA/BI,skill,ClickHouse,0.0,24,0.0,0.138
+BA/BI,skill,Druid,0.0,24,0.0,0.138
+BA/BI,skill,Elasticsearch,0.0,24,0.0,0.138
+BA/BI,skill,NoSQL,0.0,24,0.0,0.138
+BA/BI,skill,Fivetran · Airbyte,0.0,24,0.0,0.138
+BA/BI,skill,ETL · ELT,0.3333,24,0.1797,0.5329
+BA/BI,skill,Looker Studio,0.0,24,0.0,0.138
+BA/BI,skill,Qlik,0.0,24,0.0,0.138
+BA/BI,skill,Adobe Analytics,0.0,24,0.0,0.138
+BA/BI,skill,AppsFlyer · Adjust,0.0417,24,0.0074,0.2024
+BA/BI,skill,Firebase,0.0,24,0.0,0.138
+BA/BI,skill,Segment,0.0,24,0.0,0.138
+BA/BI,skill,Hackle · 실험 플랫폼,0.0,24,0.0,0.138
+BA/BI,skill,SageMaker,0.0,24,0.0,0.138
+BA/BI,skill,Vertex AI,0.0,24,0.0,0.138
+BA/BI,skill,Docker,0.0417,24,0.0074,0.2024
+BA/BI,skill,Kubernetes,0.0417,24,0.0074,0.2024
+BA/BI,skill,Git,0.125,24,0.0434,0.31
+BA/BI,skill,Linux,0.0417,24,0.0074,0.2024
+BA/BI,skill,Terraform,0.0,24,0.0,0.138
+BA/BI,skill,CI/CD,0.0,24,0.0,0.138
+BA/BI,skill,XGBoost · LightGBM,0.0,24,0.0,0.138
+BA/BI,skill,Hugging Face,0.0,24,0.0,0.138
+BA/BI,skill,Ray,0.0,24,0.0,0.138
+BA/BI,skill,컴퓨터 비전,0.0,24,0.0,0.138
+BA/BI,skill,수요 예측,0.0417,24,0.0074,0.2024
+BA/BI,skill,최적화,0.0417,24,0.0074,0.2024
+BA/BI,skill,이상 탐지,0.0,24,0.0,0.138
+BA/BI,skill,베이지안,0.0,24,0.0,0.138
+BA/BI,skill,MMM · 어트리뷰션,0.0,24,0.0,0.138
+BA/BI,skill,업리프트,0.0,24,0.0,0.138
+BA/BI,skill,생존 분석,0.0,24,0.0,0.138
+BA/BI,skill,군집 · 세그먼트,0.0417,24,0.0074,0.2024
+BA/BI,skill,RAG,0.0,24,0.0,0.138
+BA/BI,skill,LangChain · LangGraph,0.0,24,0.0,0.138
+BA/BI,skill,벡터 DB,0.0,24,0.0,0.138
+BA/BI,skill,AI 에이전트,0.125,24,0.0434,0.31
+BA/BI,skill,파인튜닝,0.0,24,0.0,0.138
+BA/BI,skill,OpenAI API,0.0,24,0.0,0.138
+BA/BI,skill,FastAPI · Flask,0.0,24,0.0,0.138
+BA/BI,skill,Streamlit · Gradio,0.0417,24,0.0074,0.2024
+BA/BI,skill,CRM,0.1667,24,0.0668,0.3585
+BA/BI,skill,KPI · 지표 설계,0.5,24,0.3143,0.6857
+DA,n,공고 그룹,166.0,166,,
+DA,n,라벨 공고,166.0,166,,
+DA,label,none,0.1265,166,,
+DA,label,분석,0.8759,145,0.8123,0.92
+DA,label,모델링,0.269,145,0.2034,0.3464
+DA,label,데이터 엔지니어링,0.3655,145,0.2915,0.4464
+DA,label,AI 엔지니어링,0.2345,145,0.1729,0.3097
+DA,label,연구,0.0345,145,0.0148,0.0782
+DA,skill,SQL,0.6386,166,0.5631,0.7077
+DA,skill,Python,0.5663,166,0.4902,0.6393
+DA,skill,R,0.1627,166,0.1143,0.2263
+DA,skill,Spark,0.0542,166,0.0288,0.0998
+DA,skill,Hadoop,0.0181,166,0.0062,0.0518
+DA,skill,Airflow,0.0783,166,0.0463,0.1294
+DA,skill,dbt,0.0301,166,0.0129,0.0686
+DA,skill,BigQuery,0.1024,166,0.0649,0.1579
+DA,skill,Redshift,0.012,166,0.0033,0.0429
+DA,skill,Snowflake,0.0663,166,0.0374,0.1148
+DA,skill,Tableau,0.259,166,0.1984,0.3306
+DA,skill,Power BI,0.1205,166,0.0794,0.1788
+DA,skill,Looker,0.0482,166,0.0246,0.0922
+DA,skill,A/B 테스트,0.1988,166,0.1452,0.266
+DA,skill,통계,0.3735,166,0.3035,0.4492
+DA,skill,실험 설계,0.1687,166,0.1194,0.233
+DA,skill,머신러닝,0.2651,166,0.2038,0.337
+DA,skill,딥러닝,0.0723,166,0.0418,0.1221
+DA,skill,LLM,0.1807,166,0.1296,0.2463
+DA,skill,추천,0.0482,166,0.0246,0.0922
+DA,skill,Google Analytics,0.0542,166,0.0288,0.0998
+DA,skill,Amplitude,0.0602,166,0.033,0.1073
+DA,skill,Mixpanel,0.012,166,0.0033,0.0429
+DA,skill,GCP,0.0361,166,0.0167,0.0766
+DA,skill,Braze,0.0241,166,0.0094,0.0603
+DA,skill,AWS,0.1145,166,0.0745,0.1718
+DA,skill,Azure,0.0602,166,0.033,0.1073
+DA,skill,Superset · Metabase · Redash,0.0783,166,0.0463,0.1294
+DA,skill,Databricks,0.0602,166,0.033,0.1073
+DA,skill,시계열,0.0482,166,0.0246,0.0922
+DA,skill,그로스 · 퍼널,0.1506,166,0.1041,0.2129
+DA,skill,코호트 · 리텐션,0.1566,166,0.1092,0.2196
+DA,skill,NLP,0.0602,166,0.033,0.1073
+DA,skill,MLOps,0.0301,166,0.0129,0.0686
+DA,skill,Scikit-learn,0.006,166,0.0011,0.0333
+DA,skill,PyTorch,0.012,166,0.0033,0.0429
+DA,skill,TensorFlow,0.012,166,0.0033,0.0429
+DA,skill,Scala,0.0,166,0.0,0.0226
+DA,skill,Java,0.012,166,0.0033,0.0429
+DA,skill,SAS,0.012,166,0.0033,0.0429
+DA,skill,SPSS,0.0,166,0.0,0.0226
+DA,skill,MATLAB,0.0,166,0.0,0.0226
+DA,skill,Excel,0.1566,166,0.1092,0.2196
+DA,skill,Kafka,0.006,166,0.0011,0.0333
+DA,skill,Flink,0.0,166,0.0,0.0226
+DA,skill,Beam · Dataflow,0.0,166,0.0,0.0226
+DA,skill,Dagster · Prefect,0.006,166,0.0011,0.0333
+DA,skill,Trino · Presto,0.012,166,0.0033,0.0429
+DA,skill,Athena,0.0241,166,0.0094,0.0603
+DA,skill,Glue · EMR,0.0,166,0.0,0.0226
+DA,skill,Iceberg · Delta Lake,0.0301,166,0.0129,0.0686
+DA,skill,DuckDB,0.0,166,0.0,0.0226
+DA,skill,Polars,0.012,166,0.0033,0.0429
+DA,skill,ClickHouse,0.0,166,0.0,0.0226
+DA,skill,Druid,0.0,166,0.0,0.0226
+DA,skill,Elasticsearch,0.0,166,0.0,0.0226
+DA,skill,NoSQL,0.0361,166,0.0167,0.0766
+DA,skill,Fivetran · Airbyte,0.0,166,0.0,0.0226
+DA,skill,ETL · ELT,0.1627,166,0.1143,0.2263
+DA,skill,Looker Studio,0.0422,166,0.0206,0.0845
+DA,skill,Qlik,0.0,166,0.0,0.0226
+DA,skill,Adobe Analytics,0.0181,166,0.0062,0.0518
+DA,skill,AppsFlyer · Adjust,0.0181,166,0.0062,0.0518
+DA,skill,Firebase,0.0181,166,0.0062,0.0518
+DA,skill,Segment,0.0,166,0.0,0.0226
+DA,skill,Hackle · 실험 플랫폼,0.0,166,0.0,0.0226
+DA,skill,SageMaker,0.012,166,0.0033,0.0429
+DA,skill,Vertex AI,0.0,166,0.0,0.0226
+DA,skill,Docker,0.0241,166,0.0094,0.0603
+DA,skill,Kubernetes,0.012,166,0.0033,0.0429
+DA,skill,Git,0.0542,166,0.0288,0.0998
+DA,skill,Linux,0.0241,166,0.0094,0.0603
+DA,skill,Terraform,0.0,166,0.0,0.0226
+DA,skill,CI/CD,0.0301,166,0.0129,0.0686
+DA,skill,XGBoost · LightGBM,0.0,166,0.0,0.0226
+DA,skill,Hugging Face,0.0,166,0.0,0.0226
+DA,skill,Ray,0.0,166,0.0,0.0226
+DA,skill,컴퓨터 비전,0.0,166,0.0,0.0226
+DA,skill,수요 예측,0.0542,166,0.0288,0.0998
+DA,skill,최적화,0.0301,166,0.0129,0.0686
+DA,skill,이상 탐지,0.0361,166,0.0167,0.0766
+DA,skill,베이지안,0.0,166,0.0,0.0226
+DA,skill,MMM · 어트리뷰션,0.0301,166,0.0129,0.0686
+DA,skill,업리프트,0.0,166,0.0,0.0226
+DA,skill,생존 분석,0.006,166,0.0011,0.0333
+DA,skill,군집 · 세그먼트,0.0663,166,0.0374,0.1148
+DA,skill,RAG,0.012,166,0.0033,0.0429
+DA,skill,LangChain · LangGraph,0.0,166,0.0,0.0226
+DA,skill,벡터 DB,0.0,166,0.0,0.0226
+DA,skill,AI 에이전트,0.0723,166,0.0418,0.1221
+DA,skill,파인튜닝,0.006,166,0.0011,0.0333
+DA,skill,OpenAI API,0.0482,166,0.0246,0.0922
+DA,skill,FastAPI · Flask,0.012,166,0.0033,0.0429
+DA,skill,Streamlit · Gradio,0.006,166,0.0011,0.0333
+DA,skill,CRM,0.1205,166,0.0794,0.1788
+DA,skill,KPI · 지표 설계,0.2831,166,0.2201,0.356
+DS,n,공고 그룹,81.0,81,,
+DS,n,라벨 공고,81.0,81,,
+DS,label,none,0.0123,81,,
+DS,label,분석,0.7125,80,0.6054,0.8001
+DS,label,모델링,0.95,80,0.8784,0.9804
+DS,label,데이터 엔지니어링,0.225,80,0.1473,0.3279
+DS,label,AI 엔지니어링,0.5625,80,0.4534,0.6659
+DS,label,연구,0.1625,80,0.0975,0.2584
+DS,skill,SQL,0.6914,81,0.584,0.7814
+DS,skill,Python,0.9136,81,0.8322,0.9575
+DS,skill,R,0.1111,81,0.0596,0.1979
+DS,skill,Spark,0.2346,81,0.1556,0.3375
+DS,skill,Hadoop,0.1481,81,0.0868,0.2413
+DS,skill,Airflow,0.2346,81,0.1556,0.3375
+DS,skill,dbt,0.0,81,-0.0,0.0453
+DS,skill,BigQuery,0.0494,81,0.0194,0.1202
+DS,skill,Redshift,0.0123,81,0.0022,0.0667
+DS,skill,Snowflake,0.0247,81,0.0068,0.0856
+DS,skill,Tableau,0.037,81,0.0127,0.1033
+DS,skill,Power BI,0.0247,81,0.0068,0.0856
+DS,skill,Looker,0.0247,81,0.0068,0.0856
+DS,skill,A/B 테스트,0.2346,81,0.1556,0.3375
+DS,skill,통계,0.7654,81,0.6625,0.8444
+DS,skill,실험 설계,0.3086,81,0.2186,0.416
+DS,skill,머신러닝,0.7407,81,0.636,0.8237
+DS,skill,딥러닝,0.3704,81,0.2733,0.4792
+DS,skill,LLM,0.3704,81,0.2733,0.4792
+DS,skill,추천,0.1975,81,0.1254,0.297
+DS,skill,Google Analytics,0.0,81,-0.0,0.0453
+DS,skill,Amplitude,0.0123,81,0.0022,0.0667
+DS,skill,Mixpanel,0.0,81,-0.0,0.0453
+DS,skill,GCP,0.1605,81,0.0963,0.2555
+DS,skill,Braze,0.0123,81,0.0022,0.0667
+DS,skill,AWS,0.2469,81,0.1659,0.3508
+DS,skill,Azure,0.0864,81,0.0425,0.1678
+DS,skill,Superset · Metabase · Redash,0.0123,81,0.0022,0.0667
+DS,skill,Databricks,0.0494,81,0.0194,0.1202
+DS,skill,시계열,0.3086,81,0.2186,0.416
+DS,skill,그로스 · 퍼널,0.037,81,0.0127,0.1033
+DS,skill,코호트 · 리텐션,0.0617,81,0.0267,0.1365
+DS,skill,NLP,0.1358,81,0.0776,0.227
+DS,skill,MLOps,0.321,81,0.2294,0.4288
+DS,skill,Scikit-learn,0.1975,81,0.1254,0.297
+DS,skill,PyTorch,0.2222,81,0.1454,0.3242
+DS,skill,TensorFlow,0.1852,81,0.1156,0.2833
+DS,skill,Scala,0.0123,81,0.0022,0.0667
+DS,skill,Java,0.0247,81,0.0068,0.0856
+DS,skill,SAS,0.0247,81,0.0068,0.0856
+DS,skill,SPSS,0.0247,81,0.0068,0.0856
+DS,skill,MATLAB,0.0,81,-0.0,0.0453
+DS,skill,Excel,0.0247,81,0.0068,0.0856
+DS,skill,Kafka,0.0494,81,0.0194,0.1202
+DS,skill,Flink,0.0123,81,0.0022,0.0667
+DS,skill,Beam · Dataflow,0.0123,81,0.0022,0.0667
+DS,skill,Dagster · Prefect,0.0,81,-0.0,0.0453
+DS,skill,Trino · Presto,0.0,81,-0.0,0.0453
+DS,skill,Athena,0.0247,81,0.0068,0.0856
+DS,skill,Glue · EMR,0.0,81,-0.0,0.0453
+DS,skill,Iceberg · Delta Lake,0.0,81,-0.0,0.0453
+DS,skill,DuckDB,0.0,81,-0.0,0.0453
+DS,skill,Polars,0.0,81,-0.0,0.0453
+DS,skill,ClickHouse,0.0494,81,0.0194,0.1202
+DS,skill,Druid,0.0,81,-0.0,0.0453
+DS,skill,Elasticsearch,0.037,81,0.0127,0.1033
+DS,skill,NoSQL,0.0617,81,0.0267,0.1365
+DS,skill,Fivetran · Airbyte,0.0,81,-0.0,0.0453
+DS,skill,ETL · ELT,0.2099,81,0.1354,0.3107
+DS,skill,Looker Studio,0.0,81,-0.0,0.0453
+DS,skill,Qlik,0.0,81,-0.0,0.0453
+DS,skill,Adobe Analytics,0.0,81,-0.0,0.0453
+DS,skill,AppsFlyer · Adjust,0.0123,81,0.0022,0.0667
+DS,skill,Firebase,0.0,81,-0.0,0.0453
+DS,skill,Segment,0.0,81,-0.0,0.0453
+DS,skill,Hackle · 실험 플랫폼,0.0,81,-0.0,0.0453
+DS,skill,SageMaker,0.0864,81,0.0425,0.1678
+DS,skill,Vertex AI,0.037,81,0.0127,0.1033
+DS,skill,Docker,0.1605,81,0.0963,0.2555
+DS,skill,Kubernetes,0.1235,81,0.0685,0.2126
+DS,skill,Git,0.1481,81,0.0868,0.2413
+DS,skill,Linux,0.0494,81,0.0194,0.1202
+DS,skill,Terraform,0.0,81,-0.0,0.0453
+DS,skill,CI/CD,0.0123,81,0.0022,0.0667
+DS,skill,XGBoost · LightGBM,0.0988,81,0.0509,0.183
+DS,skill,Hugging Face,0.0123,81,0.0022,0.0667
+DS,skill,Ray,0.0,81,-0.0,0.0453
+DS,skill,컴퓨터 비전,0.037,81,0.0127,0.1033
+DS,skill,수요 예측,0.0988,81,0.0509,0.183
+DS,skill,최적화,0.1975,81,0.1254,0.297
+DS,skill,이상 탐지,0.1728,81,0.1058,0.2695
+DS,skill,베이지안,0.0247,81,0.0068,0.0856
+DS,skill,MMM · 어트리뷰션,0.0864,81,0.0425,0.1678
+DS,skill,업리프트,0.0494,81,0.0194,0.1202
+DS,skill,생존 분석,0.0,81,-0.0,0.0453
+DS,skill,군집 · 세그먼트,0.1975,81,0.1254,0.297
+DS,skill,RAG,0.1728,81,0.1058,0.2695
+DS,skill,LangChain · LangGraph,0.0247,81,0.0068,0.0856
+DS,skill,벡터 DB,0.0494,81,0.0194,0.1202
+DS,skill,AI 에이전트,0.1605,81,0.0963,0.2555
+DS,skill,파인튜닝,0.1235,81,0.0685,0.2126
+DS,skill,OpenAI API,0.0741,81,0.0344,0.1523
+DS,skill,FastAPI · Flask,0.0494,81,0.0194,0.1202
+DS,skill,Streamlit · Gradio,0.0,81,-0.0,0.0453
+DS,skill,CRM,0.1111,81,0.0596,0.1979
+DS,skill,KPI · 지표 설계,0.1975,81,0.1254,0.297

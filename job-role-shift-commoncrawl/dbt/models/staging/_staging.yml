@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_jobkko_postings
+    description: jobkko 공고. text_lower 는 제목 + 본문 소문자 (기술 정규식 대상)
+    columns:
+      - name: posting_id
+        tests: [unique, not_null]
+      - name: group_key
+        tests: [not_null]
+
+  - name: stg_pypi_weekly
+    columns:
+      - name: skill
+        tests:
+          - not_null
+          - relationships:
+              to: ref('skills')
+              field: skill
+      - name: downloads
+        tests: [not_null]
+
+  - name: stg_github_weekly
+    description: 2025-03 까지 (수집 단절 이후 제외)
+    columns:
+      - name: skill
+        tests:
+          - relationships:
+              to: ref('skills')
+              field: skill
+
+  - name: stg_task1_postings
+    description: 라벨 묶음 공고. period 는 WDC 회차 (2022-12 등) 또는 국내 공고 수집월
+    columns:
+      - name: doc_id
+        tests: [unique, not_null]
+      - name: source
+        tests:
+          - accepted_values:
+              values: ['jobkko', 'wdc']
+
+  - name: stg_task1_labels
+    description: 업무 유형 라벨. override_reason 이 있으면 사람이 덮어쓴 행 (agent_primary 가 원래 판단)
+    columns:
+      - name: doc_id
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('stg_task1_postings')
+              field: doc_id
+      - name: primary_task
+        tests: [not_null]

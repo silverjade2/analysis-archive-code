@@ -1,0 +1,563 @@
+[
+[
+"Scala",
+"언어",
+[
+"scala",
+"스칼라"
+]
+],
+[
+"Java",
+"언어",
+[
+"java",
+"자바"
+]
+],
+[
+"SAS",
+"언어",
+[
+"sas"
+]
+],
+[
+"SPSS",
+"언어",
+[
+"spss"
+]
+],
+[
+"MATLAB",
+"언어",
+[
+"matlab",
+"매트랩"
+]
+],
+[
+"Excel",
+"언어",
+[
+"excel",
+"엑셀",
+"vba",
+"spreadsheet",
+"스프레드시트",
+"google sheets",
+"구글 시트"
+]
+],
+[
+"Kafka",
+"데이터 처리",
+[
+"kafka",
+"카프카"
+]
+],
+[
+"Flink",
+"데이터 처리",
+[
+"flink",
+"플링크"
+]
+],
+[
+"Beam · Dataflow",
+"데이터 처리",
+[
+"apache beam",
+"dataflow"
+]
+],
+[
+"Dagster · Prefect",
+"데이터 처리",
+[
+"dagster",
+"prefect"
+]
+],
+[
+"Trino · Presto",
+"데이터 처리",
+[
+"trino",
+"presto"
+]
+],
+[
+"Athena",
+"웨어하우스",
+[
+"athena",
+"아테나"
+]
+],
+[
+"Glue · EMR",
+"데이터 처리",
+[
+"aws glue",
+"emr"
+]
+],
+[
+"Iceberg · Delta Lake",
+"웨어하우스",
+[
+"iceberg",
+"delta lake",
+"hudi",
+"lakehouse",
+"레이크하우스"
+]
+],
+[
+"DuckDB",
+"데이터 처리",
+[
+"duckdb"
+]
+],
+[
+"Polars",
+"데이터 처리",
+[
+"polars"
+]
+],
+[
+"ClickHouse",
+"웨어하우스",
+[
+"clickhouse",
+"클릭하우스"
+]
+],
+[
+"Druid",
+"웨어하우스",
+[
+"druid"
+]
+],
+[
+"Elasticsearch",
+"데이터 처리",
+[
+"elasticsearch",
+"elastic search",
+"opensearch",
+"엘라스틱서치",
+"kibana"
+]
+],
+[
+"NoSQL",
+"데이터 처리",
+[
+"nosql",
+"mongodb",
+"몽고db",
+"cassandra",
+"dynamodb",
+"redis"
+]
+],
+[
+"Fivetran · Airbyte",
+"데이터 처리",
+[
+"fivetran",
+"airbyte"
+]
+],
+[
+"ETL · ELT",
+"데이터 처리",
+[
+"etl",
+"elt",
+"데이터 파이프라인",
+"data pipeline"
+]
+],
+[
+"Looker Studio",
+"BI",
+[
+"looker studio",
+"data studio",
+"데이터 스튜디오",
+"루커 스튜디오"
+]
+],
+[
+"Qlik",
+"BI",
+[
+"qlik",
+"qlikview",
+"qliksense"
+]
+],
+[
+"Adobe Analytics",
+"제품 분석 도구",
+[
+"adobe analytics"
+]
+],
+[
+"AppsFlyer · Adjust",
+"제품 분석 도구",
+[
+"appsflyer",
+"앱스플라이어",
+"airbridge",
+"에어브릿지"
+]
+],
+[
+"Firebase",
+"제품 분석 도구",
+[
+"firebase",
+"파이어베이스"
+]
+],
+[
+"Segment",
+"제품 분석 도구",
+[
+"segment.io",
+"segment cdp",
+"twilio segment"
+]
+],
+[
+"Hackle · 실험 플랫폼",
+"제품 분석 도구",
+[
+"hackle",
+"핵클",
+"optimizely",
+"statsig",
+"growthbook"
+]
+],
+[
+"SageMaker",
+"클라우드",
+[
+"sagemaker",
+"세이지메이커"
+]
+],
+[
+"Vertex AI",
+"클라우드",
+[
+"vertex ai",
+"vertexai"
+]
+],
+[
+"Docker",
+"인프라",
+[
+"docker",
+"도커",
+"container",
+"컨테이너"
+]
+],
+[
+"Kubernetes",
+"인프라",
+[
+"kubernetes",
+"k8s",
+"쿠버네티스"
+]
+],
+[
+"Git",
+"인프라",
+[
+"git",
+"github",
+"gitlab",
+"깃허브",
+"깃랩"
+]
+],
+[
+"Linux",
+"인프라",
+[
+"linux",
+"리눅스",
+"unix",
+"shell script",
+"쉘 스크립트"
+]
+],
+[
+"Terraform",
+"인프라",
+[
+"terraform",
+"테라폼"
+]
+],
+[
+"CI/CD",
+"인프라",
+[
+"ci/cd",
+"cicd",
+"jenkins",
+"github actions"
+]
+],
+[
+"XGBoost · LightGBM",
+"모델링",
+[
+"xgboost",
+"lightgbm",
+"catboost",
+"gradient boosting",
+"gbm"
+]
+],
+[
+"Hugging Face",
+"모델링",
+[
+"hugging face",
+"huggingface",
+"허깅페이스",
+"transformers"
+]
+],
+[
+"Ray",
+"모델링",
+[
+"ray serve",
+"ray tune",
+"anyscale"
+]
+],
+[
+"컴퓨터 비전",
+"모델링",
+[
+"computer vision",
+"컴퓨터 비전",
+"opencv",
+"이미지 인식",
+"object detection",
+"객체 탐지"
+]
+],
+[
+"수요 예측",
+"분석 방법",
+[
+"demand forecast",
+"forecasting",
+"수요\\s?예측",
+"판매\\s?예측"
+]
+],
+[
+"최적화",
+"분석 방법",
+[
+"mathematical optimization",
+"optimization model",
+"optimization algorithm",
+"operations research",
+"linear programming",
+"integer programming",
+"수리\\s?최적화",
+"최적화\\s?(모델|알고리즘|문제|기법)",
+"(가격|재고|배차|스케줄링|경로|노출)\\s?최적화",
+"pricing optimization"
+]
+],
+[
+"이상 탐지",
+"분석 방법",
+[
+"anomaly detection",
+"이상\\s?탐지",
+"이상\\s?감지",
+"fraud detection",
+"이상거래"
+]
+],
+[
+"베이지안",
+"분석 방법",
+[
+"bayesian",
+"베이지안",
+"베이즈"
+]
+],
+[
+"MMM · 어트리뷰션",
+"분석 방법",
+[
+"marketing mix",
+"mmm",
+"attribution",
+"어트리뷰션",
+"기여도 분석"
+]
+],
+[
+"업리프트",
+"분석 방법",
+[
+"uplift",
+"업리프트"
+]
+],
+[
+"생존 분석",
+"분석 방법",
+[
+"survival analysis",
+"생존\\s?분석"
+]
+],
+[
+"군집 · 세그먼트",
+"분석 방법",
+[
+"clustering",
+"클러스터링",
+"군집",
+"segmentation",
+"세그멘테이션",
+"세그먼트 분석"
+]
+],
+[
+"RAG",
+"모델링",
+[
+"rag",
+"retrieval augmented",
+"retrieval-augmented"
+]
+],
+[
+"LangChain · LangGraph",
+"모델링",
+[
+"langchain",
+"langgraph",
+"랭체인",
+"랭그래프",
+"llamaindex"
+]
+],
+[
+"벡터 DB",
+"모델링",
+[
+"vector db",
+"vector database",
+"벡터\\s?db",
+"벡터\\s?데이터베이스",
+"pinecone",
+"faiss",
+"milvus",
+"weaviate",
+"pgvector",
+"chroma"
+]
+],
+[
+"AI 에이전트",
+"모델링",
+[
+"ai agent",
+"agentic",
+"llm agent",
+"ai 에이전트",
+"에이전트"
+]
+],
+[
+"파인튜닝",
+"모델링",
+[
+"fine-tuning",
+"fine tuning",
+"finetuning",
+"파인\\s?튜닝",
+"lora"
+]
+],
+[
+"OpenAI API",
+"모델링",
+[
+"openai",
+"gpt-4",
+"gpt-3.5",
+"chatgpt api",
+"claude",
+"gemini"
+]
+],
+[
+"FastAPI · Flask",
+"인프라",
+[
+"fastapi",
+"flask",
+"django"
+]
+],
+[
+"Streamlit · Gradio",
+"BI",
+[
+"streamlit",
+"gradio",
+"dash plotly",
+"plotly dash"
+]
+],
+[
+"CRM",
+"분석 방법",
+[
+"crm"
+]
+],
+[
+"KPI · 지표 설계",
+"분석 방법",
+[
+"kpi",
+"지표\\s?설계",
+"metric design",
+"north star",
+"핵심\\s?지표"
+]
+]
+]

@@ -1,0 +1,41 @@
+name: bigdata
+version: "0.1.0"
+profile: bigdata
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+# 결과는 BIGDATA.ANALYTICS_<층> 스키마에 만든다 (예: ANALYTICS_STAGING)
+models:
+  bigdata:
+    staging:
+      +materialized: view
+      +schema: staging
+    intermediate:
+      +materialized: view
+      +schema: intermediate
+    marts:
+      +materialized: table
+      +schema: marts
+
+seeds:
+  bigdata:
+    +schema: seeds
+    skills:
+      +column_types:
+        jobkko: float
+        wdc_all: float
+        wdc_2022: float
+        wdc_2023: float
+        wdc_2024: float
+    task_share_wdc:
+      +column_types:
+        n_pop: integer
+        n_test: integer
+        model_share: float
+        share: float
+        ci_lo: float
+        ci_hi: float
