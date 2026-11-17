@@ -24,7 +24,7 @@ LEFT JOIN p ON p.id = d.player_id;
 -- pars 는 '친 순서' 18개 (IN 출발이면 10번 홀 par 가 첫 칸). 형식이 어긋나면 앱처럼 전부 4
 CREATE OR REPLACE TABLE stg.golf_courses AS
 WITH c AS (
-    SELECT *, list_transform(string_split(coalesce(pars, ''), ','), x -> TRY_CAST(trim(x) AS INTEGER)) AS pars_raw
+    SELECT *, list_transform(string_split(coalesce(pars, ''), ','), lambda x: TRY_CAST(trim(x) AS INTEGER)) AS pars_raw
     FROM raw.golf_course_latest
     QUALIFY row_number() OVER (PARTITION BY id ORDER BY coalesce(nullif(updated_at, ''), created_at) DESC, sheet_row DESC) = 1
 ),
@@ -44,9 +44,9 @@ SELECT
     coalesce(h.first_hole, 1) AS first_hole,
     h.course_id IS NOT NULL AS is_home,
     CASE
-        WHEN len(c.pars_raw) = 18 AND coalesce(list_aggregate(list_transform(c.pars_raw, x -> x BETWEEN 3 AND 6), 'bool_and'), false)
+        WHEN len(c.pars_raw) = 18 AND coalesce(list_aggregate(list_transform(c.pars_raw, lambda x: x BETWEEN 3 AND 6), 'bool_and'), false)
             THEN c.pars_raw
-        ELSE list_transform(range(18), x -> 4)
+        ELSE list_transform(range(18), lambda x: 4)
     END AS pars,
     nullif(trim(c.deleted_at), '') IS NOT NULL AS deleted
 FROM c
@@ -71,7 +71,7 @@ SELECT
     coalesce(c.holes, 18) AS holes,
     coalesce(c.first_hole, 1) AS first_hole,
     coalesce(c.is_home, false) AS is_home,
-    coalesce(c.pars, list_transform(range(18), x -> 4)) AS pars
+    coalesce(c.pars, list_transform(range(18), lambda x: 4)) AS pars
 FROM r
 LEFT JOIN stg.golf_courses c ON c.course_id = r.course_id;
 

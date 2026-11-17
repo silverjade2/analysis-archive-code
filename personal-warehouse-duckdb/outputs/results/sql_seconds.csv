@@ -1,6 +1,6 @@
 run,sql_seconds,with_raw_views_seconds,slowest_file
-1,0.026,0.035,021_golf.sql
-2,0.025,0.036,021_golf.sql
-3,0.03,0.039,020_golf.sql
-4,0.032,0.041,021_golf.sql
-5,0.023,0.032,021_golf.sql
+1,0.033,0.047,021_golf.sql
+2,0.032,0.045,021_golf.sql
+3,0.032,0.045,021_golf.sql
+4,0.033,0.048,020_golf.sql
+5,0.031,0.043,021_golf.sql

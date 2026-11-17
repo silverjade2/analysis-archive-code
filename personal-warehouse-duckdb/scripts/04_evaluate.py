@@ -89,7 +89,9 @@ check(
 
 # 가상 일정은 주 경계를 넘지 않아 시작 시각의 주로 묶으면 됨
 timed = occ_t[~occ_t["truth_all_day"] & (occ_t["truth_status"] != "CANCELLED")].copy()
-timed["week_start"] = (timed["start_local"] - pd.to_timedelta(timed["start_local"].dt.weekday, unit="D")).dt.normalize()
+timed["week_start"] = (
+    timed["start_local"] - pd.to_timedelta(timed["start_local"].dt.day_of_week, unit="D")
+).dt.normalize()
 timed["h"] = (timed["end_local"] - timed["start_local"]).dt.total_seconds() / 3600
 truth_week = timed.groupby(["week_start", "calendar"])["h"].sum().round(2)
 mart_week = q(

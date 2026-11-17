@@ -11,7 +11,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
-3초 안쪽. Python 3.11.16, duckdb 1.5.6, pyarrow 26.0.0, pandas 3.0.6, numpy 2.4.6, icalendar 7.3.0, recurring-ical-events 3.8.2 (운영 코드와 같은 조합). 이 조합에서 `data/` 와 `outputs/` 를 지우고 다시 돌려도 `sql_seconds.csv` 와 `data/warehouse.duckdb` 를 뺀 26개 파일이 byte 단위로 같았음. `data/warehouse.duckdb` 는 git 에 넣지 않음.
+3초 안쪽. Python 3.14.7, duckdb 2.0.0, pyarrow 26.0.1, pandas 3.1.1, numpy 2.5.5, icalendar 7.3.0, recurring-ical-events 3.8.2. 이 조합에서 `data/` 와 `outputs/` 를 지우고 다시 돌려도 `sql_seconds.csv` 와 `data/warehouse.duckdb` 를 뺀 26개 파일이 byte 단위로 같았음. 운영 코드와 같은 조합(Python 3.11.16, duckdb 1.5.6, pyarrow 26.0.0, pandas 3.0.6, numpy 2.4.6)에서도 결과 CSV 는 같고, raw parquet 는 내용이 같고 created_by 메타데이터(pyarrow 버전)만 다름. `data/warehouse.duckdb` 는 git 에 넣지 않음.
 
 ## 스크립트
 
@@ -22,7 +22,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 03 | raw view(날짜별 파일 glob, 최신 파일 하나) -> `sql/stg` -> `sql/mart` 번호순. mart 를 CSV 로, 실행 시간은 5번 | `sql_steps.csv`, `sql_seconds.csv`, mart 5개 |
 | 04 | ground truth 평가. 스코어 행이 빠진 이유와 타수 합, 캘린더 회차와 반복 판정과 주별 시간, 설문 건수를 원본에서 다시 센 값과 식별 값 | `eval_checks.csv`, `numbers.csv` |
 
-`truth_*.csv` 는 04 만 읽음. `sql/` 은 운영 코드의 SQL 에서 골프장, 플레이어 기본 이름 상수만 가상 값으로 바꿈. 동작이 다른 곳은 `mart/030_calendar.sql` 의 미래 주 기준일 하나 (`current_date` -> 마지막 수집일, 결과가 실행 날짜와 무관하게). 수집 쪽은 첫날 한 번 성공하는 경로만 옮겼고 재시도, 제한 시간, 건너뜀, `_meta.json` 실행 기록, 같은 날 조회 기간 유지는 없음. 가짜 캘린더 서버는 기간 조건 없이 전부 돌려주고(실제 CalDAV 는 서버가 기간으로 거름) 전개 단계가 같은 기간으로 잘라 회차는 같음.
+`truth_*.csv` 는 04 만 읽음. `sql/` 은 운영 코드의 SQL 에서 골프장, 플레이어 기본 이름 상수만 가상 값으로 바꿈. 동작이 다른 곳은 `mart/030_calendar.sql` 의 미래 주 기준일 하나 (`current_date` -> 마지막 수집일, 결과가 실행 날짜와 무관하게). `stg/021_golf.sql` 의 lambda 는 `x -> ...` 가 duckdb 2.0 에서 오류라 `lambda x: ...` 로 바꿈 (1.5.6 에서도 같은 결과). 수집 쪽은 첫날 한 번 성공하는 경로만 옮겼고 재시도, 제한 시간, 건너뜀, `_meta.json` 실행 기록, 같은 날 조회 기간 유지는 없음. 가짜 캘린더 서버는 기간 조건 없이 전부 돌려주고(실제 CalDAV 는 서버가 기간으로 거름) 전개 단계가 같은 기간으로 잘라 회차는 같음.
 
 판단 기준은 `common.py` 에: 첫 수집일 2026-10-20, 캘린더 조회 기간 지난 56일과 앞으로 90일, 소스별 하루 호출 상한(캘린더 60, 시트 20, 설문 20).
 
