@@ -2,17 +2,17 @@
 
 ["다시 말씀해 주시겠어요", 그리고 아무도 다시 말하지 않았다](https://analysis-archive.vercel.app/analyses/voice-llm-freshness) 재현 코드.
 
-음성 비서 로그에서 LLM의 낡은 답(knowledge cutoff 이후 바뀐 정보를 옛 정보로 답한 것)은 정상 응답으로 남아 직접 셀 수 없다. 원본 분석은 발화 쪽 신호(최신성 표현, 불만, 재시도)로 우회해 셌는데, 그 proxy가 실제로 몇 건을 가리키는지는 알 수 없었다. 여기서는 낡은 답에 `truth_stale`을 붙인 가상 로그를 만들어 proxy의 recall과 precision을 잰다.
+음성 비서 로그에서 LLM의 낡은 답(knowledge cutoff 이후 바뀐 정보를 옛 정보로 답한 것)은 정상 응답으로 남아 직접 셀 수 없다. 원본 분석은 발화 쪽 신호(최신성 표현, 불만, 재시도)로 우회해 셌고 proxy가 실제로 몇 건을 가리키는지는 모름. 여기서는 낡은 답에 `truth_stale`을 붙인 가상 로그를 만들어 proxy의 recall과 precision을 잼.
 
 ## 실행
 
 ```bash
-pip install -r requirements.txt
-for s in scripts/[01][0-9]_*.py; do python "$s"; done
-python verify.py
+python -m venv .venv && .venv/bin/pip install -r requirements.txt
+for s in scripts/[01][0-9]_*.py; do .venv/bin/python "$s"; done
+.venv/bin/python verify.py
 ```
 
-10초 안쪽. Python 3.14.6(macOS), numpy 2.5.3, pandas 3.0.5, matplotlib 3.11.2, pillow 12.3.0. `data/*.csv.gz`는 gzip mtime을 0으로 고정해서 다시 돌려도 byte 동일. png, webp는 비교 안 함.
+20초 안쪽. Python 3.14.7(macOS), numpy 2.5.3, pandas 3.0.5, matplotlib 3.11.2, pillow 12.3.0. `data/*.csv.gz`는 gzip mtime을 0으로 고정해서 다시 돌려도 byte 동일. png, webp는 비교 안 함.
 
 ## 스크립트
 
@@ -29,7 +29,7 @@ python verify.py
 | 09 | 미매칭 발화 n-gram | `uncovered_ngram.csv` |
 | 10 | 그림 4장. 1~2는 04, 3은 05, 4는 06의 결과 | `outputs/figures/site/` |
 
-사전(주제 키워드, 제외 규칙, fallback 문구, 의도 규칙)과 상수는 전부 `common.py`. 02~06, 09는 `truth_` 컬럼을 읽지 않고 07, 08만 대조에 쓴다. `verify.py`가 그 순서와 02의 짝짓기(루프로 다시 계산, 제어 코드가 끼었거나 지연 응답이 있는 세션 위주)를 확인.
+사전(주제 키워드, 제외 규칙, fallback 문구, 의도 규칙)과 상수는 전부 `common.py`. 02~06, 09는 `truth_` 컬럼을 읽지 않고 07, 08만 대조에 쓴다. `verify.py`가 그 순서와 02의 짝짓기(루프로 다시 계산, 제어 코드나 음성 참조 행이 낀 세션과 응답으로 안 붙은 기기 발화가 있는 세션 위주)를 확인하고, 하나라도 어긋나면 assert로 실패.
 
 `logs.csv.gz`는 `row_id, session_id, ts(0.1초), log_type, text` + `truth_misfire, truth_topic, truth_fresh, truth_stale`. log_type 0 유저, 1 기기, 2 제어 코드, 3과 4는 schema에 없는 음성 원본 참조 행. 유저 발화의 text는 빈 문자열일 수 있음. `truth_misfire`는 사람이 기기에 한 말이 아님, `truth_topic`은 키워드와 무관한 실제 주제("오늘 비 와"도 날씨), `truth_fresh`는 최신 정보가 있어야 답할 수 있는 질문, `truth_stale`은 정상 응답인데 낡은 답.
 
@@ -38,7 +38,7 @@ python verify.py
 - 04: 빈 발화 56.2%, 원문 있는 발화의 fallback 26.9%, 무응답 7.9%
 - 05: 재시도율 fallback 직후 0.57%, 정상 직후 1.43%, 무응답 직후 7.30%. fallback 직후가 가장 낮은 순서가 sweep 12개 정의 전부에서 유지
 - 06: 매칭 발화 1.69%. 최신성 신호 발화의 94.7%가 미매칭. 미매칭 한 줄 점수가 1위 주제의 57배
-- 07: 최신성 신호 recall 0.629 / precision 0.351. 불만 표현은 precision 0.944인데 recall 0.035, 재시도는 recall 0.016
+- 07: 최신성 신호 recall 0.629 / precision 0.351. 불만 표현은 recall 0.035 (precision 0.944는 01이 불만을 낡은 답 뒤에만 만들어서 나오는 값), 재시도는 recall 0.016
 - 08: 빈 발화를 전부 오호출로 볼 때 precision 0.55
 
 ## 생성기에 넣은 구조

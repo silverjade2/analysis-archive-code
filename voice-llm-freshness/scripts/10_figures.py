@@ -1,4 +1,4 @@
-"""그림 4장. 1~2는 04, 3은 05, 4는 06의 결과 CSV를 그린다. 다시 계산하지 않는다."""
+"""그림 4장 (1~2: 04, 3: 05, 4: 06 결과 CSV)"""
 
 import matplotlib.pyplot as plt
 import numpy as np

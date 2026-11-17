@@ -16,17 +16,21 @@ print("truth_ in judge scripts:", bad or "none")
 
 for f in ["08_misfire.py"]:
     src = (SCRIPTS / f).read_text()
-    print(f"{f}: rules defined before truth is read:", src.index('rules["upper"]') < src.index('truth_misfire"])'))
+    order_ok = src.index('rules["upper"]') < src.index('truth_misfire"])')
+    print(f"{f}: rules defined before truth is read:", order_ok)
 
+leaked = []
 for name in ["turn_pairs.csv.gz", "topic_match.csv.gz", "turn_flags.csv.gz", "turn_retry.csv.gz"]:
     cols = pd.read_csv(DATA / name, nrows=1).columns
-    print(name, "truth columns:", [c for c in cols if c.startswith("truth_")] or "none")
+    found = [c for c in cols if c.startswith("truth_")]
+    leaked += found
+    print(name, "truth columns:", found or "none")
 
 logs = pd.read_csv(DATA / "logs.csv.gz", keep_default_na=False, usecols=["row_id", "session_id", "log_type", "ts"])
 logs["ts"] = pd.to_datetime(logs["ts"])
 pairs = pd.read_csv(DATA / "turn_pairs.csv.gz", dtype={"resp_row_id": "Int64"}).set_index("turn_id")
 
-# 제어 코드가 끼었거나 지연 응답이 있는 세션을 우선 뽑는다
+# 제어 코드(2)나 음성 참조 행(3)이 낀 세션 3개, 없는 세션 2개, 응답으로 안 붙은 기기 발화가 있는 세션 5개
 sess = logs.groupby("session_id")["log_type"].agg(lambda s: (s == 2).any() or (s == 3).any())
 picked = list(sess[sess].index[:3]) + list(sess[~sess].index[:2])
 late = logs[logs.log_type == DEVICE].merge(pairs[["resp_row_id"]], left_on="row_id", right_on="resp_row_id", how="left")
@@ -50,3 +54,5 @@ for sid in picked:
         if ("" if pd.isna(got) else str(got)) != expect:
             mismatch += 1
 print(f"pairing checked on {len(picked)} sessions, mismatches {mismatch}")
+
+assert not bad and order_ok and not leaked and mismatch == 0, "verify failed"
