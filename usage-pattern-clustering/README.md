@@ -23,11 +23,9 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 04 | k=2~10 sweep (inertia, silhouette, ARI), k=4 vs 5 대조 | `k_sweep.csv`, `k_composition.csv`, `fig5~6` |
 | 05 | 최종 군집 (k=5) z-score 프로파일과 비즈니스 라벨 | `cluster_zscore.csv`, `cluster_labels.csv`, `fig7` |
 
-`scaling_compare.csv`의 방법 열은 03의 문자열 그대로.
-
 ## 시도 순서와 숫자
 
-- 02: ARI 0.238, 사실상 랜덤. 분산 비율 99.8%는 거리 계산을 total_usage 한 열이 다 정했다는 뜻
+- 02: ARI 0.238, 군집이 total_usage 구간으로 갈림. 분산 비율 99.8%는 거리 계산을 total_usage 한 열이 다 정했다는 뜻
 - 03: ARI 0.723 (표준화만), 0.897 (log1p + 표준화). 로그 변환이 낫지만 노이즈 15대가 allday_low에 흡수됨 (순도 6%)
 - 04: k=5에서 silhouette 0.412, ARI 0.928. 지표가 고른 k와 정답 k가 같고 노이즈 15대가 독립 군집으로 돌아옴
 
@@ -35,7 +33,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 
 `usage_profiles.csv` 800행 x 171열. `device_id`(D0000~D0799), `u_{dow}_h{HH}` 168열 (요일 x 시각 평균 사용 강도, 0~10), `total_usage`(0~5000, 셀 합 x 3.5 + noise), `true_cluster`(morning / allday_low / night / intermittent / noise). ground truth 열은 평가 전용이고 클러스터링 입력에 안 들어간다.
 
-세그멘테이션 시리즈 2편은 이 폴더의 생성기를 그대로 복사해 쓴다. 01을 고치면 여기 pipeline 전체를 다시 돌려야 함.
+01을 고치면 여기 pipeline 전체를 다시 돌려야 함.
 
 ## 넣은 구조
 

@@ -103,7 +103,7 @@ LABEL_COLORS = {
     "allday_low": "#8A8F98",
     "night": "tab:purple",
     "intermittent": "#9E3D22",
-    "noise": "#9E3D22",
+    "noise": "#E0A526",
 }
 
 fig, axes = plt.subplots(1, 2, figsize=(11, 4.5), sharey=True)
@@ -120,7 +120,7 @@ for ax, k in zip(axes, (4, 5)):
     ax.set_xticks(comp.index)
     ax.grid(alpha=0.3, axis="y")
 axes[0].set_ylabel("기기 수")
-axes[1].legend(title="ground truth 라벨", fontsize=8, loc="upper right")
+axes[1].legend(title="ground truth 라벨", fontsize=8, loc="upper left", bbox_to_anchor=(1.02, 1))
 fig.suptitle("k=4 vs k=5: 예측 군집별 ground truth 라벨 구성")
 fig.tight_layout()
 fig.savefig(fig_dir / "fig6_k4_vs_k5.png", dpi=150)
