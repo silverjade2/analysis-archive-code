@@ -1,7 +1,7 @@
 """기술 수요 vs 오픈소스 활동량 대시보드
 
 Streamlit in Snowflake 에서 돈다. dbt 가 만든 BIGDATA.ANALYTICS_* 를 읽기만 한다.
-사분면 4개 색은 범주 팔레트 1 ~ 4번. 노랑과 초록은 대비가 낮아 점 이름 라벨과 표를 같이 둔다
+노랑과 초록은 대비가 낮아 점 이름 라벨과 표를 같이 둔다
 """
 
 import altair as alt
@@ -83,7 +83,6 @@ points = base.mark_circle(size=110, opacity=0.95, stroke="white", strokeWidth=1.
         alt.Tooltip("STRENGTH:N", title="연결 강도"),
     ],
 )
-# 글자 색은 지정하지 않아 Streamlit 테마 (밝은 화면, 어두운 화면) 의 글자색을 따른다
 labels = base.mark_text(align="left", dx=8, dy=-6, fontSize=12).encode(text="LABEL:N")
 st.altair_chart((rules + points + labels).properties(height=560), use_container_width=True)
 st.caption("점선 = 측정 기술의 중앙값 (사분면 경계). 점에 마우스를 올리면 값이 보인다")
@@ -123,7 +122,7 @@ if len(gh):
         use_container_width=True,
     )
 
-# 표: 색에 기대지 않고 읽을 수 있게 전체 값
+# 전체 표
 st.subheader("전체 표")
 table = mart.assign(
     공고_등장률_pct=(mart.POSTING_SHARE * 100).round(1),

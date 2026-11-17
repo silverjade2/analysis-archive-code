@@ -1,28 +1,23 @@
--- jobkko parquet 6개를 stage 에 한 번에 올리고 테이블 6개로 적재한다
--- 순서: 1단계 실행 → Snowsight 에서 stage 에 파일 업로드 → 2 ~ 4단계 실행
--- 원본: 채용 공고 수집기에서 내보낸 parquet (2026-11-02). 공고 원문이라 저장소에는 없고, dbt 는 POSTINGS 만 읽는다
+-- jobkko parquet 6개를 JOBKKO_STAGE 에 올려 테이블 6개로 적재. dbt 는 POSTINGS 만 읽음
+-- 원본: 채용 공고 수집기에서 내보낸 parquet (2026-11-02). 공고 원문이라 저장소에는 없음
+-- stage 를 만든 뒤 파일 업로드는 Snowsight 에서 손으로
 
--- 0. 작업 위치
 USE ROLE ACCOUNTADMIN;
 USE WAREHOUSE BIGDATA_WH;
 USE SCHEMA BIGDATA.JOBKKO;
 
--- 1. 파일 형식 · stage 만들기
 CREATE FILE FORMAT IF NOT EXISTS PARQUET_FMT TYPE = PARQUET;
 
 CREATE STAGE IF NOT EXISTS JOBKKO_STAGE
   FILE_FORMAT = PARQUET_FMT
-  DIRECTORY = (ENABLE = TRUE)                -- Snowsight 에서 파일 목록이 보이게
-  ENCRYPTION = (TYPE = 'SNOWFLAKE_SSE');     -- Snowsight 업로드에 필요한 서버 쪽 암호화
+  DIRECTORY = (ENABLE = TRUE)
+  ENCRYPTION = (TYPE = 'SNOWFLAKE_SSE');     -- Snowsight 업로드에 필요
 
--- >>> 여기서 Snowsight 로 파일 6개를 JOBKKO_STAGE 에 올린다 <<<
+-- 업로드 뒤
+LIST @JOBKKO_STAGE;   -- 6줄
 
--- 2. 올라갔는지 확인 (6줄 나와야 함)
-LIST @JOBKKO_STAGE;
-
--- 3. 파일마다: 컬럼 구조를 읽어 빈 테이블을 만들고 (INFER_SCHEMA) 데이터를 넣는다 (COPY INTO)
---    IGNORE_CASE => TRUE: 컬럼 이름을 대문자로 만들어 따옴표 없이 쓸 수 있게
---    같은 이름 테이블이 이미 있으면 CREATE 에서 멈춘다 (덮어쓰지 않음)
+-- IGNORE_CASE: 열 이름이 대문자로 잡혀 따옴표 없이 씀
+-- 같은 이름 테이블이 있으면 CREATE 에서 멈춤 (덮어쓰지 않음)
 
 CREATE TABLE POSTINGS USING TEMPLATE (
   SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*)) WITHIN GROUP (ORDER BY ORDER_ID)
@@ -66,7 +61,7 @@ CREATE TABLE SKILL_WEEKLY USING TEMPLATE (
 COPY INTO SKILL_WEEKLY FROM @JOBKKO_STAGE FILES = ('jobkko_skill_weekly.parquet')
   FILE_FORMAT = (FORMAT_NAME = 'PARQUET_FMT') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
 
--- 4. 행 수 확인 (기대값: 791 / 121810 / 1252 / 635 / 5641 / 2183)
+-- 791 / 121810 / 1252 / 635 / 5641 / 2183 행
 SELECT 'POSTINGS' AS t, COUNT(*) AS n FROM POSTINGS
 UNION ALL SELECT 'POSTING_STREAMS', COUNT(*) FROM POSTING_STREAMS
 UNION ALL SELECT 'FIT_CHECKS', COUNT(*) FROM FIT_CHECKS

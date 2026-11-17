@@ -1,25 +1,21 @@
--- ClickHouse 에서 받은 주별 활동량 (GitHub · PyPI) 을 Snowflake 에 적재
--- 순서: 1단계 실행 → Snowsight 에서 ACTIVITY_STAGE 에 파일 2개 업로드 → 2 ~ 4단계 실행
+-- ClickHouse 에서 받은 주별 활동량 (GitHub, PyPI) 적재
 -- 원본: data/*.parquet (scripts/01_fetch_activity.py, 2023-01-02 ~ 2026-10-26 주 단위)
+-- 01 과 같이 stage 를 만든 뒤 Snowsight 에서 parquet 2개를 올림
 
--- 0. 작업 위치
 USE ROLE ACCOUNTADMIN;
 USE WAREHOUSE BIGDATA_WH;
 CREATE SCHEMA IF NOT EXISTS BIGDATA.ACTIVITY;
 USE SCHEMA BIGDATA.ACTIVITY;
 
--- 1. stage 만들기 (파일 형식은 JOBKKO schema 에 만든 것을 재사용)
+-- 파일 형식은 01 에서 JOBKKO 에 만든 것
 CREATE STAGE IF NOT EXISTS ACTIVITY_STAGE
   FILE_FORMAT = BIGDATA.JOBKKO.PARQUET_FMT
   DIRECTORY = (ENABLE = TRUE)
   ENCRYPTION = (TYPE = 'SNOWFLAKE_SSE');
 
--- >>> 여기서 Snowsight 로 github_weekly.parquet · pypi_weekly.parquet 를 ACTIVITY_STAGE 에 올린다 <<<
-
--- 2. 올라갔는지 확인 (2줄)
+-- github_weekly.parquet, pypi_weekly.parquet 업로드 뒤
 LIST @ACTIVITY_STAGE;
 
--- 3. 테이블 만들기 + 적재
 CREATE TABLE GITHUB_WEEKLY USING TEMPLATE (
   SELECT ARRAY_AGG(OBJECT_CONSTRUCT(*)) WITHIN GROUP (ORDER BY ORDER_ID)
   FROM TABLE(INFER_SCHEMA(LOCATION => '@ACTIVITY_STAGE', FILES => 'github_weekly.parquet',
@@ -34,6 +30,6 @@ CREATE TABLE PYPI_WEEKLY USING TEMPLATE (
 COPY INTO PYPI_WEEKLY FROM @ACTIVITY_STAGE FILES = ('pypi_weekly.parquet')
   FILE_FORMAT = (FORMAT_NAME = 'BIGDATA.JOBKKO.PARQUET_FMT') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;
 
--- 4. 확인 (기대값: GITHUB_WEEKLY 44353, PYPI_WEEKLY 9051)
+-- GITHUB_WEEKLY 44353, PYPI_WEEKLY 9051 행
 SELECT 'GITHUB_WEEKLY' AS t, COUNT(*) AS n, COUNT(DISTINCT SKILL) AS skills FROM GITHUB_WEEKLY
 UNION ALL SELECT 'PYPI_WEEKLY', COUNT(*), COUNT(DISTINCT SKILL) FROM PYPI_WEEKLY;

@@ -18,7 +18,6 @@
 
 ```bash
 python scripts/01_fetch_activity.py --start 2023-01-02 --end 2026-11-02   # 공개 서버 쿼리 두 번, 수 초
-python scripts/02_widget_data.py                                          # 1초 안쪽
 ```
 
 `01`은 `data/`의 parquet 두 개를 덮어쓴다. 2026-11-04에 다시 받아 저장된 파일과 같은 것을 확인했다(공개 서버가 과거 값을 고치면 달라질 수 있다).
@@ -27,6 +26,14 @@ dbt는 Snowsight에서 `snowflake/01`, `02`, `04`를 실행한 뒤 Workspace에�
 
 ```sql
 EXECUTE DBT PROJECT FROM WORKSPACE user$.public."analysis-archive-code" PROJECT_ROOT = 'skill-demand-vs-oss-activity/dbt' ARGS = 'build --target dev'
+```
+
+DB `BIGDATA`, warehouse `BIGDATA_WH`, schema `BIGDATA.JOBKKO`를 만드는 문장은 없어 먼저 만들어 둬야 함. 번호 `03`은 비어 있음: 사전을 넓힌 뒤 활동량 테이블을 다시 채우던 스크립트였고, 지금 `data/`의 parquet은 `02`만으로 적재된다.
+
+build 뒤 mart와 `stg_pypi_weekly`를 csv로 내려받아 `data/`에 두고 위젯 json을 만든다(저장소에 있는 csv로도 돈다):
+
+```bash
+python scripts/02_widget_data.py   # 1초 안쪽
 ```
 
 ## 데이터
@@ -47,6 +54,8 @@ EXECUTE DBT PROJECT FROM WORKSPACE user$.public."analysis-archive-code" PROJECT_
 - Kubernetes는 사전과 dbt에서 strong이지만 json에서는 proxy (Python 클라이언트 패키지)
 
 Python 3.12.14, pandas 2.3.3, pyarrow 26.0.0에서 두 번 실행해 json byte 동일.
+
+`requirements.txt`는 `scripts/`용이라 `dashboard/app.py`가 import 하는 streamlit, altair, numpy, snowpark는 없음. 앱은 Streamlit in Snowflake에서 돌렸고 그쪽 패키지 버전은 적어 두지 않았음.
 
 ## 확인할 숫자
 
