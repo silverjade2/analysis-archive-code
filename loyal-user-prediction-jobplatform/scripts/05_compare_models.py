@@ -12,7 +12,7 @@ import time
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
-from common import CAT_COLS, DATA, FIG, NOTEBOOK_FEATURES, PREF_FEATURES, RES, TARGET
+from common import DATA, FIG, NOTEBOOK_FEATURES, PREF_FEATURES, RES, TARGET, encode
 from lightgbm import LGBMClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -40,15 +40,6 @@ MODELS = {  # 파라미터는 원본 노트북 값
     ),
 }
 SCORING = {"Accuracy": "accuracy", "AUC": "roc_auc", "Recall": "recall", "Prec.": "precision", "F1": "f1"}
-
-
-def encode(df, cols):
-    X = df[cols].copy()
-    cats = [c for c in cols if c in CAT_COLS]
-    X = pd.get_dummies(X, columns=cats, drop_first=False, dtype=int)
-    X.columns = [c.replace(" ", "_") for c in X.columns]
-    return X
-
 
 rows, holdout, importances = [], [], {}
 for vname, (fname, cols) in VARIANTS.items():
@@ -99,9 +90,7 @@ print("\n", comp.round(4).to_string(index=False))
 print("\nhold-out (LightGBM):\n", pd.DataFrame(holdout).round(4).to_string(index=False))
 
 fig, axes = plt.subplots(1, 2, figsize=(12, 5.2), sharex=False)
-for ax, vname, title in zip(
-    axes, ["v1_asis", "v2_pref"], ["v1 snapshot (as-was)", "v2 time cut (+ preference fields)"]
-):
+for ax, vname, title in zip(axes, ["v1_asis", "v2_pref"], ["v1 snapshot (as-was)", "v2 cutoff (+ preference fields)"]):
     top = importances[vname].head(10)[::-1]
     ax.hlines(top.index, 0, top.values, color="#2b6cb0", lw=1.5)
     ax.plot(top.values, top.index, "o", color="#2b6cb0")

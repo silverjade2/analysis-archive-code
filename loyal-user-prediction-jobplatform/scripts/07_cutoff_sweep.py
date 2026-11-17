@@ -9,7 +9,7 @@ import json
 
 import numpy as np
 import pandas as pd
-from common import CAT_COLS, DATA, N_DAYS, NOTEBOOK_FEATURES, PREF_FEATURES, RES, TARGET
+from common import DATA, N_DAYS, NOTEBOOK_FEATURES, PREF_FEATURES, RES, TARGET, encode
 from features import build_features, load
 from lightgbm import LGBMClassifier
 from sklearn.metrics import roc_auc_score
@@ -19,13 +19,6 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 OFFSETS = [-30, -14, -7, -3, -1, 0, 1, 2, 3, 5, 7, 14, 30, 60, 90, 180, 365, "snapshot"]
 COLS = NOTEBOOK_FEATURES + PREF_FEATURES
 TOP_N = 5
-
-
-def encode(df, cols):
-    cats = [c for c in cols if c in CAT_COLS]
-    X = pd.get_dummies(df[cols], columns=cats, dtype=int)
-    X.columns = [c.replace(" ", "_") for c in X.columns]
-    return X
 
 
 def make_model():

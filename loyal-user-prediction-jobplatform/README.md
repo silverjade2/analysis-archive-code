@@ -24,7 +24,7 @@ Python 3.14, numpy 2.5, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, XGBoost 3.4,
 | 03 | v1 snapshot feature (원본 노트북 구조) | `data/features_v1_snapshot.csv` |
 | 04 | v2 cutoff feature (타깃 결정 직전) | `data/features_v2_timecut.csv` |
 | 05 | 95/5 split 후 10-fold CV. LR, RF, XGBoost, LightGBM x v1_asis / v1_pref / v2_pref | `model_comparison.csv`, `importance_*.csv`, `fig4~5` |
-| 06 | 넛지 리스트 (비동의 상위 10%) 두 버전을 넣어 둔 동의 성향으로 평가 | `oof_auc_vs_oracle.csv`, `nudge_list_*.csv`, `fig6` |
+| 06 | 넛지 리스트 (비동의 상위 10%) 두 버전을 ground truth 동의 확률로 평가 | `oof_auc_vs_oracle.csv`, `nudge_list_*.csv`, `fig6` |
 | 07 | cutoff를 동의일 기준 -30일~+365일, snapshot으로 옮기며 AUC와 상위 feature 기록 | `cutoff_sweep.csv`, `cutoff_sweep.json` (사이트 `src/data/cutoff-sweep.json`) |
 | 08 | 그림 1~6 사이트 톤. fig4, fig5는 재설계 | `outputs/figures/site/fig1~6.webp` |
 | 09 | 그림 7~11 데이터. 동의 전후 로그인, 타임라인 12명, OOF 점수와 ROC, 분위와 사분면. 06과 assert 대조 | `login_around_consent.csv`, `oof_scores.csv`, `leakage_anatomy_summary.csv` 등 |
@@ -37,7 +37,7 @@ Python 3.14, numpy 2.5, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, XGBoost 3.4,
 ## 확인할 숫자
 
 - 01: 동의율 0.806 (30,898 / 38,355). 생성기 절편을 이 값에 맞춰 풀었으므로 여기서 벗어나면 생성기가 달라진 것
-- 05: v1_asis LightGBM 10-fold AUC 0.944, v2_pref 0.687. 앞의 것이 ground truth 확률의 AUC 0.716보다 높은 게 leakage 증거, 뒤의 것이 그 아래 붙는 게 정상
+- 05: v1_asis LightGBM 10-fold AUC 0.944, v2_pref 0.687. 앞의 것은 ground truth 확률의 AUC 0.716보다 높아서 leakage, 뒤의 것은 그 아래
 - 06: oracle 0.716, v1 OOF 0.944, v2 OOF 0.687. 두 리스트 겹침 28.1%, 상위 10%를 뽑아도 열에 일곱은 다른 사람
 - 06: 선호 정보 빈 유저(연봉 기본값 또는 복지 5개 미만) 7,165명 안에서 같은 745명을 뽑으면 v2 0.859, v1 0.821, 무작위 0.725 (`nudge_list_pref_empty.csv`). 비동의 전체에서 뽑는 위의 비교와 모집단만 다름
 
@@ -53,7 +53,7 @@ Python 3.14, numpy 2.5, pandas 3.0, scikit-learn 1.9, LightGBM 4.7, XGBoost 3.4,
 
 - 동의 후 로그인 증가 (01의 `after` 마스크 2.2배 + 결과표 확인 burst). 동의 다음 날 로그인 확률 0.775 vs 비동의 0.103, cutoff일이 동의일을 넘는 순간 AUC 0.69 -> 0.88 (`cutoff_sweep.csv`)
 - 시즌 가입자. 공채 시즌 직전 가입자는 한 번 지원하고 떠남, 가입 월이 그 proxy (`journey_dormancy.csv`, fig3)
-- 선호 정보 완성이 진짜 원인. 연봉 기본값이 아니고 복지 5개 이상이면 동의 logit +1.30. v2에서 상위로 올라옴 (`importance_v2_pref.csv`)
+- 선호 정보 완성 -> 동의. 연봉 기본값이 아니고 복지 5개 이상이면 동의 logit +1.30. v2에서 상위로 올라옴 (`importance_v2_pref.csv`)
 
 oracle은 `truth_p_consent`로 순위를 매긴 AUC.
 

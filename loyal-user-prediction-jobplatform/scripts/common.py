@@ -89,3 +89,11 @@ def day_index(ts):
 
 
 N_DAYS = day_index(SNAPSHOT) + 1
+
+
+def encode(df, cols):
+    """범주형 열 one-hot. 05, 06, 07, 09 공용"""
+    cats = [c for c in cols if c in CAT_COLS]
+    X = pd.get_dummies(df[cols], columns=cats, dtype=int)
+    X.columns = [c.replace(" ", "_") for c in X.columns]
+    return X

@@ -1,12 +1,12 @@
 """leakage 해부. 그림 7~11 데이터. pipeline은 안 바꾸고 data/와 v1, v2 테이블만 읽음
 
-- 기준일 주변 로그인 확률, 유저 12명 타임라인, OOF 점수와 ROC, 점수 분위별 동의 성향, v1 x v2 사분면
+- 기준일 주변 로그인 확률, 유저 12명 타임라인, OOF 점수와 ROC, 점수 분위별 ground truth 동의 확률, v1 x v2 사분면
 - 점수를 쓰는 셋은 06 결과와 assert로 대조 (같은 CV, seed). 캡션 숫자는 leakage_anatomy_summary.csv
 """
 
 import numpy as np
 import pandas as pd
-from common import CAT_COLS, DATA, N_DAYS, NOTEBOOK_FEATURES, PREF_FEATURES, RES, SEED, TARGET
+from common import DATA, N_DAYS, NOTEBOOK_FEATURES, PREF_FEATURES, RES, SEED, TARGET, encode
 from lightgbm import LGBMClassifier
 from sklearn.metrics import roc_auc_score, roc_curve
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
@@ -79,14 +79,6 @@ for u in sample:
     )
 pd.DataFrame(rows).to_csv(RES / "timeline_sample.csv", index=False)
 print("2. timeline_sample.csv")
-
-
-def encode(df, cols):
-    cats = [c for c in cols if c in CAT_COLS]
-    X = pd.get_dummies(df[cols], columns=cats, dtype=int)
-    X.columns = [c.replace(" ", "_") for c in X.columns]
-    return X
-
 
 cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=123)
 scores = {}

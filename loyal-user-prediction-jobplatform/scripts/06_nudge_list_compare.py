@@ -1,14 +1,14 @@
 """넛지 리스트 비교
 
 운영 용도는 주간 리스트 (비동의 유저 상위 10%를 마케팅에). v1, v2의 LightGBM OOF 점수로 각각 만들고
-가상데이터에 넣은 동의 성향으로 평가
+ground truth 동의 확률(truth_p_consent)로 평가
 """
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from common import CAT_COLS, DATA, FIG, NOTEBOOK_FEATURES, PREF_FEATURES, RES, TARGET
+from common import DATA, FIG, NOTEBOOK_FEATURES, PREF_FEATURES, RES, TARGET, encode
 from lightgbm import LGBMClassifier
 from sklearn.metrics import roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
@@ -16,14 +16,6 @@ from sklearn.model_selection import StratifiedKFold, cross_val_predict
 matplotlib.use("Agg")
 
 TOP = 0.10
-
-
-def encode(df, cols):
-    cats = [c for c in cols if c in CAT_COLS]
-    X = pd.get_dummies(df[cols], columns=cats, dtype=int)
-    X.columns = [c.replace(" ", "_") for c in X.columns]
-    return X
-
 
 users = pd.read_csv(DATA / "users.csv")
 v1 = pd.read_csv(DATA / "features_v1_snapshot.csv")
@@ -39,7 +31,7 @@ for name, df, cols in [("v1", v1, NOTEBOOK_FEATURES), ("v2", v2, NOTEBOOK_FEATUR
 
 oracle = roc_auc_score(y, users["truth_p_consent"].values)
 print(
-    f"oracle AUC (true propensity): {oracle:.4f}   v1 OOF AUC {roc_auc_score(y, scores['v1']):.4f}   "
+    f"oracle AUC (ground truth): {oracle:.4f}   v1 OOF AUC {roc_auc_score(y, scores['v1']):.4f}   "
     f"v2 OOF AUC {roc_auc_score(y, scores['v2']):.4f}"
 )
 pd.DataFrame(
@@ -119,8 +111,8 @@ axes[1].bar(["random 10%", "v1 list", "v2 list"], vals, color=["#e2e8f0", "#a0ae
 for i, v in enumerate(vals):
     axes[1].text(i, v + 0.01, f"{v:.3f}", ha="center", fontsize=9)
 axes[1].set_ylim(0, 1)
-axes[1].set_ylabel("mean true consent propensity")
-axes[1].set_title("Scored against the planted truth", loc="left", fontsize=11)
+axes[1].set_ylabel("mean truth_p_consent")
+axes[1].set_title("Mean ground truth consent probability", loc="left", fontsize=11)
 axes[1].grid(axis="y", alpha=0.3)
 fig.suptitle(f"Nudge lists: top 10% of non-consented users, overlap {overlap:.0%}", x=0.02, ha="left", fontsize=12)
 fig.tight_layout()
