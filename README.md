@@ -37,6 +37,10 @@
 - [`voice-llm-freshness/`](./voice-llm-freshness): ["다시 말씀해 주시겠어요", 그리고 아무도 다시 말하지 않았다](https://analysis-archive.vercel.app/analyses/voice-llm-freshness)
 - [`session-wrap-usage-log/`](./session-wrap-usage-log): [무엇을 자동화할 것인가: 쓰면서 느낀 필요를 대화 기록으로 확인한 세션 마감 도구](https://analysis-archive.vercel.app/analyses/session-wrap-usage-log)
 
+### 데이터 파이프라인
+
+- [`personal-warehouse-duckdb/`](./personal-warehouse-duckdb): [개인 데이터 창고: 웨어하우스 설계를 1인 규모로 줄이면 뭐가 남나](https://analysis-archive.vercel.app/analyses/personal-warehouse-duckdb)
+
 ## 실행
 
 ```bash
