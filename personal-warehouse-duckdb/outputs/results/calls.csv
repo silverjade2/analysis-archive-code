@@ -1,0 +1,9 @@
+source,op,calls
+golf,POST oauth2 token,1
+golf,GET spreadsheets (탭 목록),1
+golf,GET values:batchGet,1
+calendar,PROPFIND principal,1
+calendar,PROPFIND calendars,1
+calendar,REPORT calendar-query,6
+saju,connect,1
+saju,SELECT changgo.saju_submissions,1

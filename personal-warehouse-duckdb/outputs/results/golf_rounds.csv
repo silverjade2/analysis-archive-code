@@ -1,0 +1,33 @@
+round_id,round_date,day_no,round_of_day,day_label,course_id,course_name,base_course,start_nine,holes,player_id,player_name,holes_played,complete,strokes,par,to_par,out_strokes,out_par,in_strokes,in_par
+r03,2026-09-22,1,1,1일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p1,하늘,18,True,87,72,15,45,36,42,36
+r03,2026-09-22,1,1,1일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p2,바다,18,True,94,72,22,46,36,48,36
+r03,2026-09-22,1,1,1일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p3,선수3,18,True,106,72,34,52,36,54,36
+r03,2026-09-22,1,1,1일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p4,선수4,18,True,96,72,24,46,36,50,36
+r04,2026-09-23,2,1,2일차,c_home_in,IN 출발 · Maple Ridge CC,Maple Ridge CC,IN,18,p1,하늘,18,True,90,72,18,45,36,45,36
+r04,2026-09-23,2,1,2일차,c_home_in,IN 출발 · Maple Ridge CC,Maple Ridge CC,IN,18,p2,바다,18,True,93,72,21,44,36,49,36
+r04,2026-09-23,2,1,2일차,c_home_in,IN 출발 · Maple Ridge CC,Maple Ridge CC,IN,18,p3,선수3,17,False,99,68,31,43,32,56,36
+r04,2026-09-23,2,1,2일차,c_home_in,IN 출발 · Maple Ridge CC,Maple Ridge CC,IN,18,p4,선수4,17,False,96,68,28,43,32,53,36
+r06,2026-09-23,2,2,2일차 2R,c_home_out9,OUT 9홀 · Maple Ridge CC,Maple Ridge CC,OUT,9,p1,하늘,9,True,50,36,14,50,36,,
+r06,2026-09-23,2,2,2일차 2R,c_home_out9,OUT 9홀 · Maple Ridge CC,Maple Ridge CC,OUT,9,p2,바다,9,True,47,36,11,47,36,,
+r06,2026-09-23,2,2,2일차 2R,c_home_out9,OUT 9홀 · Maple Ridge CC,Maple Ridge CC,OUT,9,p3,선수3,9,True,51,36,15,51,36,,
+r06,2026-09-23,2,2,2일차 2R,c_home_out9,OUT 9홀 · Maple Ridge CC,Maple Ridge CC,OUT,9,p4,선수4,7,False,35,28,7,35,28,,
+r08,2026-09-24,3,1,3일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p1,하늘,18,True,93,72,21,46,36,47,36
+r08,2026-09-24,3,1,3일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p2,바다,17,False,85,69,16,40,33,45,36
+r08,2026-09-24,3,1,3일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p3,선수3,18,True,99,72,27,47,36,52,36
+r08,2026-09-24,3,1,3일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p4,선수4,17,False,84,69,15,43,36,41,33
+r09,2026-09-25,4,1,4일차,c_home_in,IN 출발 · Maple Ridge CC,Maple Ridge CC,IN,18,p1,하늘,18,True,90,72,18,46,36,44,36
+r09,2026-09-25,4,1,4일차,c_home_in,IN 출발 · Maple Ridge CC,Maple Ridge CC,IN,18,p2,바다,17,False,94,68,26,50,36,44,32
+r09,2026-09-25,4,1,4일차,c_home_in,IN 출발 · Maple Ridge CC,Maple Ridge CC,IN,18,p3,선수3,17,False,93,68,25,50,36,43,32
+r09,2026-09-25,4,1,4일차,c_home_in,IN 출발 · Maple Ridge CC,Maple Ridge CC,IN,18,p4,선수4,18,True,95,72,23,51,36,44,36
+r10,2026-09-25,4,2,4일차 2R,c_home_in9,IN 9홀 · Maple Ridge CC,Maple Ridge CC,IN,9,p1,하늘,9,True,45,36,9,,,45,36
+r10,2026-09-25,4,2,4일차 2R,c_home_in9,IN 9홀 · Maple Ridge CC,Maple Ridge CC,IN,9,p2,바다,9,True,51,36,15,,,51,36
+r10,2026-09-25,4,2,4일차 2R,c_home_in9,IN 9홀 · Maple Ridge CC,Maple Ridge CC,IN,9,p3,선수3,9,True,51,36,15,,,51,36
+r10,2026-09-25,4,2,4일차 2R,c_home_in9,IN 9홀 · Maple Ridge CC,Maple Ridge CC,IN,9,p4,선수4,9,True,42,36,6,,,42,36
+r11,2026-09-26,5,1,5일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p1,하늘,18,True,92,72,20,46,36,46,36
+r11,2026-09-26,5,1,5일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p2,바다,18,True,96,72,24,48,36,48,36
+r11,2026-09-26,5,1,5일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p3,선수3,18,True,101,72,29,47,36,54,36
+r11,2026-09-26,5,1,5일차,c_home_out,OUT 출발 · Maple Ridge CC,Maple Ridge CC,OUT,18,p4,선수4,18,True,85,72,13,46,36,39,36
+r14,2026-09-27,6,1,6일차,c_home_out9,OUT 9홀 · Maple Ridge CC,Maple Ridge CC,OUT,9,p1,하늘,9,True,44,36,8,44,36,,
+r14,2026-09-27,6,1,6일차,c_home_out9,OUT 9홀 · Maple Ridge CC,Maple Ridge CC,OUT,9,p2,바다,9,True,47,36,11,47,36,,
+r14,2026-09-27,6,1,6일차,c_home_out9,OUT 9홀 · Maple Ridge CC,Maple Ridge CC,OUT,9,p3,선수3,8,False,44,32,12,44,32,,
+r14,2026-09-27,6,1,6일차,c_home_out9,OUT 9홀 · Maple Ridge CC,Maple Ridge CC,OUT,9,p4,선수4,9,True,43,36,7,43,36,,

@@ -1,0 +1,3 @@
+rule,recurring,rows
+회차에 RECURRENCE-ID,73,73
+원본 VEVENT 에 RRULE 이나 회차 수정,12,73

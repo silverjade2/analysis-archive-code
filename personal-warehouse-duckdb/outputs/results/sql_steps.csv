@@ -1,0 +1,13 @@
+layer,file,table,rows
+stg,020_golf_course_holes.sql,stg.golf_course_holes,18
+stg,021_golf.sql,stg.golf_players,4
+stg,021_golf.sql,stg.golf_courses,6
+stg,021_golf.sql,stg.golf_rounds,14
+stg,021_golf.sql,stg.golf_scores,459
+stg,030_calendar.sql,stg.calendar_events,72
+stg,040_saju.sql,stg.saju_dist,228
+mart,020_golf.sql,mart.golf_rounds,32
+mart,020_golf.sql,mart.golf_player_trend,4
+mart,020_golf.sql,mart.golf_hole_stats,72
+mart,030_calendar.sql,mart.time_by_category_weekly,51
+mart,040_saju.sql,mart.saju_response_dist,228

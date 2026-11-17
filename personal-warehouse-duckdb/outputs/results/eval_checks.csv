@@ -1,0 +1,19 @@
+check,expected,actual,ok
+점수 raw 행 = 시트 행,660,660,True
+삭제 라운드 수,6,6,True
+삭제 라운드에 있던 행,192,192,True
+빈 칸 행 (살아 있는 라운드),9,9,True
+stg 점수 행,459,459,True
+타수 합: 시트 = mart,2418,2418,True
+행 단위 타수 불일치,0,0,True
+회차: truth 와 raw 가 다른 행,0,0,True
+회차 끝 시각 불일치,0,0,True
+반복 판정 (원본 VEVENT) 이 truth 와 다른 행,0,0,True
+반복 판정 (회차 RECURRENCE-ID) 이 truth 와 다른 행,61,61,True
+취소 일정 (stg 에서 빠짐),1,1,True
+주 × 카테고리 시간이 truth 와 다른 칸,0,0,True
+집계 응답 수 = 테스트 뺀 응답,340,340,True
+"(차원, 값) 건수 불일치",0,0,True
+raw 에 식별 값이 들어간 칸,0,0,True
+raw 컬럼 = 선언한 컬럼,"dimension,value,n,score_sum,total,mapping_versions,_snapshot_date,_collected_at","dimension,value,n,score_sum,total,mapping_versions,_snapshot_date,_collected_at",True
+캘린더 호출 = 2 + 캘린더 수,8,8,True

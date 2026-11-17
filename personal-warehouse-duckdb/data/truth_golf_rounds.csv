@@ -1,0 +1,15 @@
+round_id,truth_deleted,truth_holes
+r01,True,18
+r02,True,18
+r03,False,18
+r04,False,18
+r05,True,18
+r06,False,9
+r07,True,18
+r08,False,18
+r09,False,18
+r10,False,9
+r11,False,18
+r12,True,18
+r13,True,18
+r14,False,9

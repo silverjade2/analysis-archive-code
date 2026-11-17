@@ -1,0 +1,24 @@
+key,value,note
+golf_score_rows_raw,660,시트에서 받은 스코어 행
+golf_rounds,14,라운드 행
+golf_rounds_deleted,6,삭제 표시된 라운드
+golf_rows_in_deleted_rounds,192,삭제 라운드에 있던 스코어 행
+golf_rows_blank,9,살아 있는 라운드의 빈 칸
+golf_score_rows_stg,459,stg 에 남은 스코어 행
+golf_strokes_sum,2418,mart 타수 합 (시트 합과 같음)
+calendar_calendars,6,캘린더 수
+calendar_with_events,5,일정이 있는 캘린더
+calendar_occurrences,73,조회 기간 안 회차 (raw)
+calendar_recurring_by_occurrence,73,처음 판정: 회차에 RECURRENCE-ID
+calendar_recurring_by_vevent,12,"고친 판정: 원본 VEVENT 에 RRULE, 회차 수정"
+calendar_all_day,9,종일 회차
+calendar_window,2026-08-25~2027-01-19,"조회 기간, 끝은 미포함"
+saju_responses,340,집계에 들어간 응답 (테스트 제외)
+saju_test_excluded,12,view 가 뺀 테스트 응답
+saju_agg_rows,228,저장한 집계 행
+saju_dimensions,8,집계 차원
+calls_calendar,8,캘린더 수집 1회 호출 (캘린더 6개)
+calls_golf,3,스코어 시트 수집 1회 호출
+calls_saju,2,설문 수집 1회 호출
+snapshot_date,2026-10-20,첫 수집일
+raw_files,7,raw parquet 파일 (소스마다 1일치)

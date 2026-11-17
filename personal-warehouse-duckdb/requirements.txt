@@ -1,0 +1,6 @@
+duckdb>=1.5
+pyarrow>=26
+pandas>=3.0
+numpy>=2.4
+icalendar>=7.3
+recurring-ical-events>=3.8

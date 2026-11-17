@@ -1,0 +1,5 @@
+player_id,player_name,month,rounds,avg_strokes,avg_to_par,best_strokes,handicap_rounds,handicap_est
+p1,하늘,2026-09-01,5,90.4,18.4,87,5,16.5
+p2,바다,2026-09-01,3,94.3,22.3,93,3,21.0
+p3,선수3,2026-09-01,3,102.0,30.0,99,3,27.0
+p4,선수4,2026-09-01,3,92.0,20.0,85,3,13.0

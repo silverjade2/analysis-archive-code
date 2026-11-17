@@ -1,0 +1,13 @@
+{"source": "golf", "op": "POST oauth2 token", "status": "ok"}
+{"source": "golf", "op": "GET spreadsheets (탭 목록)", "status": "ok"}
+{"source": "golf", "op": "GET values:batchGet", "status": "ok"}
+{"source": "calendar", "op": "PROPFIND principal", "status": "ok"}
+{"source": "calendar", "op": "PROPFIND calendars", "status": "ok"}
+{"source": "calendar", "op": "REPORT calendar-query", "status": "ok"}
+{"source": "calendar", "op": "REPORT calendar-query", "status": "ok"}
+{"source": "calendar", "op": "REPORT calendar-query", "status": "ok"}
+{"source": "calendar", "op": "REPORT calendar-query", "status": "ok"}
+{"source": "calendar", "op": "REPORT calendar-query", "status": "ok"}
+{"source": "calendar", "op": "REPORT calendar-query", "status": "ok"}
+{"source": "saju", "op": "connect", "status": "ok"}
+{"source": "saju", "op": "SELECT changgo.saju_submissions", "status": "ok"}
