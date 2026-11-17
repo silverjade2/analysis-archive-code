@@ -1,2 +1,0 @@
-# 03 이 매번 다시 만드는 DuckDB 파일. 안에 raw view 의 절대 경로가 들어가 byte 단위로 같지 않음
-data/warehouse.duckdb
