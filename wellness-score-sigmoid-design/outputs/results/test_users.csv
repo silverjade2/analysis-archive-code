@@ -1,0 +1,8 @@
+user,inputs,score_current,stage_current,score_penalized,stage_penalized,item_stage
+A,-,100.0,안정,100.0,안정,안정
+B,-,100.0,안정,100.0,안정,안정
+C,-,100.0,안정,100.0,안정,안정
+D,-,100.0,안정,100.0,안정,안정
+E,temperature=37.6,90.66,안정,68.0,주의,주의
+F,"pulse=115,bp_dia=91",65.36,주의,49.02,경고,주의
+G,spo2=88.0,80.0,안정,40.0,경고,경고

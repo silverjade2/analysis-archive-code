@@ -22,6 +22,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 03 | 점수 계산. 원본 점수, 보정 점수, 재설계 점수, 항목 단계 두 벌, 최종 단계. edge case assert | `data/scored_synthetic.csv`, `edge_results.csv` |
 | 04 | 단계 분포, 일치율, 희석/과판정 집계, k 민감도, 결측 정책 | `agreement.csv`, `stage_crosstab.csv`, `dilution_groups.csv`, `penalty_overjudge.csv`, `k_sensitivity.csv` |
 | 05 | 그림 5장. fig4, fig5는 `data/scored_synthetic.csv`에서 다시 집계 | `outputs/figures/site/fig1~5.webp` |
+| 06 | 테스트 사용자 7명(A~G) 점수. 적은 항목 말고는 정상범위 중앙값 | `test_users.csv` |
 
 점수 함수와 단계 규칙은 전부 `scoring.py`. 파라미터는 `common.py`의 PARAMS.
 
@@ -35,6 +36,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 - 04: 6항목 완비 882명 기준 점수 단계와 항목 단계 일치율. 원본 0.353, 보정 후 0.831, 재설계 0.190, 재설계 + 캡 0.999
 - 04: 주의 항목만 있는 420명 중 원본 점수 50~66.7이 123명, 이들은 ×0.75만으로 경고
 - 04: 경고 항목 하나에 나머지 정상인 85명은 재설계 점수 최저 80.00, 전원 점수 단계 안정
+- 06: 7명 중 점수 단계와 항목 단계가 다른 사람 2명(E, G), 보정 후 1명(F)
 
 재설계 단독 일치율이 원본보다 낮은 건 정상. 점수가 관대해질수록 항목 단계와 멀어져서 캡이 붙음.
 
