@@ -122,7 +122,7 @@ tbl = pd.DataFrame(
         ],
         [
             "(e) 자정 분할 이월",
-            "시작일 귀속에서도 스파이크로 남는 날 수",
+            "스파이크일 수 (시작일 귀속 / 자정 분할)",
             f"{len(spike_dts)} / {len(spikes[spikes.attribution == 'midnight'])}",
             "스파이크일 off_n 배수 midnight vs startdate",
             f"{sp_mid.off_n_multiple.median():.2f} vs {sp_sd.off_n_multiple.median():.2f}",
