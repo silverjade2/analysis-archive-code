@@ -7,7 +7,7 @@ rPPG 비접촉 측정기의 바이탈 6항목(체온, 맥박, 산소포화도, �
 ## 실행
 
 ```bash
-python -m venv .venv && .venv/bin/pip install -r requirements.txt
+python3.14 -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
@@ -21,7 +21,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 02 | 점수 함수 곡선. 경계 바로 밖 값의 점수 표, 재설계 k=4/6/8 곡선 | `boundary_steps.csv`, `item_curves.csv`, `k_curves.csv` |
 | 03 | 점수 계산. 원본 점수, 보정 점수, 재설계 점수, 항목 단계 두 벌, 최종 단계. edge case assert | `data/scored_synthetic.csv`, `edge_results.csv` |
 | 04 | 단계 분포, 일치율, 희석/과판정 집계, k 민감도, 결측 정책 | `agreement.csv`, `stage_crosstab.csv`, `dilution_groups.csv`, `penalty_overjudge.csv`, `k_sensitivity.csv` |
-| 05 | 그림 5장. results CSV만 읽음 | `outputs/figures/site/fig1~5.webp` |
+| 05 | 그림 5장. fig4, fig5는 `data/scored_synthetic.csv`에서 다시 집계 | `outputs/figures/site/fig1~5.webp` |
 
 점수 함수와 단계 규칙은 전부 `scoring.py`. 파라미터는 `common.py`의 PARAMS.
 

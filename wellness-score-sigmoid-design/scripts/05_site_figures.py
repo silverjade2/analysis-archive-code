@@ -1,4 +1,8 @@
-"""그림 5장. 값은 02와 04의 결과 CSV와 03이 쓴 scored_synthetic.csv에서 읽고 다시 계산하지 않는다."""
+"""그림 5장
+
+- fig1~3: 02, 04의 결과 CSV
+- fig4, fig5: 03이 쓴 data/scored_synthetic.csv에서 주의만 그룹, 경고 진입, 사분위를 다시 집계
+"""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -115,8 +119,9 @@ fig.legend(
     title_fontsize=9,
     bbox_to_anchor=(0.5, -0.13),
 )
+n_complete = ct[ct.method == "current"][["score_안정", "score_주의", "score_경고"]].to_numpy().sum()
 fig.suptitle(
-    "항목 단계 x 점수 단계 (6항목 완비 882명)",
+    f"항목 단계 x 점수 단계 (6항목 완비 {n_complete}명)",
     x=0.01,
     ha="left",
     fontsize=12,
