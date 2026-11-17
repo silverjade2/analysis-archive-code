@@ -31,11 +31,11 @@ Python 3.14.6, numpy 2.4.4, pandas 3.0.2, scikit-learn 1.8.0, scipy 1.17.1, matp
 | 03 | 감정 문장 24,000개 (6감정 x 상황 7종) | `data/emotion_corpus.csv` |
 | 04 | Kiwi 형태소 토큰 캐시 | `data/*_tokens.csv` |
 | 05 | 코호트 구조, 과제별 통계, 치료 언급률, 음향 feature 분산 분해 | `eda_*.csv` |
-| 06 | recording 랜덤 분할 vs speaker-independent split x 텍스트 / 음성 GBM / 음성 k-NN / 융합, seed 3개 | `split_comparison*.csv` |
+| 06 | recording random split vs speaker-independent split x 텍스트 / 음성 GBM / 음성 k-NN / 융합, seed 3개 | `split_comparison*.csv` |
 | 07 | 과제 하나씩만 쓴 AUC, 참가자 집계 범위 | `task_ablation.csv`, `task_aggregation.csv` |
 | 08 | 환자군 라벨 vs PHQ 라벨, 치료 어휘 마스킹 | `label_definition_*.csv`, `top_features_*.csv` |
-| 09 | 감정 분류기 성능과 스크리닝 전이 | `emotion_*.csv` |
-| 10 | 상위 feature 유형, 하위군 AUC(부트스트랩 CI), 보정 | `subgroup_auc.csv`, `calibration_deciles.csv` |
+| 09 | 감정 분류기 성능과 스크리닝 transfer | `emotion_*.csv` |
+| 10 | 상위 feature 유형, 하위군 AUC(bootstrap CI), calibration | `subgroup_auc.csv`, `calibration_deciles.csv` |
 | 11 | 원본 톤 그림 8장 | `outputs/figures/*.png` |
 | 12 | 같은 8장 사이트 톤 (`sitestyle.py`, CSV만 읽음) | `outputs/figures/site/*.webp` |
 | 13 | 위젯 데이터 | `split_comparison.json` |
@@ -43,9 +43,9 @@ Python 3.14.6, numpy 2.4.4, pandas 3.0.2, scikit-learn 1.8.0, scipy 1.17.1, matp
 
 ## 확인할 숫자
 
-- 06: speaker_prior의 참가자 AUC 1.0 (recording 랜덤 분할이면 참가자 신원만으로 다 맞힌다는 뜻). 음성 k-NN 참가자 AUC 0.927(recording 랜덤) -> 0.839(speaker-independent), 텍스트는 0.931 -> 0.930
+- 06: speaker_prior의 참가자 AUC 1.0 (recording random split이면 참가자 신원만으로 다 맞힌다는 뜻). 음성 k-NN 참가자 AUC 0.927(recording random split) -> 0.839(speaker-independent), 텍스트는 0.931 -> 0.930
 - 01: 환자군인데 비우울 351명, 대조군인데 우울 51명
-- 09: 감정 전이 참가자 AUC 0.626 (아래 Kiwi 차이 참고)
+- 09: 감정 transfer 참가자 AUC 0.626 (아래 Kiwi 차이 참고)
 
 `truth_*`(템플릿 가중치, 치료 언급 여부)가 feature에 섞이지 않았는지는 99가 매 실행 확인.
 
@@ -58,5 +58,5 @@ Python 3.14.6, numpy 2.4.4, pandas 3.0.2, scikit-learn 1.8.0, scipy 1.17.1, matp
 
 ## 알려진 문제
 
-- Kiwi 형태소 결과가 플랫폼에 따라 다름. 같은 kiwipiepy 0.23.2라도 Linux(Python 3.12)와 macOS의 토큰 캐시가 16,000건 중 1,179건에서 달랐고("창 밖"이 "창밖"으로 붙는 식), 04부터 갈려 텍스트 AUC는 셋째 자리, 감정 전이 AUC는 0.611 -> 0.626으로 움직임. 커밋된 `data/`, `outputs/`는 macOS 기준
+- Kiwi 형태소 결과가 플랫폼에 따라 다름. 같은 kiwipiepy 0.23.2라도 Linux(Python 3.12)와 macOS의 토큰 캐시가 16,000건 중 1,179건에서 달랐고("창 밖"이 "창밖"으로 붙는 식), 04부터 갈려 텍스트 AUC는 셋째 자리, 감정 transfer AUC는 0.611 -> 0.626으로 움직임. 커밋된 `data/`, `outputs/`는 macOS 기준
 - 11은 Noto Sans CJK를 찾고 없으면 AppleGothic. 둘 다 없으면 한글이 깨짐
