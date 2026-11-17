@@ -78,7 +78,7 @@ Community Cloud 진입 파일은 저장소 루트 기준 `job-role-shift-commonc
 .venv/bin/python scripts/13_article_numbers.py
 ```
 
-`05`와 `06` 사이에 표본 라벨을 `work/task1/labels_*/out/`에 jsonl로 둔다 (Claude Sonnet, 지시문은 저장소에 없음)
+`05`와 `06` 사이에 표본 라벨을 `work/task1/labels_*/out/`에 jsonl로 둔다 (Claude Sonnet, 지시문은 `data/label_instructions.md`). 이 파일은 학습용 라벨 묶음에 쓴 지시문이다. 처음 라벨 713건 때는 끝의 경계 규칙 두 항목이 없었고, 그 경계 사례를 뒤에 none으로 고친 값이 `labels_agent.parquet`에 들어 있다
 
 `05`의 입력 `label_pool.parquet`, `labels_agent.parquet`는 국내 공고 원문을 포함해 저장소에 없어 `05`, `07`, `13`의 국내 표는 저장소만으로 다시 만들 수 없다
 
@@ -100,6 +100,7 @@ pipeline: Python 3.12.14, PySpark 4.2.0, DuckDB 1.5.6, scikit-learn 1.9.1, panda
 | --- | --- |
 | `data/SKILL_DEMAND_VS_ACTIVITY.csv`, `INT_SKILL_DEMAND.csv`, `STG_PYPI_WEEKLY.csv`, `STG_GITHUB_WEEKLY.csv`, `TASK_MIX.csv`, `TASK_GROUP_MIX.csv` | Snowflake 안의 dbt로 만든 표를 내려받은 것. 앱이 읽음 |
 | `data/task_taxonomy.csv` | 업무 유형 14개와 묶음 5개 |
+| `data/label_instructions.md` | 라벨 지시문 (업무 유형 14개 정의, 경계 규칙, 출력 형식) |
 | `data/eval_labels.csv` | 평가 표본 510건의 라벨과 직무군, 회차. 제목과 본문은 없다. `doc_id`는 페이지 URL + 노드의 해시, `label_row`는 라벨 파일 순서 |
 | `data/task_pred.parquet` | 적용 대상 143,762건의 모델 예측. 페이지 URL과 확률은 뺐다 |
 | `data/base_skills.csv`, `new_skills.json` | 기존 기술 37개의 패턴, 새 후보 59개의 별칭 |
