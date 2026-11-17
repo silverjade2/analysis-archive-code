@@ -2,7 +2,7 @@
 
 1. point-in-time recomputation check: 원천을 t까지 잘라서 feature 다시 계산, 저장값과 비교
 2. 이벤트일 이후 행, target 정의
-3. positive control: 일부러 만든 leakage feature를 1번이 잡는지. 0이면 검증 도구 쪽이 고장
+3. positive control: 원천을 자르지 않고 만든 leakage feature를 1번 루프에 넣어 잡히는지. 0이면 검증 도구 쪽이 고장
 """
 
 from pathlib import Path
@@ -12,6 +12,8 @@ import pandas as pd
 
 SEED = 42
 N_SAMPLE = 200
+N_CONTROL = 50
+LEAKY_COL = "w3_next_3d"
 WARNING_CODES = [f"W{i}" for i in range(1, 10)]
 
 base = Path(__file__).resolve().parents[1]
@@ -24,7 +26,6 @@ raw["day"] = (raw["event_date"] - start).dt.days
 gt["event_day"] = (gt["severe_event_date"] - start).dt.days
 
 feature_cols = [c for c in table.columns if c not in ("device_id", "event_date", "day", "target")]
-rng = np.random.default_rng(SEED)
 sample = table.sample(n=N_SAMPLE, random_state=SEED).reset_index(drop=True)
 
 
@@ -53,19 +54,30 @@ def recompute_features(device_id: str, t: int, cutoff: pd.DataFrame) -> dict[str
         out[f"{code.lower()}_cnt_7d"] = m[-7:].sum()
         out[f"{code.lower()}_cnt_14d"] = m[-14:].sum()
         out[f"{code.lower()}_slope_7d"] = slope(m[-7:])
+
+    # positive control 전용. t+1~t+3 W3 건수라 t에서 자른 원천이면 늘 0
+    future = cutoff[(cutoff["device_id"] == device_id) & (cutoff["event_code"] == "W3")]
+    out[LEAKY_COL] = float(future[future["day"].between(t + 1, t + 3)]["count"].sum())
     return out
 
 
-mismatch = 0
-for _, row in sample.iterrows():
-    t = int(row["day"])
-    cutoff = raw[raw["day"] <= t]  # t 이후 제거
-    recomputed = recompute_features(row["device_id"], t, cutoff)
-    for col in feature_cols:
-        if not np.isclose(row[col], recomputed[col], rtol=1e-9, atol=1e-9):
-            mismatch += 1
-            print(f"  불일치: {row['device_id']} day={t} {col}: 저장값 {row[col]} vs 재계산 {recomputed[col]}")
-            break
+def find_mismatches(rows: pd.DataFrame, cols: list[str]) -> list[str]:
+    found = []
+    for _, row in rows.iterrows():
+        t = int(row["day"])
+        cutoff = raw[raw["day"] <= t]  # t 이후 제거
+        recomputed = recompute_features(row["device_id"], t, cutoff)
+        for col in cols:
+            if not np.isclose(row[col], recomputed[col], rtol=1e-9, atol=1e-9):
+                found.append(f"{row['device_id']} day={t} {col}: 저장값 {row[col]} vs 재계산 {recomputed[col]}")
+                break  # 행마다 첫 불일치 열 하나만
+    return found
+
+
+found = find_mismatches(sample, feature_cols)
+for line in found:
+    print(f"  불일치: {line}")
+mismatch = len(found)
 print(
     f"[검증 1] point-in-time recomputation check, 표본 {N_SAMPLE}행 x feature {len(feature_cols)}개: "
     f"불일치 {mismatch}건 {'ok' if mismatch == 0 else 'FAIL'}"
@@ -84,17 +96,13 @@ print(
     f"{'ok' if post_event_rows == 0 and target_mismatch == 0 else 'FAIL'}"
 )
 
-w3 = raw[raw["event_code"] == "W3"]
-leak_detected = 0
-for _, row in sample.head(50).iterrows():
-    t = int(row["day"])
-    # 일부러 만든 leakage feature: t+1~t+3 W3 건수
-    leaky_value = w3[(w3["device_id"] == row["device_id"]) & (w3["day"].between(t + 1, t + 3))]["count"].sum()
-    # t까지 자르면 미래분은 항상 0
-    recomputed_value = 0
-    if not np.isclose(leaky_value, recomputed_value):
-        leak_detected += 1
-print(f"[검증 3] positive control, leakage feature 50행 중 불일치 {leak_detected}건 (0보다 커야 함)")
+control = sample.head(N_CONTROL).copy()
+# 일부러 만든 leakage feature: 같은 정의를 자르지 않은 원천으로 계산
+control[LEAKY_COL] = [
+    recompute_features(d, int(t), raw)[LEAKY_COL] for d, t in zip(control["device_id"], control["day"])
+]
+leak_detected = len(find_mismatches(control, feature_cols + [LEAKY_COL]))
+print(f"[검증 3] positive control, {LEAKY_COL} 넣은 {N_CONTROL}행 중 불일치 {leak_detected}건 (0보다 커야 함)")
 
 n_pos = int(table["target"].sum())
 print(
@@ -112,9 +120,9 @@ pd.DataFrame(
             "recompute_mismatch",
             "post_event_rows",
             "target_definition_mismatch",
-            "negative_control_rows",
-            "negative_control_detected",
+            "positive_control_rows",
+            "positive_control_detected",
         ],
-        "value": [N_SAMPLE, len(feature_cols), mismatch, post_event_rows, target_mismatch, 50, leak_detected],
+        "value": [N_SAMPLE, len(feature_cols), mismatch, post_event_rows, target_mismatch, N_CONTROL, leak_detected],
     }
 ).to_csv(res_dir / "leakage_checks.csv", index=False)

@@ -90,7 +90,7 @@ fig.savefig(fig_dir / "fig1_w3_ramp.png", dpi=150)
 
 peak = np.nanmean(w3_severe, axis=0)[rel_days == 0][0]
 baseline = np.nanmean(w3_severe[:, rel_days < -7])
-print(f"[fig1] W3 심각 기기: 이벤트 당일 평균 {peak:.2f}건 vs 램프 이전 평균 {baseline:.2f}건")
+print(f"[fig1] W3 심각 기기: 이벤트 당일 평균 {peak:.2f}건 vs ramp 이전 평균 {baseline:.2f}건")
 
 u1 = daily_matrix("U1")
 u1_severe = align_to_event(u1, severe, (-60, 5))
