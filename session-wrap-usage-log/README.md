@@ -11,7 +11,7 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 for s in scripts/0*.py; do .venv/bin/python "$s"; done
 ```
 
-10초 안쪽. Python 3.14.7, numpy 2.5.3, pandas 3.0.6, matplotlib 3.11.2, pillow 12.3.0. 이 조합에서 `data/`와 `outputs/`를 지우고 다시 돌려도 생성 데이터, 결과 CSV, 그림이 byte 단위로 같았음.
+10초 안쪽. Python 3.14.7, numpy 2.5.4, pandas 3.1.1, matplotlib 3.11.2, pillow 13.0.0. 이 조합에서 `data/`와 `outputs/`를 지우고 다시 돌려도 생성 데이터, 결과 CSV, 그림이 byte 단위로 같았음.
 
 ## 스크립트
 
@@ -20,7 +20,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | 01 | 프로젝트 10개, 30일, 본 세션 229개와 서브에이전트 기록 생성. 문장은 `phrases.txt` | `data/transcripts.jsonl.gz`, `truth_parts.csv` |
 | 02 | 사람 메시지 거르기 (1차 접두어, 2차 IDE 자동 삽입과 다른 세션이 쓴 첫 지시문), 슬래시 명령과 스킬 호출 세기 | `data/messages.csv`, `funnel.csv`, `project_messages.csv`, `slash_commands.csv`, `skill_calls.csv` |
 | 03 | 정규식 군집. 겹침 허용, 첫 일치, 규칙 순서 200가지의 첫 일치 범위 | `data/labels.csv`, `cluster_counts.csv`, `count_summary.csv`, `cluster_by_project.csv` |
-| 04 | 기타 군집의 짧은 응답에 직전 assistant 텍스트나 앞 메시지의 군집을 붙임, /clear 직전 메시지 | `data/labels_ctx.csv`, `clear_before.csv`, `other_breakdown.csv`, `context_counts.csv`, `clear_context.csv` |
+| 04 | 기타 군집의 짧은 응답에 직전 assistant 텍스트나 앞 메시지의 군집을 붙임, /clear 직전 메시지 | `data/labels_ctx.csv`, `data/clear_before.csv`, `other_breakdown.csv`, `context_counts.csv`, `clear_context.csv` |
 | 05 | 후보 4개가 덮는 메시지 수 (겹침 합, 합집합, 첫 일치, 짧은 응답 포함), 퍼진 프로젝트 수, 스킬 호출 대비 대화 건수 | `candidates.csv`, `skill_vs_dialog.csv` |
 | 06 | ground truth 평가. 거르기, 군집별 precision/recall, 기타의 실제 구성, 후보별 실제 크기 | `eval_*.csv` |
 | 07 | 그림 5장 | `outputs/figures/site/fig1~5` |
@@ -41,3 +41,4 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 
 - 의도 정답은 생성기가 정한 것. 정규식이 놓치거나 잘못 잡는 비율은 `phrases.txt`의 문장 구성에 따라 바뀜
 - 확인 질문 뒤 짧은 응답 확률은 커밋/푸시에 가장 높게 넣었음 (0.4, 나머지 0.12~0.3). 실제 기록에서 센 값이 아님
+- 그림 글꼴은 `sitestyle.py`가 macOS 경로(`~/Library/Fonts`, `/Library/Fonts`)에서 Pretendard를 찾고, 없으면 AppleGothic. 이 글꼴이 없는 환경에서는 그림이 위와 byte 단위로 같지 않음

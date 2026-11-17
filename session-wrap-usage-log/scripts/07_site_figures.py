@@ -50,7 +50,7 @@ def fig1():
     ax.set_xlim(0, total)
     ax.set_ylim(-0.8, 0.72)
     ax.axis("off")
-    ax.set_title(f"user 내용 조각 {total:,}개 중 사람이 입력한 것은 13%다", pad=10)
+    ax.set_title(f"user content block {total:,}개의 구성 (사람이 입력한 것 {share:.0%})", pad=10)
     ss.save(fig, "fig1_composition")
 
 
@@ -68,7 +68,7 @@ def fig2():
     ax.set_xlabel("메시지 수")
     ax.grid(axis="x")
     ax.legend(loc="lower right")
-    ax.set_title("규칙 순서만 바꿔도 군집 크기가 움직인다")
+    ax.set_title("군집별 메시지 수: 겹침 허용, 첫 일치, 규칙 순서에 따른 범위")
     ss.save(fig, "fig2_cluster_counts")
 
 
@@ -95,7 +95,7 @@ def fig3():
     ax.set_xlabel("precision (잡은 것 중 맞은 비율)")
     ax.set_ylabel("recall (실제 그 의도 중 잡은 비율)")
     ax.grid()
-    ax.set_title("규칙의 오차는 놓치는 군집과 끌어오는 군집으로 갈린다")
+    ax.set_title("첫 일치 규칙의 군집별 precision과 recall")
     ss.save(fig, "fig3_rule_precision_recall")
 
 
@@ -117,7 +117,7 @@ def fig4():
     ax.set_xlabel("붙인 뒤 메시지 수 - ground truth (왼쪽은 작게, 오른쪽은 크게 셈)")
     ax.spines["left"].set_visible(False)
     ax.tick_params(axis="y", length=0)
-    ax.set_title("짧은 응답을 붙여도 세션 마감은 작고 UI 시안은 크다")
+    ax.set_title("짧은 응답을 붙인 뒤 군집별 오차")
     ss.save(fig, "fig4_context_truth")
 
 
@@ -141,7 +141,7 @@ def fig5():
     ax.set_xlabel("덮는 메시지 수")
     ax.grid(axis="x")
     ax.legend(loc="center right", bbox_to_anchor=(1, 0.45))
-    ax.set_title("어떻게 세도 A가 가장 크고, C와 D는 ground truth에서 뒤집힌다")
+    ax.set_title("후보별 메시지 수: 정규식 네 방법의 범위와 ground truth")
     ss.save(fig, "fig5_candidates")
 
 

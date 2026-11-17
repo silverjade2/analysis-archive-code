@@ -98,8 +98,8 @@ def matches(text: str) -> list[str]:
     return [k for k in CLUSTERS if PATTERN[k].search(text)]
 
 
-def first_match(text: str, order: list[str] = CLUSTERS) -> str:
-    for k in order:
+def first_match(text: str) -> str:
+    for k in CLUSTERS:
         if PATTERN[k].search(text):
             return k
     return "other"
