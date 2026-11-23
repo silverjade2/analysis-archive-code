@@ -24,7 +24,7 @@
 | `scripts/10_eval_test.py` | 평가 표본으로 한 번만 평가, 보정. `data/eval_labels.csv`, `task_pred.parquet`도 씀 | 예측, 평가 라벨과 본문 |
 | `scripts/11_share_final.py` | 최종 표: 유형 + 묶음, 전체, 영어, 비영어 | `data/eval_labels.csv`, `task_pred.parquet` |
 | `scripts/12_recheck.py` | 주 대상 기준 F1, 회차 차이 구간 | 예측, 평가 라벨 |
-| `scripts/13_article_numbers.py` | 글의 업무 구성, 기술 추세 민감도, 국내 비교, 직함 변경 상한 표 | `outputs/results/`, 기준 데이터, 라벨 |
+| `scripts/13_article_numbers.py` | 글의 업무 구성, 기술 추세 민감도, 국내 비교, 직함 변경 상한 (기대 대비 초과분, DS 머신러닝 등장률로 본 한도) 표 | `outputs/results/`, 기준 데이터, 라벨 |
 | `scripts/14_dbt_seed.py` | 최종 표에서 dbt seed `task_share_wdc.csv` | `outputs/results/` |
 | `scripts/15_widget_json.py` | 사이트 위젯 json 3개 | `outputs/results/` |
 | `dbt/` | seed 3개, 모델 12개, 테스트 28개. mart는 `skill_demand_vs_activity`, `task_mix`, `task_group_mix` | Snowflake 적재 표 |

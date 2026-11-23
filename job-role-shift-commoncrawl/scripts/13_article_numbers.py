@@ -162,6 +162,22 @@ def rename_bound() -> pd.DataFrame:
     keep["expected_2024"] = keep[A] * ratio
     keep["gap"] = keep[B] - keep.expected_2024
     keep["total_ratio"] = ratio
+    surplus, deficit = keep.gap.clip(lower=0).sum(), -keep.gap.clip(upper=0).sum()
+    keep["surplus_total"] = surplus
+    keep["deficit_total"] = deficit
+    keep["surplus_over_deficit"] = surplus / deficit
+    ds_share = keep.loc["DS", "gap"] / keep.loc["DS", B]
+    keep["ds_surplus_share"] = ds_share
+
+    # 초과분이 전부 BA/BI나 DA 본문일 때의 DS 머신러닝 등장률, 2년 차이 95% 구간 아래 끝이 허용하는 직함 변경 몫
+    s = pd.read_csv(RESULTS / "task1_article2_skill_trend.csv").query("scope == '미국' and skill == '머신러닝'")
+    s = s.set_index("role")
+    keep["ml_2024"] = s.rate_2024
+    ds_ml, ds_lo = s.loc["DS", "rate_2022"], -s.loc["DS", "diff_lo"] / 100
+    src = keep.index.isin(["BA/BI", "DA"])
+    keep.loc[src, "ds_ml_if_renamed"] = (1 - ds_share) * ds_ml + ds_share * keep.ml_2024
+    keep.loc[src, "rename_max_share"] = ds_lo / (ds_ml - keep.ml_2024)
+    keep["rename_max_n"] = keep.rename_max_share * keep.loc["DS", B]
     return keep.reset_index().rename(columns={"g": "role"})
 
 
