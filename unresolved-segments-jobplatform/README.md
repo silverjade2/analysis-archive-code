@@ -18,7 +18,7 @@ for s in scripts/0*.py; do .venv/bin/python "$s"; done
 | | 역할 | 주요 출력 |
 |---|---|---|
 | 01 | 가상 구직자 6,000명. 잠재 유형 4개, 비활성 30%(취업 완료/이탈), 입력 빈약 25% | `data/jobseekers.csv` |
-| 02 | k sweep, k=5 구성, 비활성 군집 재분할, 채용 진행 상태로 확인되는 범위, 최근 경력 신입 규칙 | `js_*.csv` |
+| 02 | k sweep, k=5 구성, 비활성 군집 재분할, 채용 진행 상태로 확인되는 범위, 최근 경력 신입 규칙, 군집별 멈춘 사람과 규칙 오답 유형 세기 (`js_article_counts.csv`) | `js_*.csv` |
 | 03 | 분석 그림 | fig1 |
 | 04 | 사이트용 그림 4장, CSV에서 읽기만 함 | `outputs/figures/site/` |
 

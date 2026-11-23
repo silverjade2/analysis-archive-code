@@ -1,0 +1,10 @@
+item,key,n
+stopped_total,all,1766
+stopped_by_cluster,0,311
+stopped_by_cluster,1,352
+stopped_by_cluster,2,200
+stopped_by_cluster,3,844
+stopped_by_cluster,4,59
+stopped_outside_dormant,all,922
+rule_wrong_by_type,explorer,473
+rule_wrong_sparse,all,0

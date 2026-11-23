@@ -103,3 +103,17 @@ target = pd.DataFrame(
 )
 target.to_csv(res / "js_target_rule.csv", index=False)
 print(target.T)
+
+# 글에 쓰는 세기: 멈춘 사람(취업 완료 + 이탈)이 군집별로 몇 명인지, 규칙이 틀리게 잡은 사람의 유형
+stopped = df[df["truth_outcome"].isin(["hired", "lapsed"])]
+counts = [{"item": "stopped_total", "key": "all", "n": len(stopped)}]
+by_cluster = stopped["cluster"].value_counts().sort_index()
+counts += [{"item": "stopped_by_cluster", "key": c, "n": n} for c, n in by_cluster.items()]
+counts.append({"item": "stopped_outside_dormant", "key": "all", "n": int((stopped["cluster"] != dormant_c).sum())})
+wrong = df[rule & ~truth]
+by_type = wrong["truth_type"].value_counts().sort_index()
+counts += [{"item": "rule_wrong_by_type", "key": t, "n": n} for t, n in by_type.items()]
+counts.append({"item": "rule_wrong_sparse", "key": "all", "n": int(wrong["truth_sparse"].sum())})
+counts = pd.DataFrame(counts)
+counts.to_csv(res / "js_article_counts.csv", index=False)
+print(counts.to_string(index=False))
